@@ -731,6 +731,7 @@ function ownerAdminCard(n,isLatest){
       ${n.appetite?`<span class="b b-am">${esc(n.appetite)}</span>`:''}
     </div>`:''}
     ${n.extra?`<div style="font-size:14px;line-height:1.6">${esc(n.extra)}</div>`:''}
+    ${n.photo?`<img src="${n.photo}" style="width:100%;border-radius:var(--r);margin-top:10px;max-height:280px;object-fit:cover">`:''}
   </div>`;
 }
 
