@@ -184,15 +184,25 @@ function init(){
 async function loadData(){
   const h=MK?{'X-Master-Key':MK}:{};
   const r=await fetch(`${JBASE}/${BIN}/latest`,{headers:h});
-  if(!r.ok)throw new Error('load failed');
+  if(!r.ok){
+    let msg='Yükleme hatası: '+r.status;
+    try{const j=await r.json();msg+=' — '+(j.message||JSON.stringify(j));}catch(e){}
+    throw new Error(msg);
+  }
   const j=await r.json();DATA=j.record;
   if(!DATA.cats)DATA.cats=[];
   if(!DATA.notes)DATA.notes={};
   if(!DATA.items||!DATA.items.length)DATA.items=[...DEFAULT_ITEMS];
 }
 async function save(){
+  if(!MK||!BIN){toast('⚠️ API anahtarı veya Bin ID eksik!',4000);throw new Error('no credentials');}
   const r=await fetch(`${JBASE}/${BIN}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':MK},body:JSON.stringify(DATA)});
-  if(!r.ok)throw new Error('save failed');toast('Kaydedildi ✓');
+  if(!r.ok){
+    let msg='Kayıt hatası: '+r.status;
+    try{const j=await r.json();msg+=' — '+(j.message||JSON.stringify(j));}catch(e){}
+    toast('⚠️ '+msg,5000);throw new Error(msg);
+  }
+  toast('Kaydedildi ✓');
 }
 async function createBin(mk){
   const r=await fetch(JBASE,{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':mk,'X-Bin-Private':'false'},body:JSON.stringify({cats:[],notes:{},items:[...DEFAULT_ITEMS]})});
