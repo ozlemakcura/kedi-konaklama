@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kedi Konaklama Takibi</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#7C3AED;--purple-d:#5B21B6;--purple-l:#EDE9FE;--purple-b:#C4B5FD;
+  --pink:#DB2777;--pink-l:#FCE7F3;--pink-b:#F9A8D4;
+  --teal:#0D9488;--teal-l:#CCFBF1;--teal-b:#5EEAD4;
+  --amber:#D97706;--amber-l:#FEF3C7;--amber-b:#FCD34D;
+  --coral:#E11D48;--coral-l:#FFE4E6;--coral-b:#FDA4AF;
+  --blue:#2563EB;--blue-l:#DBEAFE;--blue-b:#93C5FD;
+  --green:#059669;--green-l:#D1FAE5;--green-b:#6EE7B7;
+  --orange:#EA580C;--orange-l:#FFEDD5;--orange-b:#FDBA74;
+  --bg:#FDF8FF;--card:#FFFFFF;--border:#E9D5FF;
+  --text:#1E1B4B;--muted:#6B7280;
+  --r:12px;--rl:16px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;font-size:15px}
+.wrap{max-width:640px;margin:0 auto;padding:1.5rem 1rem 3rem}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--rl);padding:1.25rem;margin-bottom:12px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(124,58,237,.06)}
+.card-sm{padding:1rem}
+.card-colored{border-top:3px solid var(--purple)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--r);font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--text);transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--purple-l);border-color:var(--purple-b)}
+.btn-primary{background:var(--purple);color:#fff;border-color:var(--purple)}
+.btn-primary:hover{background:var(--purple-d)}
+.btn-pink{background:var(--pink);color:#fff;border-color:var(--pink)}
+.btn-pink:hover{background:#BE185D}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-teal:hover{background:#0F766E}
+.btn-edit{background:var(--blue-l);color:var(--blue);border-color:var(--blue-b)}
+.btn-edit:hover{background:#BFDBFE}
+.btn-sm{padding:6px 12px;font-size:13px}
+.btn-danger{color:var(--coral);border-color:transparent;background:none}
+.btn-danger:hover{background:var(--coral-l)}
+.btn-full{width:100%;justify-content:center}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Forms */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;font-family:inherit;background:#fff;color:var(--text);transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-l)}
+.field textarea{resize:vertical;min-height:72px;line-height:1.5}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.g2{grid-template-columns:1fr}}
+
+/* Header */
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding:1rem 1.25rem;background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%);border-radius:var(--rl);color:#fff}
+.hdr h1{font-size:18px;font-weight:700;margin:0;color:#fff}
+.hdr p{font-size:13px;margin:0;color:rgba(255,255,255,.8)}
+.logo{width:42px;height:42px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;background:#E9D5FF;padding:4px;border-radius:12px;margin-bottom:1.25rem}
+.tab{flex:1;padding:7px 6px;font-size:12px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--purple-d);border-radius:8px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px}
+.tab.on{background:#fff;color:var(--purple);box-shadow:0 2px 6px rgba(124,58,237,.2)}
+.tab-cats.on{color:var(--teal)}
+.tab-notes.on{color:var(--purple)}
+.tab-msg.on{color:var(--pink)}
+.tab-items.on{color:var(--orange)}
+
+/* Checklist */
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.chk{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none;font-size:13px;transition:all .15s;background:#fff}
+.chk.on{border-color:var(--purple);background:var(--purple-l);color:var(--purple-d);font-weight:500}
+.chk input{accent-color:var(--purple);flex-shrink:0}
+
+/* Badges */
+.b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.b-gr{background:var(--green-l);color:var(--green)}
+.b-te{background:var(--teal-l);color:var(--teal)}
+.b-am{background:var(--amber-l);color:var(--amber)}
+.b-pu{background:var(--purple-l);color:var(--purple)}
+.b-pk{background:var(--pink-l);color:var(--pink)}
+.b-or{background:var(--orange-l);color:var(--orange)}
+
+/* Cat row */
+.cat-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.cat-row:last-child{border-bottom:none;padding-bottom:0}
+.cat-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.cat-info{flex:1;min-width:0}
+.cat-name{font-size:14px;font-weight:700;color:var(--text)}
+.cat-meta{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.6}
+.cat-acts{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+
+/* Alerts */
+.al{padding:10px 14px;border-radius:var(--r);font-size:13px;display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
+.al-info{background:var(--blue-l);color:var(--blue);border:1.5px solid var(--blue-b)}
+.al-warn{background:var(--amber-l);color:var(--amber);border:1.5px solid var(--amber-b)}
+.al-purple{background:var(--purple-l);color:var(--purple-d);border:1.5px solid var(--purple-b)}
+
+/* Note cards */
+.note-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px}
+.note-time{font-size:12px;color:var(--muted)}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.note-extra{font-size:13px;color:var(--muted);line-height:1.5}
+.note-acts{display:flex;gap:6px;margin-top:10px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:8px}
+
+/* Owner hero */
+.hero{text-align:center;padding:2rem 1rem 1.5rem;background:linear-gradient(135deg,var(--purple-l) 0%,var(--pink-l) 100%);border-radius:var(--rl);margin-bottom:1rem}
+.hero-av{width:80px;height:80px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 12px;box-shadow:0 4px 16px rgba(124,58,237,.2)}
+.hero-name{font-size:26px;font-weight:700;color:var(--purple-d);margin-bottom:6px}
+.hero-sub{font-size:14px;color:var(--purple)}
+
+/* Message box */
+.msg-box{background:var(--purple-l);border-radius:var(--r);padding:1rem;font-size:13px;line-height:1.7;white-space:pre-wrap;border:1.5px solid var(--purple-b);min-height:100px;color:var(--text)}
+
+/* Group/section labels */
+.glabel{font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;padding:8px 0 4px;border-top:1.5px solid var(--purple-l);margin-top:4px}
+.glabel:first-child{border-top:none;margin-top:0;padding-top:0}
+.slabel{font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+
+/* Edit banner */
+.edit-banner{background:linear-gradient(135deg,var(--blue-l),var(--purple-l));border:1.5px solid var(--purple-b);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--purple-d);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:500}
+
+/* Items list */
+.item-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--orange-l);border:1.5px solid var(--orange-b);border-radius:var(--r);margin-bottom:8px}
+.item-row span{flex:1;font-size:14px;font-weight:500;color:var(--orange)}
+.item-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0}
+
+/* Setup */
+.setup-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:linear-gradient(135deg,var(--purple-l) 0%,var(--pink-l) 100%)}
+.setup-card{max-width:480px;width:100%;background:#fff;border-radius:20px;padding:2rem;border:1.5px solid var(--purple-b);box-shadow:0 8px 32px rgba(124,58,237,.12)}
+.step{display:flex;gap:10px;padding:7px 0;font-size:13px;color:var(--muted);line-height:1.5}
+.step-n{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step a{color:var(--purple);font-weight:500}
+
+/* Misc */
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:14px}
+.empty-i{font-size:36px;display:block;margin-bottom:8px;opacity:.3}
+.spin{animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(16px);background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(124,58,237,.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Section color bars */
+.sec-teal{border-left:4px solid var(--teal);padding-left:10px;margin-bottom:10px}
+.sec-purple{border-left:4px solid var(--purple);padding-left:10px;margin-bottom:10px}
+.sec-orange{border-left:4px solid var(--orange);padding-left:10px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+<script>
+'use strict';
+const JBASE='https://api.jsonbin.io/v3/b';
+const EMO=['🐱','🐈','😸','🙀','😺','🐾','🐈‍⬛'];
+const DEFAULT_ITEMS=['Kendi maması','Pet pasaportu'];
+let MK='',BIN='',DATA={cats:[],notes:{},items:[]};
+let TAB='cats';
+let ownerLinks={};
+let editCatId=null;
+let editNoteState=null;
+
+function init(){
+  const sp=new URLSearchParams(location.search);
+  const catParam=sp.get('cat'),binParam=sp.get('bin');
+  if(catParam&&binParam){
+    const hp=new URLSearchParams(location.hash.slice(1));
+    MK=hp.get('mk')||'';BIN=binParam;
+    app('<div class="wrap"><div class="hero"><div class="hero-av">🐱</div><p>Yükleniyor...</p></div></div>');
+    loadData().then(()=>renderOwner(catParam)).catch(()=>app('<div class="wrap"><div class="empty"><span class="empty-i">⚠️</span>Veriler yüklenemedi.</div></div>'));
+  } else {
+    MK=localStorage.getItem('kb_mk')||'';BIN=localStorage.getItem('kb_bin')||'';
+    if(!MK){renderSetup();}
+    else{
+      app('<div class="wrap"><div class="empty"><i class="ti ti-loader spin empty-i"></i>Yükleniyor...</div></div>');
+      loadData().then(()=>renderAdmin()).catch(()=>{localStorage.removeItem('kb_mk');localStorage.removeItem('kb_bin');renderSetup('API anahtarı geçersiz.');});
+    }
+  }
+}
+
+async function loadData(){
+  const h=MK?{'X-Master-Key':MK}:{};
+  const r=await fetch(`${JBASE}/${BIN}/latest`,{headers:h});
+  if(!r.ok)throw new Error('load failed');
+  const j=await r.json();DATA=j.record;
+  if(!DATA.cats)DATA.cats=[];
+  if(!DATA.notes)DATA.notes={};
+  if(!DATA.items||!DATA.items.length)DATA.items=[...DEFAULT_ITEMS];
+}
+async function save(){
+  const r=await fetch(`${JBASE}/${BIN}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':MK},body:JSON.stringify(DATA)});
+  if(!r.ok)throw new Error('save failed');toast('Kaydedildi ✓');
+}
+async function createBin(mk){
+  const r=await fetch(JBASE,{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':mk,'X-Bin-Private':'false'},body:JSON.stringify({cats:[],notes:{},items:[...DEFAULT_ITEMS]})});
+  if(!r.ok)throw new Error('bin create failed');return(await r.json()).metadata.id;
+}
+
+function app(html){document.getElementById('app').innerHTML=html;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;}
+function daysSince(d){if(!d)return null;return Math.floor((Date.now()-new Date(d).getTime())/86400000);}
+function emo(i){return EMO[i%EMO.length];}
+let toastTimer;
+function toast(msg,dur=2200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);}
+function v(id){const el=document.getElementById(id);return el?(el.value||'').trim():'';}
+function chked(id){const el=document.getElementById(id);return el?el.querySelector('input').checked:false;}
+function ownerLink(c){return`${location.origin}${location.pathname}?cat=${c.id}&bin=${BIN}#mk=${MK}`;}
+function copyOwnerLink(catId){const link=ownerLinks[catId];if(!link)return;navigator.clipboard.writeText(link).then(()=>toast('Sahip linki kopyalandı! 🔗'));}
+
+/* Avatar backgrounds */
+const AV_COLORS=['#EDE9FE','#FCE7F3','#CCFBF1','#FEF3C7','#FFEDD5','#DBEAFE','#D1FAE5'];
+const AV_TEXTS=['#5B21B6','#BE185D','#0F766E','#92400E','#9A3412','#1E40AF','#065F46'];
+function catAvStyle(i){return`background:${AV_COLORS[i%AV_COLORS.length]}`;}
+
+/* SETUP */
+function renderSetup(errMsg=''){
+  app(`<div class="setup-outer"><div class="setup-card">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px">🐾</div>
+      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px;color:var(--purple-d)">Kedi Konaklama Takibi</h1>
+      <p style="font-size:13px;color:var(--muted)">İlk kurulum — sadece bir kere yapılır</p>
+    </div>
+    <div style="margin-bottom:1.25rem">
+      <div class="slabel">Nasıl kurulur?</div>
+      <div class="step"><div class="step-n">1</div><div><a href="https://jsonbin.io" target="_blank">jsonbin.io</a>'ya gidin, ücretsiz hesap açın</div></div>
+      <div class="step"><div class="step-n">2</div><div>Sağ üstten profilinize → <strong>API Keys</strong> bölümüne gidin</div></div>
+      <div class="step"><div class="step-n">3</div><div><strong>X-MASTER-KEY</strong>'i kopyalayın ($ ile başlar)</div></div>
+      <div class="step"><div class="step-n">4</div><div>Aşağıya yapıştırın</div></div>
+    </div>
+    ${errMsg?`<div class="al al-warn"><i class="ti ti-alert-circle"></i>${esc(errMsg)}</div>`:''}
+    <div class="field"><label>X-Master-Key</label><input id="setup-key" type="password" placeholder="$2a$10$..." autocomplete="off"></div>
+    <button class="btn btn-primary btn-full" id="setup-btn" onclick="doSetup()"><i class="ti ti-rocket"></i> Kurulumu Tamamla</button>
+  </div></div>`);
+}
+async function doSetup(){
+  const key=(document.getElementById('setup-key').value||'').trim();
+  if(!key)return renderSetup('API anahtarı boş olamaz.');
+  const btn=document.getElementById('setup-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Bağlanıyor...';
+  try{const id=await createBin(key);MK=key;BIN=id;localStorage.setItem('kb_mk',MK);localStorage.setItem('kb_bin',BIN);DATA={cats:[],notes:{},items:[...DEFAULT_ITEMS]};renderAdmin();}
+  catch(e){renderSetup('Bağlantı kurulamadı. Anahtarı kontrol edin.');}
+}
+
+/* ADMIN SHELL */
+function renderAdmin(tab){
+  if(tab)TAB=tab;
+  document.title='Kedi Konaklama — Admin';
+  ownerLinks={};DATA.cats.forEach(c=>{ownerLinks[c.id]=ownerLink(c);});
+  const count=DATA.cats.length;
+  app(`<div class="wrap">
+    <div class="hdr">
+      <div class="logo">🐾</div>
+      <div><h1>Kedi Konaklama</h1><p>${count===0?'Henüz kedi yok':count+' aktif kedi'}</p></div>
+    </div>
+    <div class="tabs">
+      <button class="tab tab-cats ${TAB==='cats'?'on':''}" onclick="renderAdmin('cats')"><i class="ti ti-paw"></i> Kediler</button>
+      <button class="tab tab-notes ${TAB==='notes'?'on':''}" onclick="renderAdmin('notes')"><i class="ti ti-notes"></i> Günlük Not</button>
+      <button class="tab tab-msg ${TAB==='msg'?'on':''}" onclick="renderAdmin('msg')"><i class="ti ti-brand-whatsapp"></i> Mesaj</button>
+      <button class="tab tab-items ${TAB==='items'?'on':''}" onclick="renderAdmin('items')"><i class="ti ti-backpack"></i> Eşyalar</button>
+    </div>
+    <div id="tab-body">${TAB==='cats'?tplCats():TAB==='notes'?tplNotes():TAB==='msg'?tplMsg():tplItems()}</div>
+  </div>`);
+  document.querySelectorAll('.chk input').forEach(inp=>{
+    inp.addEventListener('change',function(){this.closest('.chk').classList.toggle('on',this.checked);});
+  });
+}
+
+/* CATS TAB */
+function tplCats(){
+  const ec=editCatId!==null?DATA.cats.find(c=>c.id===editCatId):null;
+  const dietOpts=['Kuru mama','Yaş mama','Kuru + yaş karma','Ev yemeği','Diyet / veteriner maması'].map(o=>`<option${ec?.diet===o?' selected':''}>${o}</option>`).join('');
+  return`
+    ${ec?`<div class="edit-banner"><span><i class="ti ti-pencil"></i> <strong>${esc(ec.name)}</strong> düzenleniyor</span><button class="btn btn-sm btn-danger" onclick="cancelCatEdit()"><i class="ti ti-x"></i> İptal</button></div>`:''}
+    <div class="card card-colored">
+      <div class="slabel" style="color:var(--teal)">${ec?'Kedi bilgilerini düzenle':'Yeni kedi ekle'}</div>
+      <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Temel bilgiler</div>
+      <div class="g2">
+        <div class="field"><label>Kedi adı *</label><input id="n-name" placeholder="Örn: Pamuk" value="${esc(ec?.name||'')}"></div>
+        <div class="field"><label>Cins</label><input id="n-breed" placeholder="Örn: British Shorthair" value="${esc(ec?.breed||'')}"></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Yaş</label><input id="n-age" placeholder="Örn: 3 yaş" value="${esc(ec?.age||'')}"></div>
+        <div class="field"><label>Sahibi</label><input id="n-owner" placeholder="Örn: Ayşe Hanım" value="${esc(ec?.owner||'')}"></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Sahibinin telefonu</label><input id="n-phone" placeholder="0532 000 00 00" value="${esc(ec?.phone||'')}"></div>
+        <div class="field"></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Giriş tarihi</label><input type="date" id="n-checkin" value="${esc(ec?.checkin||'')}"></div>
+        <div class="field"><label>Çıkış tarihi</label><input type="date" id="n-checkout" value="${esc(ec?.checkout||'')}"></div>
+      </div>
+      <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Beslenme</div>
+      <div class="g2">
+        <div class="field"><label>Beslenme çeşidi</label><select id="n-diet"><option value="">Seçin</option>${dietOpts}</select></div>
+        <div class="field"><label>Ekstra takviye</label><input id="n-supp" placeholder="Omega-3, malt..." value="${esc(ec?.supplement||'')}"></div>
+      </div>
+      <div class="field"><label>Mama detayı</label><input id="n-food" placeholder="Örn: Sabah 50g Proplan, akşam 1 pouch" value="${esc(ec?.food||'')}"></div>
+      <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Sağlık & karakter</div>
+      <div class="field"><label>Alerji veya sağlık problemi</label><input id="n-health" placeholder="Örn: Balık alerjisi, günde 1x ilaç" value="${esc(ec?.health||'')}"></div>
+      <div class="field"><label>Kedinin karakteri</label><textarea id="n-char" placeholder="Örn: Sosyal ama yabancıya ürkek...">${esc(ec?.character||'')}</textarea></div>
+      <div class="glabel" style="color:var(--orange);border-top-color:var(--orange-l)">Notlar</div>
+      <div class="field"><label>Özel notlar</label><textarea id="n-extranote" placeholder="Bu kedi hakkında ekstra notlar...">${esc(ec?.extranote||'')}</textarea></div>
+      <div class="glabel" style="color:var(--pink);border-top-color:var(--pink-l)">Gelecek eşyalar</div>
+      <div class="field"><label>Sahibin getirdiği eşyalar</label><textarea id="n-gelenesya" placeholder="Örn: Kendi yastığı, oyuncak fare, battaniyesi...">${esc(ec?.gelenesya||'')}</textarea></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-teal" id="add-btn" onclick="saveCat()"><i class="ti ti-device-floppy"></i> ${ec?'Değişikliği Kaydet':'Kedi Ekle'}</button>
+        ${ec?`<button class="btn btn-danger" onclick="cancelCatEdit()"><i class="ti ti-x"></i> İptal</button>`:''}
+      </div>
+    </div>
+    <div id="cat-list">${DATA.cats.length===0?'<div class="empty"><span class="empty-i">🐱</span>Henüz kedi eklenmedi</div>':DATA.cats.map((c,i)=>catCard(c,i)).join('')}</div>`;
+}
+
+function catCard(c,i){
+  const nCount=(DATA.notes[c.id]||[]).length;
+  return`<div class="card card-sm" style="border-left:4px solid ${AV_COLORS[i%AV_COLORS.length].replace('FE','D0')||'var(--teal)'}">
+    <div class="cat-row">
+      <div class="cat-av" style="${catAvStyle(i)}">${emo(i)}</div>
+      <div class="cat-info">
+        <div class="cat-name">${esc(c.name)}${c.breed?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.breed)}</span>`:''}${c.age?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.age)}</span>`:''}</div>
+        ${c.owner||c.phone?`<div class="cat-meta">👤 ${esc(c.owner||'')}${c.phone?' · '+esc(c.phone):''}</div>`:''}
+        ${c.checkin?`<div class="cat-meta">📅 ${fmtDate(c.checkin)}${c.checkout?' → '+fmtDate(c.checkout):''}</div>`:''}
+        ${c.diet||c.food?`<div class="cat-meta">🍽 ${esc([c.diet,c.food].filter(Boolean).join(' · '))}</div>`:''}
+        ${c.supplement?`<div class="cat-meta">💊 ${esc(c.supplement)}</div>`:''}
+        ${c.health?`<div style="font-size:12px;color:var(--coral);margin-top:2px;font-weight:500">⚠️ ${esc(c.health)}</div>`:''}
+        ${c.character?`<div style="font-size:12px;color:var(--purple);font-style:italic;margin-top:2px">💬 ${esc(c.character)}</div>`:''}
+        ${c.extranote?`<div style="font-size:12px;color:var(--orange);margin-top:4px;border-top:1px solid var(--border);padding-top:4px">📋 ${esc(c.extranote)}</div>`:''}
+        ${c.gelenesya?`<div style="font-size:12px;color:var(--pink);margin-top:4px;font-weight:500">🎒 Gelen eşyalar: ${esc(c.gelenesya)}</div>`:''}
+      </div>
+      <div class="cat-acts">
+        ${nCount?`<span class="b b-pu">${nCount} not</span>`:''}
+        <button class="btn btn-sm" onclick="copyOwnerLink(${c.id})" title="Sahip linkini kopyala" style="color:var(--purple)"><i class="ti ti-link"></i></button>
+        <button class="btn btn-sm btn-edit" onclick="startCatEdit(${c.id})"><i class="ti ti-pencil"></i></button>
+        <button class="btn btn-sm btn-danger" onclick="removeCat(${c.id})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function startCatEdit(id){editCatId=id;renderAdmin('cats');document.querySelector('.card')?.scrollIntoView({behavior:'smooth'});}
+function cancelCatEdit(){editCatId=null;renderAdmin('cats');}
+async function saveCat(){
+  const name=(document.getElementById('n-name').value||'').trim();
+  if(!name){alert('Kedi adı zorunlu.');return;}
+  const btn=document.getElementById('add-btn');btn.disabled=true;
+  const data={name,breed:v('n-breed'),age:v('n-age'),owner:v('n-owner'),phone:v('n-phone'),checkin:v('n-checkin'),checkout:v('n-checkout'),diet:v('n-diet'),supplement:v('n-supp'),food:v('n-food'),health:v('n-health'),character:v('n-char'),extranote:v('n-extranote'),gelenesya:v('n-gelenesya')};
+  if(editCatId!==null){const idx=DATA.cats.findIndex(c=>c.id===editCatId);if(idx>-1)DATA.cats[idx]={...DATA.cats[idx],...data};editCatId=null;}
+  else DATA.cats.push({id:Date.now(),...data});
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
+  renderAdmin('cats');
+}
+async function removeCat(id){
+  if(!confirm('Bu kedi kaydını silmek istediğinize emin misiniz?'))return;
+  DATA.cats=DATA.cats.filter(c=>c.id!==id);delete DATA.notes[id];
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
+  renderAdmin('cats');
+}
+
+/* NOTES TAB */
+function tplNotes(){
+  const opts=DATA.cats.map(c=>`<option value="${c.id}">${esc(c.name)}${c.owner?' ('+esc(c.owner)+')':''}</option>`).join('');
+  const isEditing=editNoteState!==null;
+  return`
+    ${isEditing?`<div class="edit-banner"><span><i class="ti ti-pencil"></i> Not düzenleniyor</span><button class="btn btn-sm btn-danger" onclick="cancelNoteEdit()"><i class="ti ti-x"></i> İptal</button></div>`:''}
+    <div class="card" style="border-top:3px solid var(--purple)">
+      <div class="field"><label>Hangi kedi?</label>
+        <select id="note-sel" onchange="onNoteChange()">${opts?'<option value="">— seçin —</option>'+opts:'<option>Önce kedi ekleyin</option>'}</select>
+      </div>
+      <div id="note-hint" style="display:none" class="al al-purple"><i class="ti ti-info-circle" style="flex-shrink:0"></i><span id="note-hint-txt"></span></div>
+      <div class="slabel">Bugün gerçekleşenler</div>
+      <div class="checks">
+        <label class="chk" id="chk-mama"><input type="checkbox"> <i class="ti ti-bowl"></i> Mama yedi</label>
+        <label class="chk" id="chk-su"><input type="checkbox"> <i class="ti ti-droplet"></i> Su içti</label>
+        <label class="chk" id="chk-tuvalet"><input type="checkbox"> <i class="ti ti-sparkles"></i> Tuvalet normal</label>
+        <label class="chk" id="chk-oyun"><input type="checkbox"> <i class="ti ti-ball"></i> Oyun / aktif</label>
+        <label class="chk" id="chk-ilac"><input type="checkbox"> <i class="ti ti-pill"></i> İlaç verildi</label>
+        <label class="chk" id="chk-tarama"><input type="checkbox"> <i class="ti ti-cut"></i> Tımar / bakım</label>
+        <label class="chk" id="chk-malt"><input type="checkbox"> <i class="ti ti-candy"></i> Malt yedi</label>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Ruh hali</label>
+          <select id="note-mood"><option value="">Seçin</option>${['Sakin ve mutlu','Aktif ve oyuncu','Biraz çekingen','Stresli görünüyor','Yorgun / uykulama eğilimli'].map(o=>`<option>${o}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>İştah</label>
+          <select id="note-app"><option value="">Seçin</option>${['Hepsini yedi','Yarısını yedi','Az yedi','Hiç yemedi'].map(o=>`<option>${o}</option>`).join('')}</select>
+        </div>
+      </div>
+      <div class="field"><label>Ek notlar</label><textarea id="note-extra" placeholder="Özel gözlem, endişe, davranış..."></textarea></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="note-btn" onclick="saveNote()"><i class="ti ti-device-floppy"></i> ${isEditing?'Değişikliği Kaydet':'Notu Kaydet'}</button>
+        ${isEditing?`<button class="btn btn-danger" onclick="cancelNoteEdit()"><i class="ti ti-x"></i> İptal</button>`:''}
+      </div>
+    </div>
+    <div id="notes-list"></div>`;
+}
+
+function onNoteChange(){
+  const catId=parseInt(document.getElementById('note-sel').value);
+  const cat=DATA.cats.find(c=>c.id===catId);
+  const hint=document.getElementById('note-hint');
+  if(cat&&(cat.diet||cat.food||cat.supplement||cat.health)){
+    hint.style.display='flex';
+    document.getElementById('note-hint-txt').textContent=[cat.diet,cat.food,cat.supplement&&'Takviye: '+cat.supplement,cat.health&&'⚠️ '+cat.health].filter(Boolean).join(' · ');
+  } else {hint.style.display='none';}
+  renderNotesList(catId);
+}
+
+function renderNotesList(catId){
+  const el=document.getElementById('notes-list');if(!el||!catId)return;
+  const catNotes=DATA.notes[catId]||[];
+  const cat=DATA.cats.find(c=>c.id===catId);
+  if(!catNotes.length){el.innerHTML='<div class="empty" style="padding:1.5rem 1rem"><span style="font-size:24px;display:block;margin-bottom:6px;opacity:.3">📋</span>Henüz not eklenmedi</div>';return;}
+  el.innerHTML=`<div class="slabel">${cat?esc(cat.name)+' için ':''} kayıtlı notlar (${catNotes.length})</div>`+catNotes.map((n,idx)=>noteCard(n,catId,idx)).join('');
+}
+
+function noteCard(n,catId,idx){
+  const isOwner=n.from==='owner';
+  return`<div class="card card-sm" style="${isOwner?'border-left:4px solid var(--pink)':'border-left:4px solid var(--purple)'}">
+    <div class="note-hdr">
+      <span class="note-time">${esc(n.date)} · ${esc(n.time)}${isOwner?' · <span style="color:var(--pink);font-size:11px;font-weight:600">Sahip notu</span>':''}</span>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        ${n.mood?`<span class="b b-pu">${esc(n.mood)}</span>`:''}
+        ${n.appetite?`<span class="b b-am">${esc(n.appetite)}</span>`:''}
+      </div>
+    </div>
+    ${n.checks?`<div class="tags">
+      ${n.checks.mama?'<span class="b b-gr">🍽 mama</span>':''}
+      ${n.checks.su?'<span class="b b-gr">💧 su</span>':''}
+      ${n.checks.tuvalet?'<span class="b b-gr">✨ tuvalet</span>':''}
+      ${n.checks.oyun?'<span class="b b-gr">🎾 oyun</span>':''}
+      ${n.checks.ilac?'<span class="b b-am">💊 ilaç</span>':''}
+      ${n.checks.tarama?'<span class="b b-te">✂️ tımar</span>':''}
+      ${n.checks.malt?'<span class="b b-pk">🍬 malt</span>':''}
+    </div>`:''}
+    ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
+    ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
+    ${!isOwner&&catId!==undefined?`<div class="note-acts">
+      <button class="btn btn-sm btn-edit" onclick="startNoteEdit(${catId},${idx})"><i class="ti ti-pencil"></i> Düzenle</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteNote(${catId},${idx})"><i class="ti ti-trash"></i> Sil</button>
+    </div>`:''}
+  </div>`;
+}
+
+function startNoteEdit(catId,idx){
+  const note=(DATA.notes[catId]||[])[idx];if(!note)return;
+  editNoteState={catId,idx};renderAdmin('notes');
+  setTimeout(()=>{
+    const sel=document.getElementById('note-sel');if(sel){sel.value=catId;onNoteChange();}
+    const setChk=(id,val)=>{const el=document.getElementById(id);if(!el)return;const inp=el.querySelector('input');inp.checked=!!val;el.classList.toggle('on',!!val);};
+    setChk('chk-mama',note.checks?.mama);setChk('chk-su',note.checks?.su);
+    setChk('chk-tuvalet',note.checks?.tuvalet);setChk('chk-oyun',note.checks?.oyun);
+    setChk('chk-ilac',note.checks?.ilac);setChk('chk-tarama',note.checks?.tarama);
+    setChk('chk-malt',note.checks?.malt);
+    const mood=document.getElementById('note-mood');if(mood)mood.value=note.mood||'';
+    const ap=document.getElementById('note-app');if(ap)ap.value=note.appetite||'';
+    const ex=document.getElementById('note-extra');if(ex)ex.value=note.extra||'';
+    document.querySelector('.card')?.scrollIntoView({behavior:'smooth'});
+    toast('Not düzenleniyor — değişikliklerinizi yapıp kaydedin.');
+  },60);
+}
+function cancelNoteEdit(){editNoteState=null;renderAdmin('notes');}
+
+async function saveNote(){
+  const catId=parseInt((document.getElementById('note-sel')||{}).value||'0');
+  if(!catId){alert('Lütfen kedi seçin.');return;}
+  const btn=document.getElementById('note-btn');btn.disabled=true;
+  const checks={mama:chked('chk-mama'),su:chked('chk-su'),tuvalet:chked('chk-tuvalet'),oyun:chked('chk-oyun'),ilac:chked('chk-ilac'),tarama:chked('chk-tarama'),malt:chked('chk-malt')};
+  if(!DATA.notes[catId])DATA.notes[catId]=[];
+  if(editNoteState&&editNoteState.catId===catId){
+    const orig=DATA.notes[catId][editNoteState.idx];
+    DATA.notes[catId][editNoteState.idx]={...orig,mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),checks};
+    editNoteState=null;
+  } else {
+    DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),from:'admin',checks});
+  }
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
+  renderAdmin('notes');
+  setTimeout(()=>{const sel=document.getElementById('note-sel');if(sel){sel.value=catId;onNoteChange();}},60);
+}
+
+async function deleteNote(catId,idx){
+  if(!confirm('Bu notu silmek istediğinize emin misiniz?'))return;
+  DATA.notes[catId].splice(idx,1);
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);return;}
+  renderNotesList(catId);
+}
+
+/* ITEMS TAB */
+function tplItems(){
+  const items=DATA.items||[];
+  return`<div class="card" style="border-top:3px solid var(--orange)">
+    <div class="slabel" style="color:var(--orange)">Sahiplerden İstenecek Eşyalar</div>
+    <div class="al al-warn" style="margin-bottom:16px"><i class="ti ti-info-circle" style="flex-shrink:0"></i>Bu liste tüm sahip sayfalarında görünür.</div>
+    <div id="items-list">
+      ${items.length===0?'<div class="empty" style="padding:1rem"><span style="opacity:.3">📦</span> Henüz eşya eklenmedi</div>':items.map((item,idx)=>`
+        <div class="item-row">
+          <div class="item-dot"></div>
+          <span>${esc(item)}</span>
+          <button class="btn btn-sm btn-danger" onclick="deleteItem(${idx})"><i class="ti ti-trash"></i></button>
+        </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <div class="field" style="flex:1;margin:0"><input id="new-item" placeholder="Yeni eşya ekle..." onkeydown="if(event.key==='Enter')addItem()"></div>
+      <button class="btn" style="background:var(--orange);color:#fff;border-color:var(--orange);flex-shrink:0" onclick="addItem()"><i class="ti ti-plus"></i> Ekle</button>
+    </div>
+  </div>`;
+}
+
+async function addItem(){
+  const val=(document.getElementById('new-item').value||'').trim();
+  if(!val)return;
+  if(!DATA.items)DATA.items=[];
+  DATA.items.push(val);
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
+  renderAdmin('items');
+}
+
+async function deleteItem(idx){
+  if(!confirm('Bu eşyayı listeden çıkarmak istediğinize emin misiniz?'))return;
+  DATA.items.splice(idx,1);
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
+  renderAdmin('items');
+}
+
+/* MESSAGE TAB */
+function tplMsg(){
+  const opts=DATA.cats.map(c=>`<option value="${c.id}">${esc(c.name)}${c.owner?' ('+esc(c.owner)+')':''}</option>`).join('');
+  return`<div class="card" style="border-top:3px solid var(--pink)">
+    <div class="field"><label>Hangi kedi için?</label>
+      <select id="msg-sel" onchange="genMsg()">${opts?'<option value="">— seçin —</option>'+opts:'<option>Önce kedi ekleyin</option>'}</select>
+    </div>
+    <div class="field"><label>Ton</label>
+      <select id="msg-tone" onchange="genMsg()">
+        <option value="sicak">Sıcak ve samimi</option>
+        <option value="kisa">Kısa ve bilgilendirici</option>
+      </select>
+    </div>
+  </div>
+  <div id="msg-out" style="display:none">
+    <div class="slabel">Oluşturulan mesaj</div>
+    <div class="msg-box" id="msg-box"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-pink" onclick="copyMsg()"><i class="ti ti-copy"></i> Kopyala</button>
+      <button class="btn" onclick="openWA()" style="border-color:var(--green);color:var(--green)"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
+    </div>
+  </div>
+  <div id="msg-empty" class="empty"><i class="ti ti-brand-whatsapp empty-i"></i>Kedi seçince mesaj otomatik oluşur</div>`;
+}
+
+function genMsg(){
+  const catId=parseInt((document.getElementById('msg-sel')||{}).value||'0');
+  const tone=(document.getElementById('msg-tone')||{}).value||'sicak';
+  const cat=DATA.cats.find(c=>c.id===catId);
+  const out=document.getElementById('msg-out'),empty=document.getElementById('msg-empty');
+  if(!cat){if(out)out.style.display='none';if(empty)empty.style.display='block';return;}
+  const latest=(DATA.notes[catId]||[]).find(n=>n.from==='admin');
+  const today=new Date().toLocaleDateString('tr-TR');
+  let msg='';
+  if(tone==='sicak'){
+    msg=`Merhaba ${cat.owner||''} 😊\n\n${cat.name} bugün çok iyi! Günlük güncelleme (${today}):\n\n`;
+    if(latest){
+      if(latest.checks?.mama)msg+='🍽 Mamasını güzelce yedi\n';
+      if(latest.checks?.su)msg+='💧 Su içimini takip ettik\n';
+      if(latest.checks?.tuvalet)msg+='✨ Tuvaleti normal\n';
+      if(latest.checks?.oyun)msg+='🎾 Aktif ve oyunculdu\n';
+      if(latest.checks?.ilac)msg+='💊 İlacını aldı\n';
+      if(latest.checks?.tarama)msg+='✂️ Tımar yapıldı\n';
+      if(latest.checks?.malt)msg+='🍬 Maltını yedi\n';
+      if(latest.mood)msg+=`\nRuh hali: ${latest.mood}`;
+      if(latest.appetite)msg+=`\nİştah: ${latest.appetite}`;
+      if(latest.extra)msg+=`\n\n📝 ${latest.extra}`;
+      msg+=`\n\nSorunuz olursa yazın! ${cat.name} sizi çok seviyor 🐾`;
+    } else msg+='Henüz bugün için not eklenmedi.';
+  } else {
+    msg=`${today} — ${cat.name} raporu\n${cat.owner?'Sahibi: '+cat.owner+'\n':''}\n`;
+    if(latest){
+      const a=[latest.checks?.mama&&'mama',latest.checks?.su&&'su',latest.checks?.tuvalet&&'tuvalet ok',latest.checks?.oyun&&'aktif',latest.checks?.ilac&&'ilaç verildi',latest.checks?.tarama&&'tımar',latest.checks?.malt&&'malt'].filter(Boolean);
+      if(a.length)msg+=`✅ ${a.join(', ')}\n`;
+      if(latest.mood)msg+=`Durum: ${latest.mood}\n`;
+      if(latest.appetite)msg+=`İştah: ${latest.appetite}\n`;
+      if(latest.extra)msg+=`Not: ${latest.extra}\n`;
+    } else msg+='Henüz not eklenmedi.';
+  }
+  document.getElementById('msg-box').textContent=msg.trim();
+  out.style.display='block';empty.style.display='none';
+}
+function copyMsg(){navigator.clipboard.writeText(document.getElementById('msg-box').textContent||'').then(()=>toast('Mesaj kopyalandı! 📋'));}
+function openWA(){window.open('https://wa.me/?text='+encodeURIComponent(document.getElementById('msg-box').textContent||''),'_blank');}
+
+/* OWNER VIEW */
+async function renderOwner(catIdStr){
+  const catId=parseInt(catIdStr);
+  const cat=DATA.cats.find(c=>c.id===catId);
+  if(!cat){app('<div class="wrap"><div class="empty"><span class="empty-i">🙁</span>Kedi bulunamadı.</div></div>');return;}
+  const idx=DATA.cats.indexOf(cat);
+  const allNotes=DATA.notes[catId]||[];
+  const adminNotes=allNotes.filter(n=>n.from==='admin');
+  const ownerNotes=allNotes.filter(n=>n.from==='owner');
+  const daysHere=daysSince(cat.checkin);
+  const items=DATA.items||[];
+  document.title=`${cat.name} · Konaklama`;
+  app(`<div class="wrap">
+    <div class="hero">
+      <div class="hero-av">${emo(idx)}</div>
+      <div class="hero-name">${esc(cat.name)}</div>
+      <div class="hero-sub">${cat.breed?esc(cat.breed)+' &nbsp;·&nbsp; ':''}${daysHere===null?'Konaklamada':daysHere<0?Math.abs(daysHere)+' gün sonra gelecek 📅':daysHere===0?'Bugün geldi 🎉':daysHere+' gündür bizimle 🐾'}</div>
+      ${cat.checkout?`<div style="font-size:13px;color:var(--purple);margin-top:6px;font-weight:500">Tahmini çıkış: ${fmtDate(cat.checkout)}</div>`:''}
+    </div>
+
+    ${items.length>0?`<div class="card" style="border-top:3px solid var(--orange);margin-bottom:12px">
+      <div class="slabel" style="color:var(--orange)">📦 Getirmeniz Gerekenler</div>
+      ${items.map(item=>`<div class="item-row"><div class="item-dot"></div><span>${esc(item)}</span></div>`).join('')}
+    </div>`:''}
+
+    <div class="card" style="border-top:3px solid var(--teal);margin-bottom:12px">
+      <div class="slabel" style="color:var(--teal)">🐱 Kedi Bilgileri</div>
+      ${cat.age?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Yaş</span><span style="font-size:13px;font-weight:500">${esc(cat.age)}</span></div>`:''}
+      ${cat.checkin?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Giriş</span><span style="font-size:13px;font-weight:500">${fmtDate(cat.checkin)}</span></div>`:''}
+      ${cat.checkout?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Çıkış</span><span style="font-size:13px;font-weight:500">${fmtDate(cat.checkout)}</span></div>`:''}
+      ${cat.diet?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Beslenme</span><span style="font-size:13px;font-weight:500">${esc(cat.diet)}</span></div>`:''}
+      ${cat.food?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Mama detayı</span><span style="font-size:13px">${esc(cat.food)}</span></div>`:''}
+      ${cat.supplement?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Takviye</span><span style="font-size:13px">${esc(cat.supplement)}</span></div>`:''}
+      ${cat.health?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Sağlık</span><span style="font-size:13px;color:var(--coral);font-weight:500">⚠️ ${esc(cat.health)}</span></div>`:''}
+      ${cat.character?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Karakter</span><span style="font-size:13px;font-style:italic">${esc(cat.character)}</span></div>`:''}
+      ${cat.extranote?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Notlar</span><span style="font-size:13px">${esc(cat.extranote)}</span></div>`:''}
+      ${cat.gelenesya?`<div style="display:flex;gap:6px;margin-bottom:0"><span style="font-size:12px;color:var(--muted);min-width:90px">Gelen eşyalar</span><span style="font-size:13px;color:var(--pink);font-weight:500">🎒 ${esc(cat.gelenesya)}</span></div>`:''}
+    </div>
+
+    <div class="slabel" style="color:var(--purple)">Bakıcı güncellemeleri</div>
+    ${adminNotes.length===0
+      ?`<div class="al al-info"><i class="ti ti-clock" style="flex-shrink:0"></i>Henüz bugün için güncelleme eklenmedi. Birazdan tekrar kontrol edin!</div>`
+      :adminNotes.map((n,i)=>ownerAdminCard(n,i===0)).join('')
+    }
+
+    ${ownerNotes.length>0?`<div class="slabel" style="margin-top:1.5rem;color:var(--pink)">Sizin notlarınız</div>${ownerNotes.map(n=>ownerNoteCard(n)).join('')}`:''}
+
+    ${MK?`<div class="card" style="margin-top:1.5rem;border-top:3px solid var(--pink)">
+      <div class="slabel" style="color:var(--pink)">Not ekle</div>
+      <div class="field"><label>Adınız</label><input id="ow-name" placeholder="Örn: Ayşe Hanım" value="${esc(localStorage.getItem('ow_name')||'')}"></div>
+      <div class="field"><label>Notunuz</label><textarea id="ow-note" placeholder="Sorularınızı veya isteklerinizi yazın..."></textarea></div>
+      <button class="btn btn-pink" id="ow-btn" onclick="submitOwnerNote(${catId})"><i class="ti ti-send"></i> Gönder</button>
+    </div>`:`<div class="al al-info" style="margin-top:1.5rem"><i class="ti ti-info-circle" style="flex-shrink:0"></i>Not eklemek için size özel linkten giriş yapmanız gerekiyor.</div>`}
+  </div>`);
+}
+
+function ownerAdminCard(n,isLatest){
+  return`<div class="card card-sm" style="${isLatest?'border:2px solid var(--purple)':'border-left:4px solid var(--purple-l)'}">
+    ${isLatest?`<div style="font-size:12px;font-weight:700;color:var(--purple-d);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">⭐ Son güncelleme · ${esc(n.date)} ${esc(n.time)}</div>`:`<div class="note-time" style="margin-bottom:8px">${esc(n.date)} · ${esc(n.time)}</div>`}
+    ${n.checks?`<div class="tags">
+      ${n.checks.mama?'<span class="b b-gr">🍽 mama yedi</span>':''}
+      ${n.checks.su?'<span class="b b-gr">💧 su içti</span>':''}
+      ${n.checks.tuvalet?'<span class="b b-gr">✨ tuvalet ok</span>':''}
+      ${n.checks.oyun?'<span class="b b-gr">🎾 oynadı</span>':''}
+      ${n.checks.ilac?'<span class="b b-am">💊 ilaç aldı</span>':''}
+      ${n.checks.tarama?'<span class="b b-te">✂️ tımar</span>':''}
+      ${n.checks.malt?'<span class="b b-pk">🍬 malt yedi</span>':''}
+    </div>`:''}
+    ${n.mood||n.appetite?`<div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      ${n.mood?`<span class="b b-pu">${esc(n.mood)}</span>`:''}
+      ${n.appetite?`<span class="b b-am">${esc(n.appetite)}</span>`:''}
+    </div>`:''}
+    ${n.extra?`<div style="font-size:14px;line-height:1.6">${esc(n.extra)}</div>`:''}
+  </div>`;
+}
+
+function ownerNoteCard(n){
+  return`<div class="card card-sm" style="border-left:4px solid var(--pink)">
+    <div class="note-time" style="margin-bottom:6px">${esc(n.date)} · ${esc(n.time)}</div>
+    ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
+    ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
+  </div>`;
+}
+
+async function submitOwnerNote(catId){
+  const name=(document.getElementById('ow-name').value||'').trim();
+  const text=(document.getElementById('ow-note').value||'').trim();
+  if(!text){alert('Lütfen bir not yazın.');return;}
+  const btn=document.getElementById('ow-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Gönderiliyor...';
+  if(name)localStorage.setItem('ow_name',name);
+  if(!DATA.notes[catId])DATA.notes[catId]=[];
+  DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),extra:text,ownerName:name,from:'owner'});
+  try{await save();await loadData();await renderOwner(new URLSearchParams(location.search).get('cat'));}
+  catch(e){toast('Gönderim başarısız.',3500);btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Gönder';}
+}
+
+init();
+</script>
+</body>
+</html>
