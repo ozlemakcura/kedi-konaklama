@@ -501,7 +501,7 @@ function noteCard(n,catId,idx){
     ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
     ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
     ${n.photo?`<img src="${n.photo}" style="width:100%;border-radius:var(--r);margin-top:8px;max-height:250px;object-fit:cover">`:''}
-    ${!isOwner&&catId!==undefined?`<div class="note-acts">
+    ${catId!==undefined?`<div class="note-acts">
       <button class="btn btn-sm btn-edit" onclick="startNoteEdit(${catId},${idx})"><i class="ti ti-pencil"></i> Düzenle</button>
       <button class="btn btn-sm btn-danger" onclick="deleteNote(${catId},${idx})"><i class="ti ti-trash"></i> Sil</button>
     </div>`:''}
@@ -703,7 +703,7 @@ async function renderOwner(catIdStr){
       :adminNotes.map((n,i)=>ownerAdminCard(n,i===0)).join('')
     }
 
-    ${ownerNotes.length>0?`<div class="slabel" style="margin-top:1.5rem;color:var(--pink)">Sizin notlarınız</div>${ownerNotes.map(n=>ownerNoteCard(n)).join('')}`:''}
+    ${ownerNotes.length>0?`<div class="slabel" style="margin-top:1.5rem;color:var(--pink)">Sizin notlarınız</div>${ownerNotes.map(n=>ownerNoteCard(n,catId,allNotes.indexOf(n))).join('')}`:''}
 
     ${MK?`<div class="card" style="margin-top:1.5rem;border-top:3px solid var(--pink)">
       <div class="slabel" style="color:var(--pink)">Not ekle</div>
@@ -735,12 +735,51 @@ function ownerAdminCard(n,isLatest){
   </div>`;
 }
 
-function ownerNoteCard(n){
-  return`<div class="card card-sm" style="border-left:4px solid var(--pink)">
-    <div class="note-time" style="margin-bottom:6px">${esc(n.date)} · ${esc(n.time)}</div>
+function ownerNoteCard(n, catId, idx){
+  return`<div class="card card-sm" style="border-left:4px solid var(--pink)" id="owner-note-${idx}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div class="note-time">${esc(n.date)} · ${esc(n.time)}</div>
+      ${MK?`<div style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-edit" onclick="editOwnerNote(${catId},${idx})"><i class="ti ti-pencil"></i></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteOwnerNote(${catId},${idx})"><i class="ti ti-trash"></i></button>
+      </div>`:''}
+    </div>
     ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
     ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
   </div>`;
+}
+
+function editOwnerNote(catId, idx){
+  const note=(DATA.notes[catId]||[])[idx];
+  if(!note)return;
+  const card=document.getElementById(`owner-note-${idx}`);
+  if(!card)return;
+  card.innerHTML=`
+    <div class="field" style="margin:0 0 8px">
+      <textarea id="edit-owner-note-text" style="width:100%;padding:8px;border:1.5px solid var(--pink);border-radius:8px;font-size:13px;font-family:inherit;min-height:80px">${esc(note.extra||'')}</textarea>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-sm" style="background:var(--pink);color:#fff;border-color:var(--pink)" onclick="saveOwnerNoteEdit(${catId},${idx})"><i class="ti ti-device-floppy"></i> Kaydet</button>
+      <button class="btn btn-sm btn-danger" onclick="renderOwner('${catId}')"><i class="ti ti-x"></i> İptal</button>
+    </div>
+  `;
+  document.getElementById('edit-owner-note-text').focus();
+}
+
+async function saveOwnerNoteEdit(catId, idx){
+  const text=(document.getElementById('edit-owner-note-text').value||'').trim();
+  const notes=DATA.notes[catId]||[];
+  if(!notes[idx])return;
+  notes[idx].extra=text;
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);return;}
+  renderOwner(String(catId));
+}
+
+async function deleteOwnerNote(catId, idx){
+  if(!confirm('Bu notu silmek istediğinize emin misiniz?'))return;
+  (DATA.notes[catId]||[]).splice(idx,1);
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);return;}
+  renderOwner(String(catId));
 }
 
 async function submitOwnerNote(catId){
