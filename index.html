@@ -686,7 +686,6 @@ async function renderOwner(catIdStr){
 
     <div class="card" style="border-top:3px solid var(--teal);margin-bottom:12px">
       <div class="slabel" style="color:var(--teal)">🐱 Kedi Bilgileri</div>
-      ${cat.age?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Yaş</span><span style="font-size:13px;font-weight:500">${esc(cat.age)}</span></div>`:''}
       ${cat.checkin?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Giriş</span><span style="font-size:13px;font-weight:500">${fmtDate(cat.checkin)}</span></div>`:''}
       ${cat.checkout?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Çıkış</span><span style="font-size:13px;font-weight:500">${fmtDate(cat.checkout)}</span></div>`:''}
       ${cat.diet?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Beslenme</span><span style="font-size:13px;font-weight:500">${esc(cat.diet)}</span></div>`:''}
