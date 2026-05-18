@@ -216,6 +216,38 @@ function daysSince(d){if(!d)return null;return Math.floor((Date.now()-new Date(d
 function emo(i){return EMO[i%EMO.length];}
 let toastTimer;
 function toast(msg,dur=2200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);}
+
+function compressImage(file, maxW, quality){
+  return new Promise((res,rej)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        let w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        res(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.onerror=rej;
+      img.src=e.target.result;
+    };
+    reader.onerror=rej;
+    reader.readAsDataURL(file);
+  });
+}
+
+function showImgPreview(inputId, previewId){
+  const inp=document.getElementById(inputId);
+  const prev=document.getElementById(previewId);
+  if(!inp||!prev)return;
+  const file=inp.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{prev.src=e.target.result;prev.style.display='block';};
+  reader.readAsDataURL(file);
+}
 function v(id){const el=document.getElementById(id);return el?(el.value||'').trim():'';}
 function chked(id){const el=document.getElementById(id);return el?el.querySelector('input').checked:false;}
 function ownerLink(c){return`${location.origin}${location.pathname}?cat=${c.id}&bin=${BIN}#mk=${MK}`;}
@@ -287,6 +319,13 @@ function tplCats(){
     <div class="card card-colored">
       <div class="slabel" style="color:var(--teal)">${ec?'Kedi bilgilerini düzenle':'Yeni kedi ekle'}</div>
       <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Temel bilgiler</div>
+      <div class="field">
+        <label>Profil fotoğrafı</label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <img id="cat-photo-preview" src="${ec?.photo||''}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:${ec?.photo?'block':'none'};border:2px solid var(--teal-b)">
+          <input type="file" id="n-photo" accept="image/*" onchange="showImgPreview('n-photo','cat-photo-preview')" style="font-size:13px">
+        </div>
+      </div>
       <div class="g2">
         <div class="field"><label>Kedi adı *</label><input id="n-name" placeholder="Örn: Pamuk" value="${esc(ec?.name||'')}"></div>
         <div class="field"><label>Cins</label><input id="n-breed" placeholder="Örn: British Shorthair" value="${esc(ec?.breed||'')}"></div>
@@ -328,7 +367,7 @@ function catCard(c,i){
   const nCount=(DATA.notes[c.id]||[]).length;
   return`<div class="card card-sm" style="border-left:4px solid ${AV_COLORS[i%AV_COLORS.length].replace('FE','D0')||'var(--teal)'}">
     <div class="cat-row">
-      <div class="cat-av" style="${catAvStyle(i)}">${emo(i)}</div>
+      <div class="cat-av" style="${c.photo?'background:#fff;overflow:hidden;border:2px solid var(--teal-b)':catAvStyle(i)}">${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover">`:emo(i)}</div>
       <div class="cat-info">
         <div class="cat-name">${esc(c.name)}${c.breed?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.breed)}</span>`:''}${c.age?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.age)}</span>`:''}</div>
         ${c.owner||c.phone?`<div class="cat-meta">👤 ${esc(c.owner||'')}${c.phone?' · '+esc(c.phone):''}</div>`:''}
@@ -356,7 +395,16 @@ async function saveCat(){
   const name=(document.getElementById('n-name').value||'').trim();
   if(!name){alert('Kedi adı zorunlu.');return;}
   const btn=document.getElementById('add-btn');btn.disabled=true;
-  const data={name,breed:v('n-breed'),age:v('n-age'),owner:v('n-owner'),phone:v('n-phone'),checkin:v('n-checkin'),checkout:v('n-checkout'),diet:v('n-diet'),supplement:v('n-supp'),food:v('n-food'),health:v('n-health'),character:v('n-char'),extranote:v('n-extranote'),gelenesya:v('n-gelenesya')};
+  btn.innerHTML='<i class="ti ti-loader spin"></i> Kaydediliyor...';
+  let photo='';
+  const photoInput=document.getElementById('n-photo');
+  if(photoInput&&photoInput.files[0]){
+    try{photo=await compressImage(photoInput.files[0],240,0.75);}catch(e){toast('Fotoğraf okunamadı',3000);}
+  } else if(editCatId!==null){
+    const ec=DATA.cats.find(c=>c.id===editCatId);
+    photo=ec?.photo||'';
+  }
+  const data={name,breed:v('n-breed'),age:v('n-age'),owner:v('n-owner'),phone:v('n-phone'),checkin:v('n-checkin'),checkout:v('n-checkout'),diet:v('n-diet'),supplement:v('n-supp'),food:v('n-food'),health:v('n-health'),character:v('n-char'),extranote:v('n-extranote'),gelenesya:v('n-gelenesya'),photo};
   if(editCatId!==null){const idx=DATA.cats.findIndex(c=>c.id===editCatId);if(idx>-1)DATA.cats[idx]={...DATA.cats[idx],...data};editCatId=null;}
   else DATA.cats.push({id:Date.now(),...data});
   try{await save();}catch(e){toast('Kayıt hatası!',3000);}
@@ -399,6 +447,11 @@ function tplNotes(){
         </div>
       </div>
       <div class="field"><label>Ek notlar</label><textarea id="note-extra" placeholder="Özel gözlem, endişe, davranış..."></textarea></div>
+      <div class="field">
+        <label>Fotoğraf ekle</label>
+        <input type="file" id="note-photo" accept="image/*" onchange="showImgPreview('note-photo','note-photo-preview')" style="font-size:13px">
+        <img id="note-photo-preview" style="margin-top:8px;max-width:100%;border-radius:var(--r);display:none;max-height:200px;object-fit:cover">
+      </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary" id="note-btn" onclick="saveNote()"><i class="ti ti-device-floppy"></i> ${isEditing?'Değişikliği Kaydet':'Notu Kaydet'}</button>
         ${isEditing?`<button class="btn btn-danger" onclick="cancelNoteEdit()"><i class="ti ti-x"></i> İptal</button>`:''}
@@ -447,6 +500,7 @@ function noteCard(n,catId,idx){
     </div>`:''}
     ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
     ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
+    ${n.photo?`<img src="${n.photo}" style="width:100%;border-radius:var(--r);margin-top:8px;max-height:250px;object-fit:cover">`:''}
     ${!isOwner&&catId!==undefined?`<div class="note-acts">
       <button class="btn btn-sm btn-edit" onclick="startNoteEdit(${catId},${idx})"><i class="ti ti-pencil"></i> Düzenle</button>
       <button class="btn btn-sm btn-danger" onclick="deleteNote(${catId},${idx})"><i class="ti ti-trash"></i> Sil</button>
@@ -477,14 +531,19 @@ async function saveNote(){
   const catId=parseInt((document.getElementById('note-sel')||{}).value||'0');
   if(!catId){alert('Lütfen kedi seçin.');return;}
   const btn=document.getElementById('note-btn');btn.disabled=true;
+  let notePhoto='';
+  const notePhotoInput=document.getElementById('note-photo');
+  if(notePhotoInput&&notePhotoInput.files[0]){
+    try{notePhoto=await compressImage(notePhotoInput.files[0],700,0.72);}catch(e){toast('Fotoğraf okunamadı',3000);}
+  }
   const checks={mama:chked('chk-mama'),su:chked('chk-su'),tuvalet:chked('chk-tuvalet'),oyun:chked('chk-oyun'),ilac:chked('chk-ilac'),tarama:chked('chk-tarama'),malt:chked('chk-malt')};
   if(!DATA.notes[catId])DATA.notes[catId]=[];
   if(editNoteState&&editNoteState.catId===catId){
     const orig=DATA.notes[catId][editNoteState.idx];
-    DATA.notes[catId][editNoteState.idx]={...orig,mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),checks};
+    DATA.notes[catId][editNoteState.idx]={...orig,mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),checks,photo:notePhoto||orig.photo||''};
     editNoteState=null;
   } else {
-    DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),from:'admin',checks});
+    DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),from:'admin',checks,photo:notePhoto});
   }
   try{await save();}catch(e){toast('Kayıt hatası!',3000);}
   renderAdmin('notes');
@@ -614,7 +673,7 @@ async function renderOwner(catIdStr){
   document.title=`${cat.name} · Konaklama`;
   app(`<div class="wrap">
     <div class="hero">
-      <div class="hero-av">${emo(idx)}</div>
+      <div class="hero-av" style="${cat.photo?'background:#fff;overflow:hidden;padding:0':''}">${cat.photo?`<img src="${cat.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:emo(idx)}</div>
       <div class="hero-name">${esc(cat.name)}</div>
       <div class="hero-sub">${cat.breed?esc(cat.breed)+' &nbsp;·&nbsp; ':''}${daysHere===null?'Konaklamada':daysHere<0?Math.abs(daysHere)+' gün sonra gelecek 📅':daysHere===0?'Bugün geldi 🎉':daysHere+' gündür bizimle 🐾'}</div>
       ${cat.checkout?`<div style="font-size:13px;color:var(--purple);margin-top:6px;font-weight:500">Tahmini çıkış: ${fmtDate(cat.checkout)}</div>`:''}
@@ -636,7 +695,7 @@ async function renderOwner(catIdStr){
       ${cat.health?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Sağlık</span><span style="font-size:13px;color:var(--coral);font-weight:500">⚠️ ${esc(cat.health)}</span></div>`:''}
       ${cat.character?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Karakter</span><span style="font-size:13px;font-style:italic">${esc(cat.character)}</span></div>`:''}
       ${cat.extranote?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Notlar</span><span style="font-size:13px">${esc(cat.extranote)}</span></div>`:''}
-      ${cat.gelenesya?`<div style="display:flex;gap:6px;margin-bottom:0"><span style="font-size:12px;color:var(--muted);min-width:90px">Gelen eşyalar</span><span style="font-size:13px;color:var(--pink);font-weight:500">🎒 ${esc(cat.gelenesya)}</span></div>`:''}
+
     </div>
 
     <div class="slabel" style="color:var(--purple)">Bakıcı güncellemeleri</div>
