@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Günlük Notlar</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <style>
+    :root{--bg:#f7f4ff;--panel:#fff;--panel2:#fbf9ff;--text:#20183a;--muted:#6b6480;--line:#e8defc;--purple:#6d28d9;--pink:#db2777;--green:#15803d;--amber:#b45309;--red:#be123c;--shadow:0 18px 60px rgba(44,22,92,.10)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(139,92,246,.18),transparent 32rem),radial-gradient(circle at top right,rgba(219,39,119,.15),transparent 28rem),var(--bg)}
+    h1,h2,h3,p{margin-top:0}.wrap{max-width:1080px;margin:0 auto;padding:28px 18px 56px}.hero,.card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.hero{padding:24px;margin-bottom:18px}.hero-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#efe7ff;color:var(--purple);font-weight:700;font-size:13px}.muted{color:var(--muted)}.layout{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}.card{padding:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--purple)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:13px;padding:12px 13px;outline:none}.field textarea{min-height:110px;resize:vertical}.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.check{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:#fff}.check input{accent-color:var(--purple)}.buttons{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn{border:0;border-radius:13px;padding:11px 14px;cursor:pointer;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(135deg,var(--pink),#ec4899);color:#fff}.soft{background:#fff;border:1px solid var(--line);color:var(--text)}.danger{background:#fff1f2;color:var(--red);border:1px solid #fecdd3}.notice{border-radius:14px;padding:14px 16px;border:1px solid var(--line);background:#eff6ff;color:#1d4ed8;line-height:1.5;margin-bottom:14px}.list{display:grid;gap:12px}.item{border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px}.title{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800;background:#f5f3ff;color:var(--purple)}.badge.amber{background:#fffbeb;color:var(--amber)}.badge.green{background:#f0fdf4;color:var(--green)}.divider{height:1px;background:var(--line);margin:14px 0}.note{white-space:pre-wrap;line-height:1.6}.empty{border:1px dashed #d8b4fe;border-radius:16px;padding:22px;text-align:center;color:var(--muted);background:#fcfaff}.small{font-size:12px;color:var(--muted)}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);padding:12px 16px;background:#20183a;color:#fff;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.18s ease;z-index:60}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:900px){.layout,.grid{grid-template-columns:1fr}.hero-head{flex-direction:column}.checks{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-head">
+        <div>
+          <div class="eyebrow"><i class="ti ti-notes"></i> Günlük bakım</div>
+          <h1 style="margin:14px 0 8px">Günlük notlar</h1>
+          <p class="muted">Notu burada kaydedin. Kaydedilen notlar sahip sayfasında otomatik görünür.</p>
+        </div>
+        <a class="btn soft" href="./"><i class="ti ti-arrow-left"></i> Panele dön</a>
+      </div>
+    </section>
+
+    <section class="layout">
+      <article class="card">
+        <h2 id="form-title">Yeni günlük not</h2>
+        <div id="status" class="notice">Bilgiler hazırlanıyor...</div>
+        <form id="note-form" hidden>
+          <div class="grid">
+            <div class="field">
+              <label for="note-cat">Kedi *</label>
+              <select id="note-cat" required></select>
+            </div>
+            <div class="field">
+              <label for="note-date">Tarih</label>
+              <input id="note-date" type="date" required>
+            </div>
+            <div class="field">
+              <label for="note-mood">Ruh hali</label>
+              <input id="note-mood">
+            </div>
+            <div class="field">
+              <label for="note-appetite">İştah</label>
+              <input id="note-appetite">
+            </div>
+            <div class="field">
+              <label for="note-photo-url">Fotoğraf URL</label>
+              <input id="note-photo-url">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Günlük kontroller</label>
+            <div class="checks">
+              <label class="check"><input type="checkbox" data-flag="food"> 🍽️ Mama yedi</label>
+              <label class="check"><input type="checkbox" data-flag="water"> 💧 Su içti</label>
+              <label class="check"><input type="checkbox" data-flag="toilet"> ✨ Tuvalet normal</label>
+              <label class="check"><input type="checkbox" data-flag="play"> 🎾 Oyun / aktif</label>
+              <label class="check"><input type="checkbox" data-flag="medicine"> 💊 İlaç verildi</label>
+              <label class="check"><input type="checkbox" data-flag="care"> ✂️ Bakım yapıldı</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="note-body">Detaylı not</label>
+            <textarea id="note-body"></textarea>
+          </div>
+
+          <div class="buttons">
+            <button class="btn primary" id="save-note" type="submit"><i class="ti ti-device-floppy"></i> Notu kaydet</button>
+            <button class="btn soft" id="cancel-edit" type="button" hidden><i class="ti ti-x"></i> Düzenlemeyi bırak</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card">
+        <h2>Son notlar</h2>
+        <div id="notes-list" class="list"><div class="empty">Notlar yükleniyor...</div></div>
+      </article>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const CONFIG = window.KEDI_APP_CONFIG || {};
+    const db = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
+    const FLAGS = [['food','🍽️ Mama yedi'],['water','💧 Su içti'],['toilet','✨ Tuvalet normal'],['play','🎾 Oyun / aktif'],['medicine','💊 İlaç verildi'],['care','✂️ Bakım yapıldı']];
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => Array.from(document.querySelectorAll(s));
+    const esc = (v='') => String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+    const today = () => new Date().toISOString().slice(0,10);
+    const fmtDate = (v) => v ? new Date(v + (String(v).includes('T') ? '' : 'T12:00:00')).toLocaleDateString('tr-TR') : '—';
+    const fmtDateTime = (v) => v ? new Date(v).toLocaleString('tr-TR',{dateStyle:'medium',timeStyle:'short'}) : '—';
+    const toast = (m, error=false) => { const t=$('#toast'); t.textContent=m; t.style.background=error?'#be123c':'#20183a'; t.classList.add('show'); clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove('show'),2600); };
+
+    let session = null;
+    let cats = [];
+    let notes = [];
+    let editingId = '';
+
+    function setStatus(text){ $('#status').textContent = text; }
+    function currentUserId(){ return session?.user?.id || ''; }
+    function flagsFromForm(){ const result={}; $$('[data-flag]').forEach(input=>result[input.dataset.flag]=input.checked); return result; }
+    function applyFlags(flags={}){ $$('[data-flag]').forEach(input=>input.checked=!!flags[input.dataset.flag]); }
+    function noteCard(note){
+      const cat = cats.find(c=>c.id===note.cat_id);
+      const active = FLAGS.filter(([key])=>note.flags?.[key]);
+      return `<article class="item"><div class="title"><h3 style="margin:0">${esc(cat?.name || 'Kedi')}</h3><span class="badge">${fmtDate(note.note_date)}</span>${note.mood?`<span class="badge">${esc(note.mood)}</span>`:''}${note.appetite?`<span class="badge amber">${esc(note.appetite)}</span>`:''}</div><div class="small">Kaydedildi: ${fmtDateTime(note.created_at)}</div>${active.length?`<div class="divider"></div><div class="title">${active.map(([,label])=>`<span class="badge green">${esc(label)}</span>`).join('')}</div>`:''}${note.body?`<div class="divider"></div><div class="note">${esc(note.body)}</div>`:''}${note.photo_url?`<div class="divider"></div><a class="btn soft" href="${esc(note.photo_url)}" target="_blank" rel="noreferrer">Fotoğrafı aç</a>`:''}<div class="divider"></div><div class="buttons"><button class="btn soft" type="button" data-edit-note="${note.id}">Düzenle</button><button class="btn danger" type="button" data-delete-note="${note.id}">Sil</button></div></article>`;
+    }
+    function renderNotes(){ $('#notes-list').innerHTML = notes.length ? notes.map(noteCard).join('') : '<div class="empty">Henüz günlük not yok.</div>'; }
+    function renderCats(){ $('#note-cat').innerHTML = '<option value="">Seçin</option>' + cats.map(cat=>`<option value="${cat.id}">${esc(cat.name)}${cat.owner_name?` — ${esc(cat.owner_name)}`:''}</option>`).join(''); }
+    function resetForm(){ editingId=''; $('#form-title').textContent='Yeni günlük not'; $('#save-note').innerHTML='<i class="ti ti-device-floppy"></i> Notu kaydet'; $('#cancel-edit').hidden=true; $('#note-form').reset(); $('#note-date').value=today(); applyFlags({}); }
+    function editNote(id){ const note=notes.find(n=>n.id===id); if(!note) return; editingId=id; $('#form-title').textContent='Günlük not düzenle'; $('#save-note').innerHTML='<i class="ti ti-device-floppy"></i> Notu güncelle'; $('#cancel-edit').hidden=false; $('#note-cat').value=note.cat_id || ''; $('#note-date').value=note.note_date || today(); $('#note-mood').value=note.mood || ''; $('#note-appetite').value=note.appetite || ''; $('#note-photo-url').value=note.photo_url || ''; $('#note-body').value=note.body || ''; applyFlags(note.flags || {}); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    async function load(){
+      const sessionResult = await db.auth.getSession();
+      session = sessionResult.data.session;
+      if(!session){ setStatus('Giriş yapmanız gerekiyor. Ana panele dönüp giriş yapın.'); return; }
+      const [catsRes, notesRes] = await Promise.all([
+        db.from('cats').select('*').order('created_at',{ascending:false}),
+        db.from('daily_notes').select('*').order('created_at',{ascending:false})
+      ]);
+      if(catsRes.error){ setStatus(catsRes.error.message); return; }
+      if(notesRes.error){ setStatus(notesRes.error.message); return; }
+      cats = catsRes.data || [];
+      notes = notesRes.data || [];
+      renderCats(); renderNotes(); resetForm(); $('#note-form').hidden=false; setStatus(cats.length ? 'Hazır.' : 'Önce bir kedi ekleyin.');
+    }
+
+    $('#note-form').onsubmit = async (event) => {
+      event.preventDefault();
+      const catId = $('#note-cat').value;
+      if(!catId){ toast('Kedi seçin.', true); return; }
+      const payload = {
+        user_id: currentUserId(),
+        cat_id: catId,
+        note_date: $('#note-date').value || today(),
+        mood: $('#note-mood').value.trim() || null,
+        appetite: $('#note-appetite').value.trim() || null,
+        photo_url: $('#note-photo-url').value.trim() || null,
+        body: $('#note-body').value.trim() || null,
+        flags: flagsFromForm()
+      };
+      $('#save-note').disabled = true;
+      const result = editingId
+        ? await db.from('daily_notes').update(payload).eq('id', editingId).select().single()
+        : await db.from('daily_notes').insert(payload).select().single();
+      $('#save-note').disabled = false;
+      if(result.error){ toast(result.error.message || 'Not kaydedilemedi.', true); return; }
+      toast(editingId ? 'Not güncellendi.' : 'Günlük not kaydedildi.');
+      await load();
+    };
+
+    $('#cancel-edit').onclick = resetForm;
+    document.addEventListener('click', async (event) => {
+      const edit = event.target.closest('[data-edit-note]');
+      if(edit){ editNote(edit.dataset.editNote); return; }
+      const del = event.target.closest('[data-delete-note]');
+      if(del){
+        if(!confirm('Bu günlük not silinsin mi?')) return;
+        const res = await db.from('daily_notes').delete().eq('id', del.dataset.deleteNote);
+        if(res.error){ toast(res.error.message || 'Not silinemedi.', true); return; }
+        toast('Not silindi.'); await load();
+      }
+    });
+
+    load();
+  </script>
+</body>
+</html>
