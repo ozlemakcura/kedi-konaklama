@@ -14,4 +14,12 @@
       copyButton.dataset.copyLink = value.replace('/kedi-konaklama/?owner=', '/kedi-konaklama/owner.html?owner=');
     });
   }, 200);
+
+  document.addEventListener('click', (event) => {
+    const editButton = event.target.closest('[data-edit-cat]');
+    if (!editButton) return;
+    event.preventDefault();
+    event.stopPropagation();
+    location.href = `./edit.html?id=${encodeURIComponent(editButton.dataset.editCat || '')}`;
+  }, true);
 })();
