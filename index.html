@@ -1,780 +1,1117 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kedi Konaklama Takibi</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --purple:#7C3AED;--purple-d:#5B21B6;--purple-l:#EDE9FE;--purple-b:#C4B5FD;
-  --pink:#DB2777;--pink-l:#FCE7F3;--pink-b:#F9A8D4;
-  --teal:#0D9488;--teal-l:#CCFBF1;--teal-b:#5EEAD4;
-  --amber:#D97706;--amber-l:#FEF3C7;--amber-b:#FCD34D;
-  --coral:#E11D48;--coral-l:#FFE4E6;--coral-b:#FDA4AF;
-  --blue:#2563EB;--blue-l:#DBEAFE;--blue-b:#93C5FD;
-  --green:#059669;--green-l:#D1FAE5;--green-b:#6EE7B7;
-  --orange:#EA580C;--orange-l:#FFEDD5;--orange-b:#FDBA74;
-  --bg:#FDF8FF;--card:#fff;--border:#E9D5FF;
-  --text:#1E1B4B;--muted:#6B7280;
-  --r:12px;--rl:16px;
-}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;font-size:15px}
-.wrap{max-width:640px;margin:0 auto;padding:1.5rem 1rem 3rem}
-.card{background:var(--card);border-radius:var(--rl);padding:1.25rem;margin-bottom:12px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(124,58,237,.06)}
-.card-sm{padding:1rem}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--r);font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--text);transition:all .15s;white-space:nowrap}
-.btn:hover{background:var(--purple-l);border-color:var(--purple-b)}
-.btn-primary{background:var(--purple);color:#fff;border-color:var(--purple)}
-.btn-primary:hover{background:var(--purple-d)}
-.btn-pink{background:var(--pink);color:#fff;border-color:var(--pink)}
-.btn-pink:hover{background:#BE185D}
-.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal)}
-.btn-teal:hover{background:#0F766E}
-.btn-edit{background:var(--blue-l);color:var(--blue);border-color:var(--blue-b)}
-.btn-edit:hover{background:#BFDBFE}
-.btn-sm{padding:6px 12px;font-size:13px}
-.btn-danger{color:var(--coral);border-color:transparent;background:none}
-.btn-danger:hover{background:var(--coral-l)}
-.btn-full{width:100%;justify-content:center}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;font-family:inherit;background:#fff;color:var(--text);transition:border-color .15s}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-l)}
-.field textarea{resize:vertical;min-height:72px;line-height:1.5}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:480px){.g2{grid-template-columns:1fr}}
-.hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding:1rem 1.25rem;background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%);border-radius:var(--rl);color:#fff}
-.hdr h1{font-size:18px;font-weight:700;margin:0;color:#fff}
-.hdr p{font-size:13px;margin:0;color:rgba(255,255,255,.8)}
-.logo{width:42px;height:42px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.tabs{display:flex;gap:2px;background:#E9D5FF;padding:4px;border-radius:12px;margin-bottom:1.25rem}
-.tab{flex:1;padding:7px 6px;font-size:12px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--purple-d);border-radius:8px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px}
-.tab.on{background:#fff;color:var(--purple);box-shadow:0 2px 6px rgba(124,58,237,.2)}
-.tab-cats.on{color:var(--teal)}
-.tab-notes.on{color:var(--purple)}
-.tab-msg.on{color:var(--pink)}
-.tab-items.on{color:var(--orange)}
-.checks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
-.chk{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none;font-size:13px;transition:all .15s;background:#fff}
-.chk.on{border-color:var(--purple);background:var(--purple-l);color:var(--purple-d);font-weight:500}
-.chk input{accent-color:var(--purple);flex-shrink:0}
-.b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.b-gr{background:var(--green-l);color:var(--green)}
-.b-te{background:var(--teal-l);color:var(--teal)}
-.b-am{background:var(--amber-l);color:var(--amber)}
-.b-pu{background:var(--purple-l);color:var(--purple)}
-.b-pk{background:var(--pink-l);color:var(--pink)}
-.b-or{background:var(--orange-l);color:var(--orange)}
-.cat-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.cat-row:last-child{border-bottom:none;padding-bottom:0}
-.cat-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-.cat-info{flex:1;min-width:0}
-.cat-name{font-size:14px;font-weight:700;color:var(--text)}
-.cat-meta{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.6}
-.cat-acts{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
-.al{padding:10px 14px;border-radius:var(--r);font-size:13px;display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
-.al-info{background:var(--blue-l);color:var(--blue);border:1.5px solid var(--blue-b)}
-.al-warn{background:var(--amber-l);color:var(--amber);border:1.5px solid var(--amber-b)}
-.al-purple{background:var(--purple-l);color:var(--purple-d);border:1.5px solid var(--purple-b)}
-.note-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px}
-.note-time{font-size:12px;color:var(--muted);font-weight:500}
-.tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
-.note-extra{font-size:13px;color:var(--text);line-height:1.6}
-.note-acts{display:flex;gap:6px;margin-top:10px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:8px}
-.note-photo{width:100%;border-radius:var(--r);margin-top:10px;max-height:280px;object-fit:cover;display:block}
-.hero{text-align:center;padding:2rem 1rem 1.5rem;background:linear-gradient(135deg,var(--purple-l) 0%,var(--pink-l) 100%);border-radius:var(--rl);margin-bottom:1rem}
-.hero-av{width:80px;height:80px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 12px;box-shadow:0 4px 16px rgba(124,58,237,.2);overflow:hidden}
-.hero-name{font-size:26px;font-weight:700;color:var(--purple-d);margin-bottom:6px}
-.hero-sub{font-size:14px;color:var(--purple)}
-.msg-box{background:var(--purple-l);border-radius:var(--r);padding:1rem;font-size:13px;line-height:1.7;white-space:pre-wrap;border:1.5px solid var(--purple-b);min-height:100px;color:var(--text)}
-.glabel{font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;padding:8px 0 4px;border-top:1.5px solid var(--purple-l);margin-top:4px}
-.glabel:first-child{border-top:none;margin-top:0;padding-top:0}
-.slabel{font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
-.edit-banner{background:linear-gradient(135deg,var(--blue-l),var(--purple-l));border:1.5px solid var(--purple-b);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--purple-d);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:500}
-.item-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--orange-l);border:1.5px solid var(--orange-b);border-radius:var(--r);margin-bottom:8px}
-.item-row span{flex:1;font-size:14px;font-weight:500;color:var(--orange)}
-.item-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0}
-.archive-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--purple-l)}
-.archive-count{font-size:13px;color:var(--muted);font-weight:500}
-.setup-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:linear-gradient(135deg,var(--purple-l) 0%,var(--pink-l) 100%)}
-.setup-card{max-width:480px;width:100%;background:#fff;border-radius:20px;padding:2rem;border:1.5px solid var(--purple-b);box-shadow:0 8px 32px rgba(124,58,237,.12)}
-.step{display:flex;gap:10px;padding:7px 0;font-size:13px;color:var(--muted);line-height:1.5}
-.step-n{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
-.step a{color:var(--purple);font-weight:500}
-.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:14px}
-.empty-i{font-size:36px;display:block;margin-bottom:8px;opacity:.3}
-.spin{animation:sp 1s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(16px);background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(124,58,237,.3)}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kedi Konaklama</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <style>
+    :root{
+      --bg:#f7f4ff;
+      --panel:#ffffff;
+      --panel-2:#fbf9ff;
+      --text:#20183a;
+      --muted:#6b6480;
+      --line:#e8defc;
+      --purple:#6d28d9;
+      --purple-2:#8b5cf6;
+      --pink:#db2777;
+      --teal:#0f766e;
+      --amber:#b45309;
+      --red:#be123c;
+      --green:#15803d;
+      --blue:#2563eb;
+      --shadow:0 18px 60px rgba(44, 22, 92, .10);
+      --radius:18px;
+      --radius-sm:12px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(139,92,246,.18), transparent 32rem),
+        radial-gradient(circle at top right, rgba(219,39,119,.15), transparent 28rem),
+        var(--bg);
+    }
+    a{color:inherit}
+    button,input,select,textarea{font:inherit}
+    .shell{max-width:1180px;margin:0 auto;padding:28px 18px 56px}
+    .hero{
+      display:grid;
+      grid-template-columns:1.4fr .8fr;
+      gap:18px;
+      align-items:stretch;
+      margin-bottom:18px;
+    }
+    .hero-card,.status-card,.panel,.auth-card,.owner-card{
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .hero-card{padding:28px}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 12px;border-radius:999px;
+      background:#efe7ff;color:var(--purple);font-weight:700;font-size:13px;
+    }
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:42px;line-height:1.05;margin:16px 0 12px}
+    h2{font-size:22px;margin-bottom:12px}
+    h3{font-size:17px;margin-bottom:8px}
+    .hero p,.muted{color:var(--muted)}
+    .status-card{padding:22px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+    .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .metric{
+      border:1px solid var(--line);
+      background:var(--panel-2);
+      border-radius:14px;
+      padding:14px;
+    }
+    .metric strong{display:block;font-size:28px;line-height:1.1}
+    .metric span{color:var(--muted);font-size:13px}
+    .notice{
+      border-radius:14px;padding:14px 16px;border:1px solid var(--line);
+      background:#faf8ff;color:var(--muted);line-height:1.5;
+    }
+    .notice.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+    .notice.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+    .notice.info{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+    .layout{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}
+    .sidebar,.panel{padding:18px}
+    .sidebar{
+      position:sticky;top:18px;background:rgba(255,255,255,.92);
+      border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .brand-badge{
+      width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-size:24px;
+    }
+    .nav{display:grid;gap:8px}
+    .nav button,.ghost{
+      width:100%;text-align:left;border:1px solid var(--line);background:#fff;
+      border-radius:14px;padding:12px 14px;cursor:pointer;color:var(--text);
+      display:flex;align-items:center;gap:10px;transition:.16s ease;
+    }
+    .nav button:hover,.ghost:hover{transform:translateY(-1px);border-color:#cab8fb}
+    .nav button.active{
+      background:linear-gradient(135deg,#ede9fe,#fce7f3);
+      border-color:#d8b4fe;color:var(--purple);font-weight:700;
+    }
+    .sidebar-foot{margin-top:16px;display:grid;gap:8px}
+    .content{display:grid;gap:18px}
+    .panel-head{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px;
+    }
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .field{display:grid;gap:6px;margin-bottom:12px}
+    .field label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--purple)}
+    .field input,.field select,.field textarea{
+      width:100%;border:1px solid var(--line);background:#fff;color:var(--text);
+      border-radius:13px;padding:12px 13px;outline:none;transition:.16s ease;
+    }
+    .field textarea{min-height:96px;resize:vertical}
+    .field input:focus,.field select:focus,.field textarea:focus{
+      border-color:#c4b5fd;box-shadow:0 0 0 4px rgba(139,92,246,.12);
+    }
+    .btn-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .btn{
+      border:1px solid transparent;border-radius:13px;padding:11px 14px;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;
+      transition:.16s ease;text-decoration:none;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.primary{background:linear-gradient(135deg,var(--purple),var(--purple-2));color:white}
+    .btn.pink{background:linear-gradient(135deg,var(--pink),#ec4899);color:white}
+    .btn.teal{background:linear-gradient(135deg,var(--teal),#14b8a6);color:white}
+    .btn.soft{background:#fff;border-color:var(--line);color:var(--text)}
+    .btn.danger{background:#fff1f2;color:var(--red);border-color:#fecdd3}
+    .btn.small{padding:8px 11px;border-radius:11px;font-size:13px}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .list{display:grid;gap:12px}
+    .card{
+      border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px;
+    }
+    .card-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .title-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;
+      font-size:12px;font-weight:800;background:#f5f3ff;color:var(--purple);
+    }
+    .badge.pink{background:#fdf2f8;color:var(--pink)}
+    .badge.green{background:#f0fdf4;color:var(--green)}
+    .badge.amber{background:#fffbeb;color:var(--amber)}
+    .badge.blue{background:#eff6ff;color:var(--blue)}
+    .meta{color:var(--muted);font-size:14px;line-height:1.55}
+    .cat-avatar{
+      width:58px;height:58px;border-radius:18px;background:#f5f3ff;display:grid;place-items:center;
+      overflow:hidden;font-size:30px;flex:0 0 auto;border:1px solid var(--line);
+    }
+    .cat-avatar img{width:100%;height:100%;object-fit:cover}
+    .cat-card-main{display:flex;gap:14px}
+    .divider{height:1px;background:var(--line);margin:14px 0}
+    .check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .check{
+      display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:#fff;
+      cursor:pointer;user-select:none;
+    }
+    .check input{accent-color:var(--purple)}
+    .check.checked{border-color:#c4b5fd;background:#faf5ff;color:var(--purple);font-weight:700}
+    .note-text{white-space:pre-wrap;line-height:1.6}
+    .empty{
+      border:1px dashed #d8b4fe;border-radius:16px;padding:22px;text-align:center;color:var(--muted);background:#fcfaff;
+    }
+    .auth-wrap{max-width:540px;margin:38px auto}
+    .auth-card{padding:24px}
+    .auth-tabs{display:flex;gap:10px;margin-bottom:16px}
+    .auth-tabs button{flex:1}
+    .hidden{display:none !important}
+    .owner-wrap{max-width:860px;margin:0 auto;padding:28px 18px 56px}
+    .owner-hero{
+      background:linear-gradient(135deg,rgba(109,40,217,.95),rgba(219,39,119,.88));
+      color:white;border-radius:24px;padding:28px;box-shadow:var(--shadow);margin-bottom:18px;
+    }
+    .owner-hero p{color:rgba(255,255,255,.85)}
+    .owner-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .owner-card{padding:18px}
+    .toast{
+      position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);
+      padding:12px 16px;background:#20183a;color:white;border-radius:999px;
+      box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.18s ease;z-index:60;
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .kv{display:grid;gap:8px}
+    .kv div{display:grid;grid-template-columns:140px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+    .kv div:last-child{border-bottom:none}
+    .kv span:first-child{color:var(--muted)}
+    .inline-copy{display:flex;gap:10px;align-items:center}
+    .inline-copy input{flex:1}
+    .link-input{
+      width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fafafa;color:#4b5563;
+    }
+    .filters{display:flex;gap:10px;flex-wrap:wrap}
+    .small-muted{font-size:12px;color:var(--muted)}
+    @media(max-width:980px){
+      .hero,.layout,.owner-grid{grid-template-columns:1fr}
+      .sidebar{position:static}
+    }
+    @media(max-width:720px){
+      h1{font-size:34px}
+      .grid-2,.grid-3,.status-grid,.check-grid{grid-template-columns:1fr}
+      .panel-head,.card-top{flex-direction:column}
+      .kv div{grid-template-columns:1fr}
+    }
+  </style>
 </head>
 <body>
-<div id="app"></div>
-<div id="toast"></div>
-<script>
-'use strict';
-const JBASE='https://api.jsonbin.io/v3/b';
-const EMO=['🐱','🐈','😸','🙀','😺','🐾','🐈‍⬛'];
-const DEFAULT_ITEMS=['Kendi maması','Pet pasaportu'];
-const AV_BG=['#EDE9FE','#FCE7F3','#CCFBF1','#FEF3C7','#FFEDD5','#DBEAFE','#D1FAE5'];
-let MK='',BIN='',DATA={cats:[],notes:{},items:[]};
-let TAB='cats';
-let ownerLinks={};
-let editCatId=null;
-let editNoteState=null;
-let currentNotesCatId=null;
+  <div id="app"></div>
+  <div id="toast" class="toast"></div>
 
-// ── INIT ──────────────────────────────────────────────────────────────
-function init(){
-  const sp=new URLSearchParams(location.search);
-  const catParam=sp.get('cat'),binParam=sp.get('bin');
-  if(catParam&&binParam){
-    const hp=new URLSearchParams(location.hash.slice(1));
-    MK=hp.get('mk')||'';BIN=binParam;
-    app('<div class="wrap"><div class="hero"><div class="hero-av">🐱</div><p style="color:var(--purple)">Yükleniyor...</p></div></div>');
-    loadData().then(()=>renderOwner(catParam)).catch(()=>app('<div class="wrap"><div class="empty"><span class="empty-i">⚠️</span>Veriler yüklenemedi.</div></div>'));
-  } else {
-    MK=localStorage.getItem('kb_mk')||'';BIN=localStorage.getItem('kb_bin')||'';
-    if(!MK){renderSetup();}
-    else{
-      app('<div class="wrap"><div class="empty"><i class="ti ti-loader spin empty-i"></i>Yükleniyor...</div></div>');
-      loadData().then(()=>renderAdmin()).catch(()=>{localStorage.removeItem('kb_mk');localStorage.removeItem('kb_bin');renderSetup('API anahtarı geçersiz.');});
-    }
-  }
-}
+  <script src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (() => {
+    "use strict";
 
-// ── API ───────────────────────────────────────────────────────────────
-async function loadData(){
-  const h=MK?{'X-Master-Key':MK}:{};
-  const r=await fetch(`${JBASE}/${BIN}/latest`,{headers:h});
-  if(!r.ok){let m='Yükleme hatası: '+r.status;try{const j=await r.json();m+=' — '+(j.message||'');}catch(e){}throw new Error(m);}
-  const j=await r.json();DATA=j.record;
-  if(!DATA.cats)DATA.cats=[];
-  if(!DATA.notes)DATA.notes={};
-  if(!DATA.items||!DATA.items.length)DATA.items=[...DEFAULT_ITEMS];
-}
-async function save(){
-  if(!MK||!BIN){toast('⚠️ API anahtarı eksik!',4000);throw new Error('no creds');}
-  const r=await fetch(`${JBASE}/${BIN}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':MK},body:JSON.stringify(DATA)});
-  if(!r.ok){let m='Kayıt hatası: '+r.status;try{const j=await r.json();m+=' — '+(j.message||'');}catch(e){}toast('⚠️ '+m,5000);throw new Error(m);}
-  toast('Kaydedildi ✓');
-}
-async function createBin(mk){
-  const r=await fetch(JBASE,{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':mk,'X-Bin-Private':'false'},body:JSON.stringify({cats:[],notes:{},items:[...DEFAULT_ITEMS]})});
-  if(!r.ok)throw new Error('bin failed');return(await r.json()).metadata.id;
-}
-
-// ── HELPERS ───────────────────────────────────────────────────────────
-function app(html){document.getElementById('app').innerHTML=html;}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;}
-function daysSince(d){if(!d)return null;return Math.floor((Date.now()-new Date(d).getTime())/86400000);}
-function emo(i){return EMO[i%EMO.length];}
-function avBg(i){return AV_BG[i%AV_BG.length];}
-let toastTimer;
-function toast(msg,dur=2200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);}
-function v(id){const el=document.getElementById(id);return el?(el.value||'').trim():'';}
-function chked(id){const el=document.getElementById(id);return el?el.querySelector('input').checked:false;}
-function ownerLink(c){return`${location.origin}${location.pathname}?cat=${c.id}&bin=${BIN}#mk=${MK}`;}
-function copyOwnerLink(catId){navigator.clipboard.writeText(ownerLinks[catId]||'').then(()=>toast('Sahip linki kopyalandı! 🔗'));}
-
-function compressImage(file,maxW,quality){
-  return new Promise((res,rej)=>{
-    const reader=new FileReader();
-    reader.onload=e=>{
-      const img=new Image();
-      img.onload=()=>{
-        const canvas=document.createElement('canvas');
-        let w=img.width,h=img.height;
-        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-        canvas.width=w;canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        res(canvas.toDataURL('image/jpeg',quality));
-      };
-      img.onerror=rej;img.src=e.target.result;
+    const CONFIG = window.KEDI_APP_CONFIG || {};
+    const app = document.getElementById("app");
+    const toastEl = document.getElementById("toast");
+    let db = null;
+    let session = null;
+    let state = {
+      tab: "cats",
+      cats: [],
+      notes: [],
+      ownerNotes: [],
+      items: [],
+      selectedNoteCatId: "",
+      editingCatId: null,
+      editingNoteId: null,
+      ownerToken: new URLSearchParams(location.search).get("owner") || "",
+      ownerPayload: null,
+      authMode: "login",
+      loading: false
     };
-    reader.onerror=rej;reader.readAsDataURL(file);
-  });
-}
-function showImgPreview(inputId,previewId){
-  const inp=document.getElementById(inputId),prev=document.getElementById(previewId);
-  if(!inp||!prev)return;
-  const file=inp.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{prev.src=e.target.result;prev.style.display='block';};
-  reader.readAsDataURL(file);
-}
 
-// ── SETUP ─────────────────────────────────────────────────────────────
-function renderSetup(errMsg=''){
-  app(`<div class="setup-outer"><div class="setup-card">
-    <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px">🐾</div>
-      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px;color:var(--purple-d)">Kedi Konaklama Takibi</h1>
-      <p style="font-size:13px;color:var(--muted)">İlk kurulum — sadece bir kere yapılır</p>
-    </div>
-    <div style="margin-bottom:1.25rem">
-      <div class="slabel">Nasıl kurulur?</div>
-      <div class="step"><div class="step-n">1</div><div><a href="https://jsonbin.io" target="_blank">jsonbin.io</a>'ya gidin, ücretsiz hesap açın</div></div>
-      <div class="step"><div class="step-n">2</div><div>Profilinizden <strong>API Keys</strong> bölümüne gidin</div></div>
-      <div class="step"><div class="step-n">3</div><div><strong>X-MASTER-KEY</strong>'i kopyalayın</div></div>
-      <div class="step"><div class="step-n">4</div><div>Aşağıya yapıştırın</div></div>
-    </div>
-    ${errMsg?`<div class="al al-warn"><i class="ti ti-alert-circle"></i>${esc(errMsg)}</div>`:''}
-    <div class="field"><label>X-Master-Key</label><input id="setup-key" type="password" placeholder="$2a$10$..." autocomplete="off"></div>
-    <div class="field"><label>Mevcut Bin ID (varsa)</label><input id="setup-bin" placeholder="Eski verileriniz için bin ID girin..." autocomplete="off">
-    <div style="font-size:12px;color:var(--muted);margin-top:4px">Boş bırakırsanız yeni bin oluşturulur</div></div>
-    <button class="btn btn-primary btn-full" id="setup-btn" onclick="doSetup()"><i class="ti ti-rocket"></i> Kurulumu Tamamla</button>
-  </div></div>`);
-}
-async function doSetup(){
-  const key=(document.getElementById('setup-key').value||'').trim();
-  const existingBin=(document.getElementById('setup-bin').value||'').trim();
-  if(!key)return renderSetup('API anahtarı boş olamaz.');
-  const btn=document.getElementById('setup-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Bağlanıyor...';
-  try{
-    let id=existingBin;
-    if(!id){id=await createBin(key);}
-    MK=key;BIN=id;
-    await loadData();
-    localStorage.setItem('kb_mk',MK);localStorage.setItem('kb_bin',BIN);
-    renderAdmin();
-  }
-  catch(e){renderSetup('Bağlantı kurulamadı. Anahtarı veya Bin ID'yi kontrol edin.');}
-}
+    const FLAGS = [
+      ["food", "🍽️ Mama yedi"],
+      ["water", "💧 Su içti"],
+      ["toilet", "✨ Tuvalet normal"],
+      ["play", "🎾 Oyun / aktif"],
+      ["medicine", "💊 İlaç verildi"],
+      ["care", "✂️ Bakım yapıldı"]
+    ];
 
-// ── ADMIN SHELL ───────────────────────────────────────────────────────
-function renderAdmin(tab){
-  if(tab)TAB=tab;
-  document.title='Kedi Konaklama — Admin';
-  ownerLinks={};DATA.cats.forEach(c=>{ownerLinks[c.id]=ownerLink(c);});
-  const count=DATA.cats.length;
-  app(`<div class="wrap">
-    <div class="hdr"><div class="logo">🐾</div>
-      <div><h1>Kedi Konaklama</h1><p>${count===0?'Henüz kedi yok':count+' aktif kedi'}</p></div>
-    </div>
-    <div class="tabs">
-      <button class="tab tab-cats ${TAB==='cats'?'on':''}" onclick="renderAdmin('cats')"><i class="ti ti-paw"></i> Kediler</button>
-      <button class="tab tab-notes ${TAB==='notes'?'on':''}" onclick="renderAdmin('notes')"><i class="ti ti-notes"></i> Günlük Not</button>
-      <button class="tab tab-msg ${TAB==='msg'?'on':''}" onclick="renderAdmin('msg')"><i class="ti ti-brand-whatsapp"></i> Mesaj</button>
-      <button class="tab tab-items ${TAB==='items'?'on':''}" onclick="renderAdmin('items')"><i class="ti ti-backpack"></i> Eşyalar</button>
-    </div>
-    <div id="tab-body">${TAB==='cats'?tplCats():TAB==='notes'?tplNotes():TAB==='msg'?tplMsg():tplItems()}</div>
-  </div>`);
-  document.querySelectorAll('.chk input').forEach(inp=>{
-    inp.addEventListener('change',function(){this.closest('.chk').classList.toggle('on',this.checked);});
-  });
-  if(TAB==='notes'&&currentNotesCatId){
-    setTimeout(()=>{
-      const sel=document.getElementById('note-sel');
-      if(sel){sel.value=currentNotesCatId;renderArchive(currentNotesCatId);}
-    },50);
-  }
-}
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const esc = (v="") => String(v ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+    const fmtDate = (v) => v ? new Date(v + (String(v).includes("T") ? "" : "T12:00:00")).toLocaleDateString("tr-TR") : "—";
+    const fmtDateTime = (v) => v ? new Date(v).toLocaleString("tr-TR", {dateStyle:"medium", timeStyle:"short"}) : "—";
+    const today = () => new Date().toISOString().slice(0,10);
+    const uid = () => session?.user?.id || null;
 
-// ── CATS TAB ──────────────────────────────────────────────────────────
-function tplCats(){
-  const ec=editCatId!==null?DATA.cats.find(c=>c.id===editCatId):null;
-  const dietOpts=['Kuru mama','Yaş mama','Kuru + yaş karma','Ev yemeği','Diyet / veteriner maması'].map(o=>`<option${ec?.diet===o?' selected':''}>${o}</option>`).join('');
-  return`
-    ${ec?`<div class="edit-banner"><span><i class="ti ti-pencil"></i> <strong>${esc(ec.name)}</strong> düzenleniyor</span><button class="btn btn-sm btn-danger" onclick="cancelCatEdit()"><i class="ti ti-x"></i> İptal</button></div>`:''}
-    <div class="card" style="border-top:3px solid var(--teal)">
-      <div class="slabel" style="color:var(--teal)">${ec?'Kedi bilgilerini düzenle':'Yeni kedi ekle'}</div>
-      <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Temel bilgiler</div>
-      <div class="field">
-        <label>Profil fotoğrafı</label>
-        <div style="display:flex;align-items:center;gap:12px">
-          <img id="cat-photo-preview" src="${ec?.photo||''}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:${ec?.photo?'block':'none'};border:2px solid var(--teal-b)">
-          <input type="file" id="n-photo" accept="image/*" onchange="showImgPreview('n-photo','cat-photo-preview')" style="font-size:13px">
-        </div>
-      </div>
-      <div class="g2">
-        <div class="field"><label>Kedi adı *</label><input id="n-name" placeholder="Örn: Pamuk" value="${esc(ec?.name||'')}"></div>
-        <div class="field"><label>Cins</label><input id="n-breed" placeholder="Örn: British Shorthair" value="${esc(ec?.breed||'')}"></div>
-      </div>
-      <div class="g2">
-        <div class="field"><label>Yaş</label><input id="n-age" placeholder="Örn: 3 yaş" value="${esc(ec?.age||'')}"></div>
-        <div class="field"><label>Sahibi</label><input id="n-owner" placeholder="Örn: Ayşe Hanım" value="${esc(ec?.owner||'')}"></div>
-      </div>
-      <div class="g2">
-        <div class="field"><label>Sahibinin telefonu</label><input id="n-phone" placeholder="0532 000 00 00" value="${esc(ec?.phone||'')}"></div>
-        <div class="field"></div>
-      </div>
-      <div class="g2">
-        <div class="field"><label>Giriş tarihi</label><input type="date" id="n-checkin" value="${esc(ec?.checkin||'')}"></div>
-        <div class="field"><label>Çıkış tarihi</label><input type="date" id="n-checkout" value="${esc(ec?.checkout||'')}"></div>
-      </div>
-      <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Beslenme</div>
-      <div class="g2">
-        <div class="field"><label>Beslenme çeşidi</label><select id="n-diet"><option value="">Seçin</option>${dietOpts}</select></div>
-        <div class="field"><label>Ekstra takviye</label><input id="n-supp" placeholder="Omega-3, malt..." value="${esc(ec?.supplement||'')}"></div>
-      </div>
-      <div class="field"><label>Mama detayı</label><input id="n-food" placeholder="Örn: Sabah 50g Proplan, akşam 1 pouch" value="${esc(ec?.food||'')}"></div>
-      <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Sağlık & karakter</div>
-      <div class="field"><label>Alerji veya sağlık problemi</label><input id="n-health" placeholder="Örn: Balık alerjisi, günde 1x ilaç" value="${esc(ec?.health||'')}"></div>
-      <div class="field"><label>Kedinin karakteri</label><textarea id="n-char" placeholder="Örn: Sosyal ama yabancıya ürkek...">${esc(ec?.character||'')}</textarea></div>
-      <div class="glabel" style="color:var(--orange);border-top-color:var(--orange-l)">Notlar</div>
-      <div class="field"><label>Özel notlar</label><textarea id="n-extranote" placeholder="Bu kedi hakkında ekstra notlar...">${esc(ec?.extranote||'')}</textarea></div>
-      <div class="glabel" style="color:var(--pink);border-top-color:var(--pink-l)">Gelecek eşyalar</div>
-      <div class="field"><label>Sahibin getirdiği eşyalar</label><textarea id="n-gelenesya" placeholder="Örn: Kendi yastığı, oyuncak fare, battaniyesi...">${esc(ec?.gelenesya||'')}</textarea></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-teal" id="add-btn" onclick="saveCat()"><i class="ti ti-device-floppy"></i> ${ec?'Değişikliği Kaydet':'Kedi Ekle'}</button>
-        ${ec?`<button class="btn btn-danger" onclick="cancelCatEdit()"><i class="ti ti-x"></i> İptal</button>`:''}
-      </div>
-    </div>
-    <div id="cat-list">${DATA.cats.length===0?'<div class="empty"><span class="empty-i">🐱</span>Henüz kedi eklenmedi</div>':DATA.cats.map((c,i)=>catCard(c,i)).join('')}</div>`;
-}
-
-function catCard(c,i){
-  const nCount=(DATA.notes[c.id]||[]).filter(n=>n.from==='admin').length;
-  return`<div class="card card-sm" style="border-left:4px solid ${avBg(i)}">
-    <div class="cat-row">
-      <div class="cat-av" style="${c.photo?'background:#fff;overflow:hidden;border:2px solid var(--teal-b)':('background:'+avBg(i))}">${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover">`:emo(i)}</div>
-      <div class="cat-info">
-        <div class="cat-name">${esc(c.name)}${c.breed?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.breed)}</span>`:''}${c.age?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.age)}</span>`:''}</div>
-        ${c.owner||c.phone?`<div class="cat-meta">👤 ${esc(c.owner||'')}${c.phone?' · '+esc(c.phone):''}</div>`:''}
-        ${c.checkin?`<div class="cat-meta">📅 ${fmtDate(c.checkin)}${c.checkout?' → '+fmtDate(c.checkout):''}</div>`:''}
-        ${c.diet||c.food?`<div class="cat-meta">🍽 ${esc([c.diet,c.food].filter(Boolean).join(' · '))}</div>`:''}
-        ${c.supplement?`<div class="cat-meta">💊 ${esc(c.supplement)}</div>`:''}
-        ${c.health?`<div style="font-size:12px;color:var(--coral);margin-top:2px;font-weight:500">⚠️ ${esc(c.health)}</div>`:''}
-        ${c.character?`<div style="font-size:12px;color:var(--purple);font-style:italic;margin-top:2px">💬 ${esc(c.character)}</div>`:''}
-        ${c.extranote?`<div style="font-size:12px;color:var(--orange);margin-top:4px;border-top:1px solid var(--border);padding-top:4px">📋 ${esc(c.extranote)}</div>`:''}
-        ${c.gelenesya?`<div style="font-size:12px;color:var(--pink);margin-top:4px;font-weight:500">🎒 ${esc(c.gelenesya)}</div>`:''}
-      </div>
-      <div class="cat-acts">
-        ${nCount?`<span class="b b-pu">${nCount} not</span>`:''}
-        <button class="btn btn-sm" onclick="copyOwnerLink(${c.id})" title="Sahip linki" style="color:var(--purple)"><i class="ti ti-link"></i></button>
-        <button class="btn btn-sm btn-edit" onclick="startCatEdit(${c.id})"><i class="ti ti-pencil"></i></button>
-        <button class="btn btn-sm btn-danger" onclick="removeCat(${c.id})"><i class="ti ti-trash"></i></button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function startCatEdit(id){editCatId=id;renderAdmin('cats');document.querySelector('.card')?.scrollIntoView({behavior:'smooth'});}
-function cancelCatEdit(){editCatId=null;renderAdmin('cats');}
-
-async function saveCat(){
-  const name=(document.getElementById('n-name').value||'').trim();
-  if(!name){alert('Kedi adı zorunlu.');return;}
-  const btn=document.getElementById('add-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Kaydediliyor...';
-  let photo='';
-  const pi=document.getElementById('n-photo');
-  if(pi&&pi.files[0]){try{photo=await compressImage(pi.files[0],240,0.75);}catch(e){}}
-  else if(editCatId!==null){photo=DATA.cats.find(c=>c.id===editCatId)?.photo||'';}
-  const data={name,breed:v('n-breed'),age:v('n-age'),owner:v('n-owner'),phone:v('n-phone'),checkin:v('n-checkin'),checkout:v('n-checkout'),diet:v('n-diet'),supplement:v('n-supp'),food:v('n-food'),health:v('n-health'),character:v('n-char'),extranote:v('n-extranote'),gelenesya:v('n-gelenesya'),photo};
-  if(editCatId!==null){const idx=DATA.cats.findIndex(c=>c.id===editCatId);if(idx>-1)DATA.cats[idx]={...DATA.cats[idx],...data};editCatId=null;}
-  else DATA.cats.push({id:Date.now(),...data});
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
-  renderAdmin('cats');
-}
-
-async function removeCat(id){
-  if(!confirm('Bu kedi kaydını silmek istediğinize emin misiniz?'))return;
-  DATA.cats=DATA.cats.filter(c=>c.id!==id);delete DATA.notes[id];
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
-  renderAdmin('cats');
-}
-
-// ── NOTES TAB ─────────────────────────────────────────────────────────
-function tplNotes(){
-  const opts=DATA.cats.map(c=>`<option value="${c.id}">${esc(c.name)}${c.owner?' ('+esc(c.owner)+')':''}</option>`).join('');
-  const isEditing=editNoteState!==null;
-  return`
-    ${isEditing?`<div class="edit-banner"><span><i class="ti ti-pencil"></i> Not düzenleniyor</span><button class="btn btn-sm btn-danger" onclick="cancelNoteEdit()"><i class="ti ti-x"></i> İptal</button></div>`:''}
-    <div class="card" style="border-top:3px solid var(--purple)">
-      <div class="field"><label>Hangi kedi?</label>
-        <select id="note-sel" onchange="onNoteCatChange(this.value)">${opts?'<option value="">— seçin —</option>'+opts:'<option>Önce kedi ekleyin</option>'}</select>
-      </div>
-      <div id="note-hint" style="display:none" class="al al-purple"><i class="ti ti-info-circle" style="flex-shrink:0"></i><span id="note-hint-txt"></span></div>
-      <div class="slabel">Bugün gerçekleşenler</div>
-      <div class="checks">
-        <label class="chk" id="chk-mama"><input type="checkbox"> <i class="ti ti-bowl"></i> Mama yedi</label>
-        <label class="chk" id="chk-su"><input type="checkbox"> <i class="ti ti-droplet"></i> Su içti</label>
-        <label class="chk" id="chk-tuvalet"><input type="checkbox"> <i class="ti ti-sparkles"></i> Tuvalet normal</label>
-        <label class="chk" id="chk-oyun"><input type="checkbox"> <i class="ti ti-ball"></i> Oyun / aktif</label>
-        <label class="chk" id="chk-ilac"><input type="checkbox"> <i class="ti ti-pill"></i> İlaç verildi</label>
-        <label class="chk" id="chk-tarama"><input type="checkbox"> <i class="ti ti-cut"></i> Tımar / bakım</label>
-        <label class="chk" id="chk-malt"><input type="checkbox"> <i class="ti ti-candy"></i> Malt yedi</label>
-      </div>
-      <div class="g2">
-        <div class="field"><label>Ruh hali</label>
-          <select id="note-mood"><option value="">Seçin</option><option>Sakin ve mutlu</option><option>Aktif ve oyuncu</option><option>Biraz çekingen</option><option>Stresli görünüyor</option><option>Yorgun / uykulama eğilimli</option></select>
-        </div>
-        <div class="field"><label>İştah</label>
-          <select id="note-app"><option value="">Seçin</option><option>Hepsini yedi</option><option>Yarısını yedi</option><option>Az yedi</option><option>Hiç yemedi</option></select>
-        </div>
-      </div>
-      <div class="field"><label>Ek notlar</label><textarea id="note-extra" placeholder="Özel gözlem, endişe, davranış..."></textarea></div>
-      <div class="field">
-        <label>Fotoğraf ekle</label>
-        <input type="file" id="note-photo" accept="image/*" onchange="showImgPreview('note-photo','note-photo-prev')" style="font-size:13px">
-        <img id="note-photo-prev" style="margin-top:8px;max-width:100%;border-radius:var(--r);display:none;max-height:180px;object-fit:cover">
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" id="note-btn" onclick="saveNote()"><i class="ti ti-device-floppy"></i> ${isEditing?'Değişikliği Kaydet':'Notu Kaydet'}</button>
-        ${isEditing?`<button class="btn btn-danger" onclick="cancelNoteEdit()"><i class="ti ti-x"></i> İptal</button>`:''}
-      </div>
-    </div>
-
-    <div id="archive-section" style="margin-top:4px"></div>`;
-}
-
-function onNoteCatChange(val){
-  const catId=parseInt(val);
-  currentNotesCatId=catId||null;
-  const cat=DATA.cats.find(c=>c.id===catId);
-  const hint=document.getElementById('note-hint');
-  if(cat&&(cat.diet||cat.food||cat.supplement||cat.health)){
-    hint.style.display='flex';
-    document.getElementById('note-hint-txt').textContent=[cat.diet,cat.food,cat.supplement&&'Takviye: '+cat.supplement,cat.health&&'⚠️ '+cat.health].filter(Boolean).join(' · ');
-  } else if(hint){hint.style.display='none';}
-  renderArchive(catId);
-}
-
-function renderArchive(catId){
-  const el=document.getElementById('archive-section');
-  if(!el)return;
-  if(!catId){el.innerHTML='';return;}
-  const cat=DATA.cats.find(c=>c.id===catId);
-  // Get ALL notes for this cat - try both string and int keys
-  const catNotes=(DATA.notes[catId]||DATA.notes[String(catId)]||[]).filter(n=>n.from==='admin'||n.from===undefined);
-  const ownerNotes=(DATA.notes[catId]||DATA.notes[String(catId)]||[]).filter(n=>n.from==='owner');
-
-  if(!catNotes.length&&!ownerNotes.length){
-    el.innerHTML=`<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">
-      <span style="font-size:28px;display:block;margin-bottom:6px;opacity:.3">📋</span>
-      ${cat?esc(cat.name)+' için henüz not eklenmedi':'Henüz not eklenmedi'}
-    </div>`;
-    return;
-  }
-
-  el.innerHTML=`
-    <div class="archive-header">
-      <div class="slabel" style="margin:0">📚 Notlar arşivi</div>
-      <span class="archive-count">${catNotes.length} bakıcı notu${ownerNotes.length?' · '+ownerNotes.length+' sahip notu':''}</span>
-    </div>
-    ${catNotes.map((n,idx)=>adminNoteCard(n,catId,idx)).join('')}
-    ${ownerNotes.length?`<div class="slabel" style="margin-top:12px;color:var(--pink)">Sahip notları</div>${ownerNotes.map(n=>ownerArchiveCard(n)).join('')}`:''}`;
-}
-
-function adminNoteCard(n,catId,idx){
-  return`<div class="card card-sm" style="border-left:4px solid var(--purple)">
-    <div class="note-hdr">
-      <span class="note-time">${esc(n.date||'')} ${esc(n.time||'')}</span>
-      <div style="display:flex;gap:4px;flex-wrap:wrap">
-        ${n.mood?`<span class="b b-pu">${esc(n.mood)}</span>`:''}
-        ${n.appetite?`<span class="b b-am">${esc(n.appetite)}</span>`:''}
-      </div>
-    </div>
-    ${n.checks?`<div class="tags">
-      ${n.checks.mama?'<span class="b b-gr">🍽 mama</span>':''}
-      ${n.checks.su?'<span class="b b-gr">💧 su</span>':''}
-      ${n.checks.tuvalet?'<span class="b b-gr">✨ tuvalet</span>':''}
-      ${n.checks.oyun?'<span class="b b-gr">🎾 oyun</span>':''}
-      ${n.checks.ilac?'<span class="b b-am">💊 ilaç</span>':''}
-      ${n.checks.tarama?'<span class="b b-te">✂️ tımar</span>':''}
-      ${n.checks.malt?'<span class="b b-pk">🍬 malt</span>':''}
-    </div>`:''}
-    ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
-    ${n.photo?`<img src="${n.photo}" class="note-photo">`:''}
-    <div class="note-acts">
-      <button class="btn btn-sm btn-edit" onclick="startNoteEdit(${catId},${idx})"><i class="ti ti-pencil"></i> Düzenle</button>
-      <button class="btn btn-sm btn-danger" onclick="deleteNote(${catId},${idx})"><i class="ti ti-trash"></i> Sil</button>
-    </div>
-  </div>`;
-}
-
-function ownerArchiveCard(n){
-  return`<div class="card card-sm" style="border-left:4px solid var(--pink)">
-    <div class="note-time" style="margin-bottom:6px;color:var(--pink)">${esc(n.date||'')} · ${esc(n.time||'')} · <span style="font-weight:600">Sahip notu</span></div>
-    ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
-    ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
-  </div>`;
-}
-
-function startNoteEdit(catId,idx){
-  const allNotes=DATA.notes[catId]||DATA.notes[String(catId)]||[];
-  const adminNotes=allNotes.filter(n=>n.from==='admin'||n.from===undefined);
-  const note=adminNotes[idx];if(!note)return;
-  // Find real index in allNotes
-  const realIdx=allNotes.indexOf(note);
-  editNoteState={catId,idx:realIdx};
-  renderAdmin('notes');
-  setTimeout(()=>{
-    const sel=document.getElementById('note-sel');if(sel){sel.value=catId;onNoteCatChange(catId);}
-    const setChk=(id,val)=>{const el=document.getElementById(id);if(!el)return;const inp=el.querySelector('input');inp.checked=!!val;el.classList.toggle('on',!!val);};
-    setChk('chk-mama',note.checks?.mama);setChk('chk-su',note.checks?.su);
-    setChk('chk-tuvalet',note.checks?.tuvalet);setChk('chk-oyun',note.checks?.oyun);
-    setChk('chk-ilac',note.checks?.ilac);setChk('chk-tarama',note.checks?.tarama);
-    setChk('chk-malt',note.checks?.malt);
-    const mood=document.getElementById('note-mood');if(mood)mood.value=note.mood||'';
-    const ap=document.getElementById('note-app');if(ap)ap.value=note.appetite||'';
-    const ex=document.getElementById('note-extra');if(ex)ex.value=note.extra||'';
-    document.querySelector('.card')?.scrollIntoView({behavior:'smooth'});
-    toast('Not düzenleniyor — değişikliklerinizi yapıp kaydedin.');
-  },60);
-}
-function cancelNoteEdit(){editNoteState=null;renderAdmin('notes');}
-
-async function saveNote(){
-  const sel=document.getElementById('note-sel');
-  const catId=parseInt((sel||{}).value||'0');
-  if(!catId){alert('Lütfen kedi seçin.');return;}
-  const btn=document.getElementById('note-btn');btn.disabled=true;
-  let notePhoto='';
-  const pi=document.getElementById('note-photo');
-  if(pi&&pi.files[0]){try{notePhoto=await compressImage(pi.files[0],700,0.72);}catch(e){}}
-  const checks={mama:chked('chk-mama'),su:chked('chk-su'),tuvalet:chked('chk-tuvalet'),oyun:chked('chk-oyun'),ilac:chked('chk-ilac'),tarama:chked('chk-tarama'),malt:chked('chk-malt')};
-  // Normalize key to integer
-  if(!DATA.notes[catId]){
-    // Try to migrate from string key
-    const strKey=String(catId);
-    if(DATA.notes[strKey]){DATA.notes[catId]=DATA.notes[strKey];delete DATA.notes[strKey];}
-    else DATA.notes[catId]=[];
-  }
-  if(editNoteState&&editNoteState.catId===catId){
-    const orig=DATA.notes[catId][editNoteState.idx];
-    if(orig)DATA.notes[catId][editNoteState.idx]={...orig,mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),checks,photo:notePhoto||orig.photo||''};
-    editNoteState=null;
-  } else {
-    DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),from:'admin',checks,photo:notePhoto});
-  }
-  currentNotesCatId=catId;
-  // Reload latest data first, then apply our new note on top
-  const newNote=DATA.notes[catId]?.[0];
-  try{
-    await loadData();
-    if(!DATA.notes[catId])DATA.notes[catId]=[];
-    if(editNoteState===null&&newNote){DATA.notes[catId].unshift(newNote);}
-  }catch(e){}
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);btn.disabled=false;return;}
-  renderAdmin('notes');
-}
-
-async function deleteNote(catId,idx){
-  if(!confirm('Bu notu silmek istediğinize emin misiniz?'))return;
-  const notes=DATA.notes[catId]||DATA.notes[String(catId)];
-  if(notes)notes.splice(idx,1);
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);return;}
-  renderArchive(catId);
-}
-
-// ── ITEMS TAB ─────────────────────────────────────────────────────────
-function tplItems(){
-  const items=DATA.items||[];
-  return`<div class="card" style="border-top:3px solid var(--orange)">
-    <div class="slabel" style="color:var(--orange)">Sahiplerden İstenecek Eşyalar</div>
-    <div class="al al-warn"><i class="ti ti-info-circle" style="flex-shrink:0"></i>Bu liste tüm sahip sayfalarında görünür.</div>
-    <div id="items-list">
-      ${items.length===0?'<div class="empty" style="padding:1rem"><span style="opacity:.3">📦</span> Henüz eşya eklenmedi</div>':items.map((item,idx)=>`
-        <div class="item-row"><div class="item-dot"></div><span>${esc(item)}</span>
-          <button class="btn btn-sm btn-danger" onclick="deleteItem(${idx})"><i class="ti ti-trash"></i></button>
-        </div>`).join('')}
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <div class="field" style="flex:1;margin:0"><input id="new-item" placeholder="Yeni eşya ekle..." onkeydown="if(event.key==='Enter')addItem()"></div>
-      <button class="btn" style="background:var(--orange);color:#fff;border-color:var(--orange);flex-shrink:0" onclick="addItem()"><i class="ti ti-plus"></i> Ekle</button>
-    </div>
-  </div>`;
-}
-async function addItem(){
-  const val=(document.getElementById('new-item').value||'').trim();if(!val)return;
-  if(!DATA.items)DATA.items=[];DATA.items.push(val);
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);}renderAdmin('items');
-}
-async function deleteItem(idx){
-  if(!confirm('Bu eşyayı çıkarmak istediğinize emin misiniz?'))return;
-  DATA.items.splice(idx,1);try{await save();}catch(e){}renderAdmin('items');
-}
-
-// ── MESSAGE TAB ───────────────────────────────────────────────────────
-function tplMsg(){
-  const opts=DATA.cats.map(c=>`<option value="${c.id}">${esc(c.name)}${c.owner?' ('+esc(c.owner)+')':''}</option>`).join('');
-  return`<div class="card" style="border-top:3px solid var(--pink)">
-    <div class="field"><label>Hangi kedi için?</label>
-      <select id="msg-sel" onchange="genMsg()">${opts?'<option value="">— seçin —</option>'+opts:'<option>Önce kedi ekleyin</option>'}</select>
-    </div>
-    <div class="field"><label>Ton</label>
-      <select id="msg-tone" onchange="genMsg()"><option value="sicak">Sıcak ve samimi</option><option value="kisa">Kısa ve bilgilendirici</option></select>
-    </div>
-  </div>
-  <div id="msg-out" style="display:none">
-    <div class="slabel">Oluşturulan mesaj</div>
-    <div class="msg-box" id="msg-box"></div>
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn btn-pink" onclick="copyMsg()"><i class="ti ti-copy"></i> Kopyala</button>
-      <button class="btn" onclick="openWA()" style="border-color:var(--green);color:var(--green)"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
-    </div>
-  </div>
-  <div id="msg-empty" class="empty"><i class="ti ti-brand-whatsapp empty-i"></i>Kedi seçince mesaj otomatik oluşur</div>`;
-}
-function genMsg(){
-  const catId=parseInt((document.getElementById('msg-sel')||{}).value||'0');
-  const tone=(document.getElementById('msg-tone')||{}).value||'sicak';
-  const cat=DATA.cats.find(c=>c.id===catId);
-  const out=document.getElementById('msg-out'),empty=document.getElementById('msg-empty');
-  if(!cat){if(out)out.style.display='none';if(empty)empty.style.display='block';return;}
-  const allNotes=DATA.notes[catId]||DATA.notes[String(catId)]||[];
-  const latest=allNotes.find(n=>n.from==='admin'||n.from===undefined);
-  const today=new Date().toLocaleDateString('tr-TR');
-  let msg='';
-  if(tone==='sicak'){
-    msg=`Merhaba ${cat.owner||''} 😊\n\n${cat.name} bugün çok iyi! Günlük güncelleme (${today}):\n\n`;
-    if(latest){
-      if(latest.checks?.mama)msg+='🍽 Mamasını güzelce yedi\n';
-      if(latest.checks?.su)msg+='💧 Su içimini takip ettik\n';
-      if(latest.checks?.tuvalet)msg+='✨ Tuvaleti normal\n';
-      if(latest.checks?.oyun)msg+='🎾 Aktif ve oyunculdu\n';
-      if(latest.checks?.ilac)msg+='💊 İlacını aldı\n';
-      if(latest.checks?.tarama)msg+='✂️ Tımar yapıldı\n';
-      if(latest.checks?.malt)msg+='🍬 Maltını yedi\n';
-      if(latest.mood)msg+=`\nRuh hali: ${latest.mood}`;
-      if(latest.appetite)msg+=`\nİştah: ${latest.appetite}`;
-      if(latest.extra)msg+=`\n\n📝 ${latest.extra}`;
-      msg+=`\n\nSorunuz olursa yazın! ${cat.name} sizi çok seviyor 🐾`;
-    } else msg+='Henüz bugün için not eklenmedi.';
-  } else {
-    msg=`${today} — ${cat.name} raporu\n${cat.owner?'Sahibi: '+cat.owner+'\n':''}\n`;
-    if(latest){
-      const a=[latest.checks?.mama&&'mama',latest.checks?.su&&'su',latest.checks?.tuvalet&&'tuvalet ok',latest.checks?.oyun&&'aktif',latest.checks?.ilac&&'ilaç verildi',latest.checks?.tarama&&'tımar',latest.checks?.malt&&'malt'].filter(Boolean);
-      if(a.length)msg+=`✅ ${a.join(', ')}\n`;
-      if(latest.mood)msg+=`Durum: ${latest.mood}\n`;
-      if(latest.appetite)msg+=`İştah: ${latest.appetite}\n`;
-      if(latest.extra)msg+=`Not: ${latest.extra}\n`;
-    } else msg+='Henüz not eklenmedi.';
-  }
-  document.getElementById('msg-box').textContent=msg.trim();
-  out.style.display='block';empty.style.display='none';
-}
-function copyMsg(){navigator.clipboard.writeText(document.getElementById('msg-box').textContent||'').then(()=>toast('Mesaj kopyalandı! 📋'));}
-function openWA(){window.open('https://wa.me/?text='+encodeURIComponent(document.getElementById('msg-box').textContent||''),'_blank');}
-
-// ── OWNER VIEW ────────────────────────────────────────────────────────
-async function renderOwner(catIdStr){
-  const catId=parseInt(catIdStr);
-  const cat=DATA.cats.find(c=>c.id===catId);
-  if(!cat){app('<div class="wrap"><div class="empty"><span class="empty-i">🙁</span>Kedi bulunamadı.</div></div>');return;}
-  const idx=DATA.cats.indexOf(cat);
-  const allNotes=DATA.notes[catId]||DATA.notes[String(catId)]||[];
-  const adminNotes=allNotes.filter(n=>n.from==='admin'||n.from===undefined);
-  const ownerNotes=allNotes.filter(n=>n.from==='owner');
-  const daysHere=daysSince(cat.checkin);
-  const items=DATA.items||[];
-  document.title=`${cat.name} · Konaklama`;
-  app(`<div class="wrap">
-    <div class="hero">
-      <div class="hero-av">${cat.photo?`<img src="${cat.photo}" style="width:100%;height:100%;object-fit:cover">`:emo(idx)}</div>
-      <div class="hero-name">${esc(cat.name)}</div>
-      <div class="hero-sub">${cat.breed?esc(cat.breed)+' &nbsp;·&nbsp; ':''}${daysHere===null?'Konaklamada':daysHere<0?Math.abs(daysHere)+' gün sonra gelecek 📅':daysHere===0?'Bugün geldi 🎉':daysHere+' gündür bizimle 🐾'}</div>
-      ${cat.checkout?`<div style="font-size:13px;color:var(--purple);margin-top:6px;font-weight:500">Tahmini çıkış: ${fmtDate(cat.checkout)}</div>`:''}
-    </div>
-
-    ${items.length>0?`<div class="card" style="border-top:3px solid var(--orange);margin-bottom:12px">
-      <div class="slabel" style="color:var(--orange)">📦 Getirmeniz Gerekenler</div>
-      ${items.map(item=>`<div class="item-row"><div class="item-dot"></div><span>${esc(item)}</span></div>`).join('')}
-    </div>`:''}
-
-    <div class="card" style="border-top:3px solid var(--teal);margin-bottom:12px">
-      <div class="slabel" style="color:var(--teal)">🐱 Kedi Bilgileri</div>
-      ${cat.checkin?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Giriş</span><span style="font-size:13px;font-weight:500">${fmtDate(cat.checkin)}</span></div>`:''}
-      ${cat.checkout?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Çıkış</span><span style="font-size:13px;font-weight:500">${fmtDate(cat.checkout)}</span></div>`:''}
-      ${cat.diet?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Beslenme</span><span style="font-size:13px;font-weight:500">${esc(cat.diet)}</span></div>`:''}
-      ${cat.food?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Mama detayı</span><span style="font-size:13px">${esc(cat.food)}</span></div>`:''}
-      ${cat.supplement?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Takviye</span><span style="font-size:13px">${esc(cat.supplement)}</span></div>`:''}
-      ${cat.health?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Sağlık</span><span style="font-size:13px;color:var(--coral);font-weight:500">⚠️ ${esc(cat.health)}</span></div>`:''}
-      ${cat.character?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Karakter</span><span style="font-size:13px;font-style:italic">${esc(cat.character)}</span></div>`:''}
-      ${cat.extranote?`<div style="display:flex;gap:6px;margin-bottom:0"><span style="font-size:12px;color:var(--muted);min-width:90px">Notlar</span><span style="font-size:13px">${esc(cat.extranote)}</span></div>`:''}
-    </div>
-
-    <div class="slabel" style="color:var(--purple)">Bakıcı güncellemeleri (${adminNotes.length})</div>
-    ${adminNotes.length===0
-      ?`<div class="al al-info"><i class="ti ti-clock" style="flex-shrink:0"></i>Henüz güncelleme eklenmedi. Birazdan tekrar kontrol edin!</div>`
-      :adminNotes.map((n,i)=>ownerAdminCard(n,i===0)).join('')
+    function toast(message, type="ok"){
+      toastEl.textContent = message;
+      toastEl.style.background = type === "error" ? "#be123c" : type === "info" ? "#1d4ed8" : "#20183a";
+      toastEl.classList.add("show");
+      clearTimeout(toastEl._timer);
+      toastEl._timer = setTimeout(() => toastEl.classList.remove("show"), 2600);
     }
 
-    ${ownerNotes.length>0?`<div class="slabel" style="margin-top:1.5rem;color:var(--pink)">Sizin notlarınız (${ownerNotes.length})</div>${ownerNotes.map(n=>ownerNoteCard(n)).join('')}`:''}
-
-    ${MK?`<div class="card" style="margin-top:1.5rem;border-top:3px solid var(--pink)">
-      <div class="slabel" style="color:var(--pink)">Not ekle</div>
-      <div class="field"><label>Adınız</label><input id="ow-name" placeholder="Örn: Ayşe Hanım" value="${esc(localStorage.getItem('ow_name')||'')}"></div>
-      <div class="field"><label>Notunuz</label><textarea id="ow-note" placeholder="Sorularınızı veya isteklerinizi yazın..."></textarea></div>
-      <button class="btn btn-pink" id="ow-btn" onclick="submitOwnerNote(${catId})"><i class="ti ti-send"></i> Gönder</button>
-    </div>`:`<div class="al al-info" style="margin-top:1.5rem"><i class="ti ti-info-circle" style="flex-shrink:0"></i>Not eklemek için size özel linkten giriş yapmanız gerekiyor.</div>`}
-  </div>`);
-}
-
-function ownerAdminCard(n,isLatest){
-  return`<div class="card card-sm" style="${isLatest?'border:2px solid var(--purple)':'border-left:4px solid var(--purple-l)'}">
-    ${isLatest?`<div style="font-size:12px;font-weight:700;color:var(--purple-d);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">⭐ Son güncelleme · ${esc(n.date||'')} ${esc(n.time||'')}</div>`:`<div class="note-time" style="margin-bottom:8px">${esc(n.date||'')} · ${esc(n.time||'')}</div>`}
-    ${n.checks?`<div class="tags">
-      ${n.checks.mama?'<span class="b b-gr">🍽 mama yedi</span>':''}
-      ${n.checks.su?'<span class="b b-gr">💧 su içti</span>':''}
-      ${n.checks.tuvalet?'<span class="b b-gr">✨ tuvalet ok</span>':''}
-      ${n.checks.oyun?'<span class="b b-gr">🎾 oynadı</span>':''}
-      ${n.checks.ilac?'<span class="b b-am">💊 ilaç aldı</span>':''}
-      ${n.checks.tarama?'<span class="b b-te">✂️ tımar</span>':''}
-      ${n.checks.malt?'<span class="b b-pk">🍬 malt yedi</span>':''}
-    </div>`:''}
-    ${n.mood||n.appetite?`<div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-      ${n.mood?`<span class="b b-pu">${esc(n.mood)}</span>`:''}
-      ${n.appetite?`<span class="b b-am">${esc(n.appetite)}</span>`:''}
-    </div>`:''}
-    ${n.extra?`<div style="font-size:14px;line-height:1.6">${esc(n.extra)}</div>`:''}
-    ${n.photo?`<img src="${n.photo}" class="note-photo">`:''}
-  </div>`;
-}
-
-function ownerNoteCard(n){
-  return`<div class="card card-sm" style="border-left:4px solid var(--pink)">
-    <div class="note-time" style="margin-bottom:6px">${esc(n.date||'')} · ${esc(n.time||'')}</div>
-    ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
-    ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
-  </div>`;
-}
-
-async function submitOwnerNote(catId){
-  const name=(document.getElementById('ow-name').value||'').trim();
-  const text=(document.getElementById('ow-note').value||'').trim();
-  if(!text){alert('Lütfen bir not yazın.');return;}
-  const btn=document.getElementById('ow-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Gönderiliyor...';
- 
-  if(name) localStorage.setItem('ow_name',name);
-
-  if(!DATA.notes[catId]){
-    const strKey=String(catId);
-    if(DATA.notes[strKey]){
-      DATA.notes[catId]=DATA.notes[strKey];
-      delete DATA.notes[strKey];
-    } else {
-      DATA.notes[catId]=[];
+    function baseUrl(){
+      return location.origin + location.pathname;
     }
-  }
 
-  DATA.notes[catId].unshift({
-    date:new Date().toLocaleDateString('tr-TR'),
-    time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),
-    extra:text,
-    from:'owner',
-    ownerName:name
-  });
+    function ownerLink(token){
+      return `${baseUrl()}?owner=${encodeURIComponent(token)}`;
+    }
 
-  try{
-    await save();
-    toast('Notunuz gönderildi ✓');
-    renderOwner(String(catId));
-  }catch(e){
-    toast('Not gönderilemedi.',3000);
-    btn.disabled=false;
-    btn.innerHTML='<i class="ti ti-send"></i> Gönder';
-  }
-}
+    function setBusy(flag){
+      state.loading = flag;
+      $$('[data-busy]').forEach(btn => btn.disabled = flag);
+    }
 
-init();
-</script>
+    function initClient(){
+      if(!CONFIG.supabaseUrl || !CONFIG.supabaseAnonKey){
+        renderMissingConfig();
+        return false;
+      }
+      db = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
+      return true;
+    }
+
+    async function boot(){
+      if(!initClient()) return;
+      if(state.ownerToken){
+        await loadOwnerPortal();
+        return;
+      }
+      const result = await db.auth.getSession();
+      session = result.data.session;
+      db.auth.onAuthStateChange(async (_event, currentSession) => {
+        session = currentSession;
+        if(!state.ownerToken){
+          if(session){
+            await loadAdminData();
+            renderAdmin();
+          } else {
+            renderAuth();
+          }
+        }
+      });
+      if(session){
+        await loadAdminData();
+        renderAdmin();
+      } else {
+        renderAuth();
+      }
+    }
+
+    function renderMissingConfig(){
+      app.innerHTML = `
+        <main class="auth-wrap">
+          <section class="auth-card">
+            <div class="eyebrow"><i class="ti ti-settings"></i> Kurulum gerekli</div>
+            <h1 style="font-size:34px">Site hazır, Supabase bilgisi bekliyor.</h1>
+            <p class="muted">Repo içindeki <strong>config.js</strong> dosyasına Supabase Project URL ve anon public key girildiğinde site çalışır.</p>
+            <div class="notice info">
+              Veriler tarayıcıda değil, veritabanında tutulacak. Sahip notları özel owner linkinden gönderilecek; admin şifresi URL'ye taşınmayacak.
+            </div>
+          </section>
+        </main>
+      `;
+    }
+
+    function renderAuth(){
+      app.innerHTML = `
+        <main class="auth-wrap">
+          <section class="auth-card">
+            <div class="eyebrow"><i class="ti ti-paw"></i> Kedi Konaklama Yönetimi</div>
+            <h1 style="font-size:34px">Admin paneli</h1>
+            <p class="muted">Kedileri, günlük notları ve sahip mesajlarını buradan yönetin.</p>
+            <div class="auth-tabs">
+              <button class="btn ${state.authMode === "login" ? "primary" : "soft"}" data-auth-mode="login">Giriş</button>
+              <button class="btn ${state.authMode === "signup" ? "primary" : "soft"}" data-auth-mode="signup">Hesap oluştur</button>
+            </div>
+            <form id="auth-form">
+              <div class="field">
+                <label>E-posta</label>
+                <input id="auth-email" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <label>Şifre</label>
+                <input id="auth-password" type="password" minlength="6" autocomplete="${state.authMode === "signup" ? "new-password" : "current-password"}" required>
+              </div>
+              <div class="btn-row">
+                <button class="btn primary" data-busy type="submit">
+                  <i class="ti ti-lock"></i> ${state.authMode === "signup" ? "Hesap oluştur" : "Giriş yap"}
+                </button>
+              </div>
+            </form>
+            <div class="notice info" style="margin-top:16px">
+              İlk kurulumda hesap oluşturduktan sonra aynı e-posta ile giriş yapın. Supabase projenizde e-posta doğrulaması açıksa doğrulama postası gerekebilir.
+            </div>
+          </section>
+        </main>
+      `;
+      bindAuth();
+    }
+
+    function bindAuth(){
+      $$('[data-auth-mode]').forEach(btn => {
+        btn.onclick = () => {
+          state.authMode = btn.dataset.authMode;
+          renderAuth();
+        };
+      });
+      $('#auth-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const email = $('#auth-email').value.trim();
+        const password = $('#auth-password').value;
+        setBusy(true);
+        try{
+          const result = state.authMode === "signup"
+            ? await db.auth.signUp({ email, password })
+            : await db.auth.signInWithPassword({ email, password });
+          if(result.error) throw result.error;
+          toast(state.authMode === "signup" ? "Hesap oluşturuldu." : "Giriş yapıldı.");
+          if(state.authMode === "signup" && !result.data.session){
+            toast("E-posta doğrulaması bekleniyor.", "info");
+          }
+        }catch(err){
+          toast(err.message || "Kimlik doğrulama başarısız.", "error");
+        }finally{
+          setBusy(false);
+        }
+      };
+    }
+
+    async function loadAdminData(){
+      if(!uid()) return;
+      setBusy(true);
+      try{
+        const [catsRes, notesRes, ownerRes, itemsRes] = await Promise.all([
+          db.from("cats").select("*").order("created_at", {ascending:false}),
+          db.from("daily_notes").select("*").order("created_at", {ascending:false}),
+          db.from("owner_notes").select("*").order("created_at", {ascending:false}),
+          db.from("packing_items").select("*").order("created_at", {ascending:true})
+        ]);
+        [catsRes, notesRes, ownerRes, itemsRes].forEach(r => { if(r.error) throw r.error; });
+        state.cats = catsRes.data || [];
+        state.notes = notesRes.data || [];
+        state.ownerNotes = ownerRes.data || [];
+        state.items = itemsRes.data || [];
+        if(!state.selectedNoteCatId && state.cats[0]) state.selectedNoteCatId = state.cats[0].id;
+      }catch(err){
+        toast(err.message || "Veriler yüklenemedi.", "error");
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    function renderAdmin(){
+      const catsCount = state.cats.length;
+      const ownerUnread = state.ownerNotes.length;
+      const notesCount = state.notes.length;
+      app.innerHTML = `
+        <div class="shell">
+          <section class="hero">
+            <div class="hero-card">
+              <div class="eyebrow"><i class="ti ti-paw"></i> Kedi Konaklama</div>
+              <h1>Takip paneli</h1>
+              <p>Kediler, günlük bakım notları, sahip mesajları ve paylaşılabilir sahip linkleri tek panelde tutulur.</p>
+              <div class="btn-row">
+                <button class="btn primary" data-nav="cats"><i class="ti ti-plus"></i> Kedi ekle</button>
+                <button class="btn pink" data-nav="notes"><i class="ti ti-notes"></i> Günlük not gir</button>
+              </div>
+            </div>
+            <div class="status-card">
+              <div class="status-grid">
+                <div class="metric"><strong>${catsCount}</strong><span>aktif kedi</span></div>
+                <div class="metric"><strong>${notesCount}</strong><span>günlük not</span></div>
+                <div class="metric"><strong>${ownerUnread}</strong><span>sahip notu</span></div>
+                <div class="metric"><strong>${state.items.length}</strong><span>eşya maddesi</span></div>
+              </div>
+              <div class="notice ok">Kayıtlar Supabase üzerinde saklanır; tarayıcı temizliği verileri silmez.</div>
+            </div>
+          </section>
+          <section class="layout">
+            <aside class="sidebar">
+              <div class="brand">
+                <div class="brand-badge">🐾</div>
+                <div><strong>Yönetim</strong><div class="small-muted">${esc(session?.user?.email || "")}</div></div>
+              </div>
+              <nav class="nav">
+                ${navButton("cats","ti-paw","Kediler")}
+                ${navButton("notes","ti-notes","Günlük not")}
+                ${navButton("owners","ti-message-circle","Sahip notları")}
+                ${navButton("items","ti-backpack","Eşya listesi")}
+              </nav>
+              <div class="sidebar-foot">
+                <button class="ghost" id="refresh-admin"><i class="ti ti-refresh"></i> Yenile</button>
+                <button class="ghost" id="logout"><i class="ti ti-logout"></i> Çıkış</button>
+              </div>
+            </aside>
+            <main class="content">
+              ${state.tab === "cats" ? catsPanel() : ""}
+              ${state.tab === "notes" ? notesPanel() : ""}
+              ${state.tab === "owners" ? ownerNotesPanel() : ""}
+              ${state.tab === "items" ? itemsPanel() : ""}
+            </main>
+          </section>
+        </div>
+      `;
+      bindAdmin();
+    }
+
+    function navButton(id, icon, label){
+      return `<button class="${state.tab === id ? "active" : ""}" data-nav="${id}"><i class="ti ${icon}"></i> ${label}</button>`;
+    }
+
+    function catsPanel(){
+      const editing = state.cats.find(c => c.id === state.editingCatId) || null;
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>${editing ? "Kedi düzenle" : "Yeni kedi"}</h2>
+              <p class="muted">Kedi bilgileri ve sahibi için paylaşılacak özel link burada hazırlanır.</p>
+            </div>
+            ${editing ? `<button class="btn soft" id="cancel-cat-edit"><i class="ti ti-x"></i> Düzenlemeyi bırak</button>` : ""}
+          </div>
+          <form id="cat-form">
+            <div class="grid-2">
+              ${input("cat-name","Kedi adı *", editing?.name || "", "text", true)}
+              ${input("cat-breed","Cins", editing?.breed || "")}
+              ${input("cat-age","Yaş", editing?.age || "")}
+              ${input("cat-owner-name","Sahibi", editing?.owner_name || "")}
+              ${input("cat-owner-phone","Sahibinin telefonu", editing?.owner_phone || "")}
+              ${input("cat-photo-url","Fotoğraf URL", editing?.photo_url || "")}
+              ${input("cat-checkin","Giriş tarihi", editing?.checkin_date || "", "date")}
+              ${input("cat-checkout","Çıkış tarihi", editing?.checkout_date || "", "date")}
+            </div>
+            <div class="grid-2">
+              ${input("cat-diet","Beslenme", editing?.diet || "")}
+              ${input("cat-supplement","Takviye", editing?.supplement || "")}
+            </div>
+            ${textarea("cat-food","Mama detayı", editing?.food || "")}
+            ${textarea("cat-health","Sağlık / dikkat", editing?.health || "")}
+            ${textarea("cat-character","Karakter", editing?.character || "")}
+            ${textarea("cat-private-note","Sadece admin notu", editing?.private_note || "")}
+            ${textarea("cat-owner-items","Sahibin getirecekleri", editing?.owner_items || "")}
+            <div class="btn-row">
+              <button class="btn teal" data-busy type="submit"><i class="ti ti-device-floppy"></i> ${editing ? "Kaydet" : "Kedi oluştur"}</button>
+            </div>
+          </form>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Kedi listesi</h2>
+              <p class="muted">Sahip linkini buradan kopyalayabilirsiniz.</p>
+            </div>
+          </div>
+          <div class="list">
+            ${state.cats.length ? state.cats.map(catCard).join("") : `<div class="empty">Henüz kedi kaydı yok.</div>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function catCard(cat){
+      const noteCount = state.notes.filter(n => n.cat_id === cat.id).length;
+      const ownerCount = state.ownerNotes.filter(n => n.cat_id === cat.id).length;
+      const link = ownerLink(cat.public_token);
+      return `
+        <article class="card">
+          <div class="cat-card-main">
+            <div class="cat-avatar">${cat.photo_url ? `<img src="${esc(cat.photo_url)}" alt="">` : "🐱"}</div>
+            <div style="flex:1">
+              <div class="card-top">
+                <div>
+                  <div class="title-line">
+                    <h3 style="margin:0">${esc(cat.name)}</h3>
+                    ${cat.breed ? `<span class="badge">${esc(cat.breed)}</span>` : ""}
+                    ${cat.owner_name ? `<span class="badge pink">${esc(cat.owner_name)}</span>` : ""}
+                  </div>
+                  <div class="meta">
+                    ${cat.checkin_date ? `Giriş: ${fmtDate(cat.checkin_date)}` : "Giriş tarihi yok"}
+                    ${cat.checkout_date ? ` · Çıkış: ${fmtDate(cat.checkout_date)}` : ""}
+                    ${cat.owner_phone ? ` · ${esc(cat.owner_phone)}` : ""}
+                  </div>
+                </div>
+                <div class="btn-row">
+                  <button class="btn small soft" data-edit-cat="${cat.id}"><i class="ti ti-pencil"></i> Düzenle</button>
+                  <button class="btn small danger" data-delete-cat="${cat.id}"><i class="ti ti-trash"></i> Sil</button>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="grid-3">
+                <div class="metric"><strong>${noteCount}</strong><span>günlük not</span></div>
+                <div class="metric"><strong>${ownerCount}</strong><span>sahip notu</span></div>
+                <div class="metric"><strong>${cat.age ? esc(cat.age) : "—"}</strong><span>yaş</span></div>
+              </div>
+              <div class="divider"></div>
+              <div class="field" style="margin-bottom:0">
+                <label>Sahip linki</label>
+                <div class="inline-copy">
+                  <input class="link-input" readonly value="${esc(link)}">
+                  <button class="btn small primary" data-copy-link="${esc(link)}"><i class="ti ti-copy"></i> Kopyala</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function notesPanel(){
+      const selected = state.cats.find(c => c.id === state.selectedNoteCatId) || null;
+      const editing = state.notes.find(n => n.id === state.editingNoteId) || null;
+      const notes = state.selectedNoteCatId
+        ? state.notes.filter(n => n.cat_id === state.selectedNoteCatId)
+        : state.notes;
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>${editing ? "Günlük not düzenle" : "Günlük bakım notu"}</h2>
+              <p class="muted">Notlar tarih, ruh hali, iştah ve bakım işaretleriyle birlikte kaydedilir.</p>
+            </div>
+            ${editing ? `<button class="btn soft" id="cancel-note-edit"><i class="ti ti-x"></i> Düzenlemeyi bırak</button>` : ""}
+          </div>
+          <form id="note-form">
+            <div class="grid-2">
+              <div class="field">
+                <label>Kedi *</label>
+                <select id="note-cat" required>
+                  <option value="">Seçin</option>
+                  ${state.cats.map(c => `<option value="${c.id}" ${selected?.id === c.id ? "selected" : ""}>${esc(c.name)}${c.owner_name ? ` — ${esc(c.owner_name)}` : ""}</option>`).join("")}
+                </select>
+              </div>
+              ${input("note-date","Tarih", editing?.note_date || today(), "date", true)}
+              ${input("note-mood","Ruh hali", editing?.mood || "")}
+              ${input("note-appetite","İştah", editing?.appetite || "")}
+              ${input("note-photo-url","Fotoğraf URL", editing?.photo_url || "")}
+            </div>
+            <div class="field">
+              <label>Günlük kontroller</label>
+              <div class="check-grid">
+                ${FLAGS.map(([key, label]) => {
+                  const checked = !!editing?.flags?.[key];
+                  return `<label class="check ${checked ? "checked" : ""}"><input type="checkbox" data-flag="${key}" ${checked ? "checked" : ""}> ${label}</label>`;
+                }).join("")}
+              </div>
+            </div>
+            ${textarea("note-body","Detaylı not", editing?.body || "")}
+            <div class="btn-row">
+              <button class="btn pink" data-busy type="submit"><i class="ti ti-device-floppy"></i> ${editing ? "Notu güncelle" : "Notu kaydet"}</button>
+            </div>
+          </form>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Not arşivi</h2>
+              <p class="muted">${selected ? `${esc(selected.name)} için kayıtlar` : "Tüm kediler"}</p>
+            </div>
+          </div>
+          <div class="list">
+            ${notes.length ? notes.map(noteCard).join("") : `<div class="empty">Henüz günlük not yok.</div>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function noteCard(note){
+      const cat = state.cats.find(c => c.id === note.cat_id);
+      const activeFlags = FLAGS.filter(([key]) => note.flags?.[key]);
+      return `
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <div class="title-line">
+                <h3 style="margin:0">${esc(cat?.name || "Kedi")}</h3>
+                <span class="badge blue">${fmtDate(note.note_date)}</span>
+                ${note.mood ? `<span class="badge">${esc(note.mood)}</span>` : ""}
+                ${note.appetite ? `<span class="badge amber">${esc(note.appetite)}</span>` : ""}
+              </div>
+              <div class="meta">Kaydedildi: ${fmtDateTime(note.created_at)}</div>
+            </div>
+            <div class="btn-row">
+              <button class="btn small soft" data-edit-note="${note.id}"><i class="ti ti-pencil"></i> Düzenle</button>
+              <button class="btn small danger" data-delete-note="${note.id}"><i class="ti ti-trash"></i> Sil</button>
+            </div>
+          </div>
+          ${activeFlags.length ? `<div class="divider"></div><div class="btn-row">${activeFlags.map(([,label]) => `<span class="badge green">${esc(label)}</span>`).join("")}</div>` : ""}
+          ${note.body ? `<div class="divider"></div><div class="note-text">${esc(note.body)}</div>` : ""}
+          ${note.photo_url ? `<div class="divider"></div><a class="btn small soft" href="${esc(note.photo_url)}" target="_blank" rel="noreferrer"><i class="ti ti-photo"></i> Fotoğrafı aç</a>` : ""}
+        </article>
+      `;
+    }
+
+    function ownerNotesPanel(){
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Sahip notları</h2>
+              <p class="muted">Sahiplerin özel linkten gönderdiği mesajlar burada görünür.</p>
+            </div>
+          </div>
+          <div class="list">
+            ${state.ownerNotes.length ? state.ownerNotes.map(ownerNoteCard).join("") : `<div class="empty">Henüz sahip notu yok.</div>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function ownerNoteCard(note){
+      const cat = state.cats.find(c => c.id === note.cat_id);
+      return `
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <div class="title-line">
+                <h3 style="margin:0">${esc(note.owner_name || "Sahip")}</h3>
+                <span class="badge pink">${esc(cat?.name || "Kedi")}</span>
+              </div>
+              <div class="meta">${fmtDateTime(note.created_at)}</div>
+            </div>
+            <button class="btn small danger" data-delete-owner-note="${note.id}"><i class="ti ti-trash"></i> Sil</button>
+          </div>
+          <div class="divider"></div>
+          <div class="note-text">${esc(note.message)}</div>
+        </article>
+      `;
+    }
+
+    function itemsPanel(){
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Eşya listesi</h2>
+              <p class="muted">Bu maddeler sahip sayfasında görünür.</p>
+            </div>
+          </div>
+          <form id="item-form" class="grid-2">
+            ${input("item-label","Yeni madde", "", "text", true)}
+            <div class="field" style="align-self:end">
+              <button class="btn primary" data-busy type="submit"><i class="ti ti-plus"></i> Ekle</button>
+            </div>
+          </form>
+          <div class="divider"></div>
+          <div class="list">
+            ${state.items.length ? state.items.map(itemCard).join("") : `<div class="empty">Henüz eşya maddesi yok.</div>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function itemCard(item){
+      return `
+        <article class="card">
+          <div class="card-top">
+            <div class="title-line">
+              <span class="badge amber"><i class="ti ti-backpack"></i> Gerekli</span>
+              <h3 style="margin:0">${esc(item.label)}</h3>
+            </div>
+            <button class="btn small danger" data-delete-item="${item.id}"><i class="ti ti-trash"></i> Sil</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function input(id, label, value="", type="text", required=false){
+      return `<div class="field"><label for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(value)}" ${required ? "required" : ""}></div>`;
+    }
+
+    function textarea(id, label, value=""){
+      return `<div class="field"><label for="${id}">${label}</label><textarea id="${id}">${esc(value)}</textarea></div>`;
+    }
+
+    function bindAdmin(){
+      $$('[data-nav]').forEach(btn => btn.onclick = () => {
+        state.tab = btn.dataset.nav;
+        renderAdmin();
+      });
+      $('#logout').onclick = async () => {
+        await db.auth.signOut();
+        toast("Çıkış yapıldı.");
+      };
+      $('#refresh-admin').onclick = async () => {
+        await loadAdminData();
+        renderAdmin();
+        toast("Veriler yenilendi.");
+      };
+      bindCatPanel();
+      bindNotesPanel();
+      bindOwnerNotesPanel();
+      bindItemsPanel();
+    }
+
+    function bindCatPanel(){
+      const form = $('#cat-form');
+      if(form){
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          const payload = {
+            user_id: uid(),
+            name: $('#cat-name').value.trim(),
+            breed: $('#cat-breed').value.trim() || null,
+            age: $('#cat-age').value.trim() || null,
+            owner_name: $('#cat-owner-name').value.trim() || null,
+            owner_phone: $('#cat-owner-phone').value.trim() || null,
+            photo_url: $('#cat-photo-url').value.trim() || null,
+            checkin_date: $('#cat-checkin').value || null,
+            checkout_date: $('#cat-checkout').value || null,
+            diet: $('#cat-diet').value.trim() || null,
+            supplement: $('#cat-supplement').value.trim() || null,
+            food: $('#cat-food').value.trim() || null,
+            health: $('#cat-health').value.trim() || null,
+            character: $('#cat-character').value.trim() || null,
+            private_note: $('#cat-private-note').value.trim() || null,
+            owner_items: $('#cat-owner-items').value.trim() || null,
+            updated_at: new Date().toISOString()
+          };
+          setBusy(true);
+          try{
+            const res = state.editingCatId
+              ? await db.from("cats").update(payload).eq("id", state.editingCatId).select().single()
+              : await db.from("cats").insert(payload).select().single();
+            if(res.error) throw res.error;
+            state.editingCatId = null;
+            await loadAdminData();
+            renderAdmin();
+            toast("Kedi kaydedildi.");
+          }catch(err){
+            toast(err.message || "Kedi kaydedilemedi.", "error");
+          }finally{
+            setBusy(false);
+          }
+        };
+      }
+      $$('[data-edit-cat]').forEach(btn => btn.onclick = () => {
+        state.editingCatId = btn.dataset.editCat;
+        state.tab = "cats";
+        renderAdmin();
+        window.scrollTo({top:0, behavior:"smooth"});
+      });
+      $$('[data-delete-cat]').forEach(btn => btn.onclick = async () => {
+        if(!confirm("Bu kedi kaydı ve ilişkili kayıtlar silinsin mi?")) return;
+        setBusy(true);
+        try{
+          const res = await db.from("cats").delete().eq("id", btn.dataset.deleteCat);
+          if(res.error) throw res.error;
+          await loadAdminData();
+          renderAdmin();
+          toast("Kedi silindi.");
+        }catch(err){
+          toast(err.message || "Kedi silinemedi.", "error");
+        }finally{
+          setBusy(false);
+        }
+      });
+      $$('[data-copy-link]').forEach(btn => btn.onclick = async () => {
+        try{
+          await navigator.clipboard.writeText(btn.dataset.copyLink);
+          toast("Sahip linki kopyalandı.");
+        }catch{
+          toast("Link kopyalanamadı.", "error");
+        }
+      });
+      $('#cancel-cat-edit')?.addEventListener("click", () => {
+        state.editingCatId = null;
+        renderAdmin();
+      });
+    }
+
+    function bindNotesPanel(){
+      $('#note-cat')?.addEventListener("change", async (e) => {
+        state.selectedNoteCatId = e.target.value;
+        renderAdmin();
+      });
+      $$('.check input').forEach(input => input.addEventListener("change", () => {
+        input.closest(".check")?.classList.toggle("checked", input.checked);
+      }));
+      const form = $('#note-form');
+      if(form){
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          const flags = {};
+          $$('[data-flag]').forEach(input => flags[input.dataset.flag] = input.checked);
+          const payload = {
+            user_id: uid(),
+            cat_id: $('#note-cat').value,
+            note_date: $('#note-date').value || today(),
+            mood: $('#note-mood').value.trim() || null,
+            appetite: $('#note-appetite').value.trim() || null,
+            photo_url: $('#note-photo-url').value.trim() || null,
+            body: $('#note-body').value.trim() || null,
+            flags
+          };
+          if(!payload.cat_id){
+            toast("Kedi seçin.", "error");
+            return;
+          }
+          setBusy(true);
+          try{
+            const res = state.editingNoteId
+              ? await db.from("daily_notes").update(payload).eq("id", state.editingNoteId).select().single()
+              : await db.from("daily_notes").insert(payload).select().single();
+            if(res.error) throw res.error;
+            state.editingNoteId = null;
+            state.selectedNoteCatId = payload.cat_id;
+            await loadAdminData();
+            renderAdmin();
+            toast("Günlük not kaydedildi.");
+          }catch(err){
+            toast(err.message || "Not kaydedilemedi.", "error");
+          }finally{
+            setBusy(false);
+          }
+        };
+      }
+      $$('[data-edit-note]').forEach(btn => btn.onclick = () => {
+        const note = state.notes.find(n => n.id === btn.dataset.editNote);
+        if(!note) return;
+        state.editingNoteId = note.id;
+        state.selectedNoteCatId = note.cat_id;
+        state.tab = "notes";
+        renderAdmin();
+        window.scrollTo({top:0, behavior:"smooth"});
+      });
+      $$('[data-delete-note]').forEach(btn => btn.onclick = async () => {
+        if(!confirm("Bu günlük not silinsin mi?")) return;
+        setBusy(true);
+        try{
+          const res = await db.from("daily_notes").delete().eq("id", btn.dataset.deleteNote);
+          if(res.error) throw res.error;
+          await loadAdminData();
+          renderAdmin();
+          toast("Not silindi.");
+        }catch(err){
+          toast(err.message || "Not silinemedi.", "error");
+        }finally{
+          setBusy(false);
+        }
+      });
+      $('#cancel-note-edit')?.addEventListener("click", () => {
+        state.editingNoteId = null;
+        renderAdmin();
+      });
+    }
+
+    function bindOwnerNotesPanel(){
+      $$('[data-delete-owner-note]').forEach(btn => btn.onclick = async () => {
+        if(!confirm("Bu sahip notu silinsin mi?")) return;
+        setBusy(true);
+        try{
+          const res = await db.from("owner_notes").delete().eq("id", btn.dataset.deleteOwnerNote);
+          if(res.error) throw res.error;
+          await loadAdminData();
+          renderAdmin();
+          toast("Sahip notu silindi.");
+        }catch(err){
+          toast(err.message || "Sahip notu silinemedi.", "error");
+        }finally{
+          setBusy(false);
+        }
+      });
+    }
+
+    function bindItemsPanel(){
+      const form = $('#item-form');
+      if(form){
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          const label = $('#item-label').value.trim();
+          if(!label) return;
+          setBusy(true);
+          try{
+            const res = await db.from("packing_items").insert({ user_id: uid(), label }).select().single();
+            if(res.error) throw res.error;
+            await loadAdminData();
+            renderAdmin();
+            toast("Eşya maddesi eklendi.");
+          }catch(err){
+            toast(err.message || "Madde eklenemedi.", "error");
+          }finally{
+            setBusy(false);
+          }
+        };
+      }
+      $$('[data-delete-item]').forEach(btn => btn.onclick = async () => {
+        if(!confirm("Bu eşya maddesi silinsin mi?")) return;
+        setBusy(true);
+        try{
+          const res = await db.from("packing_items").delete().eq("id", btn.dataset.deleteItem);
+          if(res.error) throw res.error;
+          await loadAdminData();
+          renderAdmin();
+          toast("Madde silindi.");
+        }catch(err){
+          toast(err.message || "Madde silinemedi.", "error");
+        }finally{
+          setBusy(false);
+        }
+      });
+    }
+
+    async function loadOwnerPortal(){
+      if(!initClient()) return;
+      app.innerHTML = `
+        <main class="owner-wrap">
+          <section class="owner-hero">
+            <div class="eyebrow" style="background:rgba(255,255,255,.18);color:white"><i class="ti ti-heart"></i> Sahip görünümü</div>
+            <h1 style="font-size:38px;margin-bottom:8px">Yükleniyor...</h1>
+            <p>Bilgiler hazırlanıyor.</p>
+          </section>
+        </main>
+      `;
+      try{
+        const res = await db.rpc("owner_portal", { p_token: state.ownerToken });
+        if(res.error) throw res.error;
+        if(!res.data) throw new Error("Link geçersiz veya kayıt bulunamadı.");
+        state.ownerPayload = res.data;
+        renderOwnerPortal();
+      }catch(err){
+        renderOwnerError(err.message || "Sahip görünümü açılamadı.");
+      }
+    }
+
+    function renderOwnerError(message){
+      app.innerHTML = `
+        <main class="owner-wrap">
+          <section class="owner-card">
+            <div class="eyebrow"><i class="ti ti-alert-triangle"></i> Link sorunu</div>
+            <h1 style="font-size:34px">Sayfa açılamadı.</h1>
+            <p class="muted">${esc(message)}</p>
+          </section>
+        </main>
+      `;
+    }
+
+    function renderOwnerPortal(){
+      const payload = state.ownerPayload || {};
+      const cat = payload.cat || {};
+      const notes = payload.daily_notes || [];
+      const ownerNotes = payload.owner_notes || [];
+      const items = payload.packing_items || [];
+      app.innerHTML = `
+        <main class="owner-wrap">
+          <section class="owner-hero">
+            <div class="eyebrow" style="background:rgba(255,255,255,.18);color:white"><i class="ti ti-paw"></i> Kedi konaklama günlüğü</div>
+            <h1 style="font-size:42px;margin:14px 0 8px">${esc(cat.name || "Kedi")}</h1>
+            <p>${cat.breed ? esc(cat.breed) : "Konaklama takibi"} ${cat.owner_name ? ` · ${esc(cat.owner_name)}` : ""}</p>
+          </section>
+          <section class="owner-grid">
+            <article class="owner-card">
+              <h2>Bilgiler</h2>
+              <div class="kv">
+                <div><span>Giriş</span><strong>${fmtDate(cat.checkin_date)}</strong></div>
+                <div><span>Çıkış</span><strong>${fmtDate(cat.checkout_date)}</strong></div>
+                <div><span>Beslenme</span><strong>${esc(cat.diet || "—")}</strong></div>
+                <div><span>Mama detayı</span><strong>${esc(cat.food || "—")}</strong></div>
+                <div><span>Takviye</span><strong>${esc(cat.supplement || "—")}</strong></div>
+                <div><span>Sağlık</span><strong>${esc(cat.health || "—")}</strong></div>
+                <div><span>Karakter</span><strong>${esc(cat.character || "—")}</strong></div>
+              </div>
+            </article>
+            <article class="owner-card">
+              <h2>Getirilecekler</h2>
+              ${items.length ? `<div class="list">${items.map(i => `<div class="card"><strong>${esc(i.label)}</strong></div>`).join("")}</div>` : `<div class="empty">Ek eşya listesi yok.</div>`}
+              ${cat.owner_items ? `<div class="divider"></div><div class="notice info">${esc(cat.owner_items)}</div>` : ""}
+            </article>
+          </section>
+          <section class="owner-card" style="margin-top:18px">
+            <h2>Bakıcı güncellemeleri</h2>
+            <div class="list">
+              ${notes.length ? notes.map(ownerDailyNoteCard).join("") : `<div class="empty">Henüz günlük not eklenmedi.</div>`}
+            </div>
+          </section>
+          <section class="owner-grid" style="margin-top:18px">
+            <article class="owner-card">
+              <h2>Not gönder</h2>
+              <form id="owner-message-form">
+                ${input("owner-name","Adınız", "")}
+                ${textarea("owner-message","Mesajınız", "")}
+                <div class="btn-row">
+                  <button class="btn pink" data-busy type="submit"><i class="ti ti-send"></i> Gönder</button>
+                </div>
+              </form>
+            </article>
+            <article class="owner-card">
+              <h2>Gönderilen notlar</h2>
+              <div class="list">
+                ${ownerNotes.length ? ownerNotes.map(n => `<div class="card"><div class="meta">${fmtDateTime(n.created_at)} · ${esc(n.owner_name || "Sahip")}</div><div class="divider"></div><div class="note-text">${esc(n.message)}</div></div>`).join("") : `<div class="empty">Henüz not gönderilmedi.</div>`}
+              </div>
+            </article>
+          </section>
+        </main>
+      `;
+      bindOwnerPortal();
+    }
+
+    function ownerDailyNoteCard(note){
+      const activeFlags = FLAGS.filter(([key]) => note.flags?.[key]);
+      return `
+        <article class="card">
+          <div class="title-line">
+            <h3 style="margin:0">${fmtDate(note.note_date)}</h3>
+            ${note.mood ? `<span class="badge">${esc(note.mood)}</span>` : ""}
+            ${note.appetite ? `<span class="badge amber">${esc(note.appetite)}</span>` : ""}
+          </div>
+          ${activeFlags.length ? `<div class="divider"></div><div class="btn-row">${activeFlags.map(([,label]) => `<span class="badge green">${esc(label)}</span>`).join("")}</div>` : ""}
+          ${note.body ? `<div class="divider"></div><div class="note-text">${esc(note.body)}</div>` : ""}
+          ${note.photo_url ? `<div class="divider"></div><a class="btn small soft" href="${esc(note.photo_url)}" target="_blank" rel="noreferrer"><i class="ti ti-photo"></i> Fotoğrafı aç</a>` : ""}
+        </article>
+      `;
+    }
+
+    function bindOwnerPortal(){
+      const form = $('#owner-message-form');
+      if(!form) return;
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const p_owner_name = $('#owner-name').value.trim();
+        const p_message = $('#owner-message').value.trim();
+        if(!p_message){
+          toast("Mesaj boş olamaz.", "error");
+          return;
+        }
+        setBusy(true);
+        try{
+          const res = await db.rpc("submit_owner_note", {
+            p_token: state.ownerToken,
+            p_owner_name,
+            p_message
+          });
+          if(res.error) throw res.error;
+          toast("Notunuz gönderildi.");
+          await loadOwnerPortal();
+        }catch(err){
+          toast(err.message || "Not gönderilemedi.", "error");
+        }finally{
+          setBusy(false);
+        }
+      };
+    }
+
+    boot();
+  })();
+  </script>
 </body>
 </html>
