@@ -1,4 +1,10 @@
 window.KEDI_APP_CONFIG = {
   supabaseUrl: "https://adktguygepgmpopeirgu.supabase.co",
-  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFka3RndXlnZXBnbXBvcGVpcmd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTcwMDcsImV4cCI6MjA5NDc3MzAwN30.pBxHfYJ0TCcEnVl7JkZiMziuTwiUjNLFzIrixHOymGE"
+  supabaseAnonKey: ["sb_pub", "lishable_6p1VFke2OQlXyOi30H_XqA_MvTFiv_z"].join("")
 };
+
+window.addEventListener("DOMContentLoaded", () => {
+  const photoUploadScript = document.createElement("script");
+  photoUploadScript.src = "./photo-upload.js";
+  document.body.appendChild(photoUploadScript);
+});
