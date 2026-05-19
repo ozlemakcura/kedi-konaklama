@@ -157,10 +157,25 @@
     }, true);
   }
 
+  function keepCatSubmitUsable() {
+    const form = document.getElementById('cat-form');
+    if (!form || form.dataset.submitUsableReady) return;
+    form.dataset.submitUsableReady = '1';
+
+    const reenable = () => {
+      const submit = form.querySelector('button[type="submit"]');
+      if (submit?.disabled) submit.disabled = false;
+    };
+
+    form.addEventListener('input', reenable);
+    form.addEventListener('change', reenable);
+  }
+
   const enhance = () => {
     addControl(document.getElementById('cat-photo-url'));
     addControl(document.getElementById('note-photo-url'));
     improveCatCreateFeedback();
+    keepCatSubmitUsable();
   };
 
   const start = () => {
