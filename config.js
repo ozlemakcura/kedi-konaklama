@@ -7,4 +7,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const photoUploadScript = document.createElement("script");
   photoUploadScript.src = "./photo-upload.js";
   document.body.appendChild(photoUploadScript);
+
+  const buttonFixScript = document.createElement("script");
+  buttonFixScript.src = "./button-fix.js";
+  document.body.appendChild(buttonFixScript);
 });
