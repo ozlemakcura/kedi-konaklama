@@ -226,15 +226,25 @@ function renderSetup(errMsg=''){
     </div>
     ${errMsg?`<div class="al al-warn"><i class="ti ti-alert-circle"></i>${esc(errMsg)}</div>`:''}
     <div class="field"><label>X-Master-Key</label><input id="setup-key" type="password" placeholder="$2a$10$..." autocomplete="off"></div>
+    <div class="field"><label>Mevcut Bin ID (varsa)</label><input id="setup-bin" placeholder="Eski verileriniz için bin ID girin..." autocomplete="off">
+    <div style="font-size:12px;color:var(--muted);margin-top:4px">Boş bırakırsanız yeni bin oluşturulur</div></div>
     <button class="btn btn-primary btn-full" id="setup-btn" onclick="doSetup()"><i class="ti ti-rocket"></i> Kurulumu Tamamla</button>
   </div></div>`);
 }
 async function doSetup(){
   const key=(document.getElementById('setup-key').value||'').trim();
+  const existingBin=(document.getElementById('setup-bin').value||'').trim();
   if(!key)return renderSetup('API anahtarı boş olamaz.');
   const btn=document.getElementById('setup-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Bağlanıyor...';
-  try{const id=await createBin(key);MK=key;BIN=id;localStorage.setItem('kb_mk',MK);localStorage.setItem('kb_bin',BIN);DATA={cats:[],notes:{},items:[...DEFAULT_ITEMS]};renderAdmin();}
-  catch(e){renderSetup('Bağlantı kurulamadı. Anahtarı kontrol edin.');}
+  try{
+    let id=existingBin;
+    if(!id){id=await createBin(key);}
+    MK=key;BIN=id;
+    await loadData();
+    localStorage.setItem('kb_mk',MK);localStorage.setItem('kb_bin',BIN);
+    renderAdmin();
+  }
+  catch(e){renderSetup('Bağlantı kurulamadı. Anahtarı veya Bin ID'yi kontrol edin.');}
 }
 
 // ── ADMIN SHELL ───────────────────────────────────────────────────────
@@ -732,17 +742,4 @@ async function submitOwnerNote(catId){
   const text=(document.getElementById('ow-note').value||'').trim();
   if(!text){alert('Lütfen bir not yazın.');return;}
   const btn=document.getElementById('ow-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Gönderiliyor...';
-  if(name)localStorage.setItem('ow_name',name);
-  // Reload latest data first to avoid overwriting admin notes
-  try{await loadData();}catch(e){}
-  const note={date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),extra:text,ownerName:name,from:'owner'};
-  if(!DATA.notes[catId])DATA.notes[catId]=[];
-  DATA.notes[catId].unshift(note);
-  try{await save();await loadData();await renderOwner(new URLSearchParams(location.search).get('cat'));}
-  catch(e){toast('Gönderim başarısız.',3500);btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Gönder';}
-}
-
-init();
-</script>
-</body>
-</html>
+  if(name)
