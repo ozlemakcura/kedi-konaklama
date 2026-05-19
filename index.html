@@ -535,6 +535,13 @@ async function saveNote(){
     DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),from:'admin',checks,photo:notePhoto});
   }
   currentNotesCatId=catId;
+  // Reload latest data first, then apply our new note on top
+  const newNote=DATA.notes[catId]?.[0];
+  try{
+    await loadData();
+    if(!DATA.notes[catId])DATA.notes[catId]=[];
+    if(editNoteState===null&&newNote){DATA.notes[catId].unshift(newNote);}
+  }catch(e){}
   try{await save();}catch(e){toast('Kayıt hatası!',3000);btn.disabled=false;return;}
   renderAdmin('notes');
 }
