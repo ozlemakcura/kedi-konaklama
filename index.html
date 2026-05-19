@@ -742,4 +742,39 @@ async function submitOwnerNote(catId){
   const text=(document.getElementById('ow-note').value||'').trim();
   if(!text){alert('Lütfen bir not yazın.');return;}
   const btn=document.getElementById('ow-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Gönderiliyor...';
-  if(name)
+ 
+  if(name) localStorage.setItem('ow_name',name);
+
+  if(!DATA.notes[catId]){
+    const strKey=String(catId);
+    if(DATA.notes[strKey]){
+      DATA.notes[catId]=DATA.notes[strKey];
+      delete DATA.notes[strKey];
+    } else {
+      DATA.notes[catId]=[];
+    }
+  }
+
+  DATA.notes[catId].unshift({
+    date:new Date().toLocaleDateString('tr-TR'),
+    time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),
+    extra:text,
+    from:'owner',
+    ownerName:name
+  });
+
+  try{
+    await save();
+    toast('Notunuz gönderildi ✓');
+    renderOwner(String(catId));
+  }catch(e){
+    toast('Not gönderilemedi.',3000);
+    btn.disabled=false;
+    btn.innerHTML='<i class="ti ti-send"></i> Gönder';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
