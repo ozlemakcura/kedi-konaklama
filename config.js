@@ -1,4 +1,4 @@
 window.KEDI_APP_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: ""
+  supabaseUrl: "https://adktguygepgmpopeirgu.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFka3RndXlnZXBnbXBvcGVpcmd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTcwMDcsImV4cCI6MjA5NDc3MzAwN30.pBxHfYJ0TCcEnVl7JkZiMziuTwiUjNLFzIrixHOymGE"
 };
