@@ -115,8 +115,8 @@
     }
     function renderNotes(){ $('#notes-list').innerHTML = notes.length ? notes.map(noteCard).join('') : '<div class="empty">Henüz günlük not yok.</div>'; }
     function renderCats(){ $('#note-cat').innerHTML = '<option value="">Seçin</option>' + cats.map(cat=>`<option value="${cat.id}">${esc(cat.name)}${cat.owner_name?` — ${esc(cat.owner_name)}`:''}</option>`).join(''); }
-    function resetForm(){ editingId=''; $('#form-title').textContent='Yeni günlük not'; $('#save-note').innerHTML='<i class="ti ti-device-floppy"></i> Notu kaydet'; $('#cancel-edit').hidden=true; $('#note-form').reset(); $('#note-date').value=today(); applyFlags({}); }
-    function editNote(id){ const note=notes.find(n=>n.id===id); if(!note) return; editingId=id; $('#form-title').textContent='Günlük not düzenle'; $('#save-note').innerHTML='<i class="ti ti-device-floppy"></i> Notu güncelle'; $('#cancel-edit').hidden=false; $('#note-cat').value=note.cat_id || ''; $('#note-date').value=note.note_date || today(); $('#note-mood').value=note.mood || ''; $('#note-appetite').value=note.appetite || ''; $('#note-photo-url').value=note.photo_url || ''; $('#note-body').value=note.body || ''; applyFlags(note.flags || {}); window.scrollTo({top:0,behavior:'smooth'}); }
+    function resetForm(){ editingId=''; window.__editingDailyNoteId=''; $('#form-title').textContent='Yeni günlük not'; $('#save-note').innerHTML='<i class="ti ti-device-floppy"></i> Notu kaydet'; $('#cancel-edit').hidden=true; $('#note-form').reset(); $('#note-date').value=today(); applyFlags({}); }
+    function editNote(id){ const note=notes.find(n=>n.id===id); if(!note) return; editingId=id; window.__editingDailyNoteId=id; $('#form-title').textContent='Günlük not düzenle'; $('#save-note').innerHTML='<i class="ti ti-device-floppy"></i> Notu güncelle'; $('#cancel-edit').hidden=false; $('#note-cat').value=note.cat_id || ''; $('#note-date').value=note.note_date || today(); $('#note-mood').value=note.mood || ''; $('#note-appetite').value=note.appetite || ''; $('#note-photo-url').value=note.photo_url || ''; $('#note-body').value=note.body || ''; applyFlags(note.flags || {}); window.scrollTo({top:0,behavior:'smooth'}); }
 
     async function load(){
       const sessionResult = await db.auth.getSession();
@@ -172,5 +172,6 @@
 
     load();
   </script>
+  <script src="./note-fix.js"></script>
 </body>
 </html>
