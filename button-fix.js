@@ -30,6 +30,23 @@
       event.preventDefault();
       event.stopPropagation();
       location.href = './note.html';
+      return;
+    }
+
+    const catsNav = event.target.closest('[data-nav="cats"]');
+    if (catsNav) {
+      setTimeout(() => {
+        const form = document.querySelector('#cat-form');
+        const heading = form?.closest('.panel')?.querySelector('h2')?.textContent || '';
+        if (form && /Yeni kedi/i.test(heading)) {
+          const redirect = document.createElement('a');
+          redirect.href = './add-cat.html';
+          redirect.className = 'btn primary';
+          redirect.textContent = 'Yeni kedi ekleme sayfasını aç';
+          redirect.style.marginBottom = '14px';
+          form.parentElement?.insertBefore(redirect, form);
+        }
+      }, 120);
     }
   }, true);
 })();
