@@ -18,9 +18,18 @@
 
   document.addEventListener('click', (event) => {
     const editButton = event.target.closest('[data-edit-cat]');
-    if (!editButton) return;
-    event.preventDefault();
-    event.stopPropagation();
-    location.href = `./edit.html?id=${encodeURIComponent(editButton.dataset.editCat || '')}`;
+    if (editButton) {
+      event.preventDefault();
+      event.stopPropagation();
+      location.href = `./edit.html?id=${encodeURIComponent(editButton.dataset.editCat || '')}`;
+      return;
+    }
+
+    const notesButton = event.target.closest('[data-nav="notes"]');
+    if (notesButton) {
+      event.preventDefault();
+      event.stopPropagation();
+      location.href = './note.html';
+    }
   }, true);
 })();
