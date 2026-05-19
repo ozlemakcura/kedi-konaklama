@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yeni Kedi Ekle</title>
+  <style>
+    :root{--bg:#f7f4ff;--panel:#fff;--text:#20183a;--muted:#6b6480;--line:#e8defc;--purple:#6d28d9;--teal:#0f766e;--red:#be123c;--shadow:0 18px 60px rgba(44,22,92,.10)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(139,92,246,.18),transparent 32rem),radial-gradient(circle at top right,rgba(219,39,119,.15),transparent 28rem),var(--bg)}
+    .wrap{max-width:900px;margin:0 auto;padding:28px 18px 56px}.card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:22px}.head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}.muted{color:var(--muted)}h1,h2,p{margin-top:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--purple)}.field input,.field textarea{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:13px;padding:12px 13px;outline:none}.field textarea{min-height:96px;resize:vertical}.buttons{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:13px;padding:11px 14px;cursor:pointer;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.primary{background:linear-gradient(135deg,var(--teal),#14b8a6);color:#fff}.soft{background:#fff;border:1px solid var(--line);color:var(--text)}.notice{border-radius:14px;padding:14px 16px;border:1px solid var(--line);background:#eff6ff;color:#1d4ed8;line-height:1.5;margin-bottom:14px}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);padding:12px 16px;background:#20183a;color:#fff;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.18s ease;z-index:60}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:720px){.grid{grid-template-columns:1fr}.head{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <div class="head">
+        <div><h1>Yeni kedi ekle</h1><p class="muted">Bu sayfa doğrudan veritabanına kayıt yapar.</p></div>
+        <a class="btn soft" href="./">Panele dön</a>
+      </div>
+      <div id="status" class="notice">Oturum kontrol ediliyor...</div>
+      <form id="cat-form" hidden>
+        <div class="grid">
+          <div class="field"><label>Kedi adı *</label><input id="cat-name" required></div>
+          <div class="field"><label>Cins</label><input id="cat-breed"></div>
+          <div class="field"><label>Yaş</label><input id="cat-age"></div>
+          <div class="field"><label>Sahibi</label><input id="cat-owner-name"></div>
+          <div class="field"><label>Sahibinin telefonu</label><input id="cat-owner-phone"></div>
+          <div class="field"><label>Fotoğraf URL</label><input id="cat-photo-url"></div>
+          <div class="field"><label>Giriş tarihi</label><input id="cat-checkin" type="date"></div>
+          <div class="field"><label>Çıkış tarihi</label><input id="cat-checkout" type="date"></div>
+          <div class="field"><label>Beslenme</label><input id="cat-diet"></div>
+          <div class="field"><label>Takviye</label><input id="cat-supplement"></div>
+        </div>
+        <div class="field"><label>Mama detayı</label><textarea id="cat-food"></textarea></div>
+        <div class="field"><label>Sağlık / dikkat</label><textarea id="cat-health"></textarea></div>
+        <div class="field"><label>Karakter</label><textarea id="cat-character"></textarea></div>
+        <div class="field"><label>Sadece admin notu</label><textarea id="cat-private-note"></textarea></div>
+        <div class="field"><label>Sahibin getirecekleri</label><textarea id="cat-owner-items"></textarea></div>
+        <div class="buttons">
+          <button class="btn primary" id="save-cat" type="submit">Kedi ekle</button>
+          <a class="btn soft" href="./">Vazgeç</a>
+        </div>
+      </form>
+    </section>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const cfg=window.KEDI_APP_CONFIG||{};
+    const db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+    const status=document.getElementById('status');
+    const form=document.getElementById('cat-form');
+    const save=document.getElementById('save-cat');
+    const toast=(m,e=false)=>{const t=document.getElementById('toast');t.textContent=m;t.style.background=e?'#be123c':'#20183a';t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),2600)};
+    const val=id=>document.getElementById(id).value.trim();
+    async function load(){
+      const sessionResult=await db.auth.getSession();
+      const session=sessionResult.data.session;
+      if(!session){status.textContent='Giriş yapmanız gerekiyor. Ana panele dönüp tekrar giriş yapın.';return}
+      window.__catUserId=session.user.id;
+      status.textContent='Hazır.';
+      form.hidden=false;
+    }
+    form.onsubmit=async e=>{
+      e.preventDefault();
+      const name=val('cat-name');
+      if(!name){toast('Kedi adı zorunlu.',true);return}
+      save.disabled=true;
+      save.textContent='Kaydediliyor...';
+      const payload={
+        user_id:window.__catUserId,
+        name,
+        breed:val('cat-breed')||null,
+        age:val('cat-age')||null,
+        owner_name:val('cat-owner-name')||null,
+        owner_phone:val('cat-owner-phone')||null,
+        photo_url:val('cat-photo-url')||null,
+        checkin_date:document.getElementById('cat-checkin').value||null,
+        checkout_date:document.getElementById('cat-checkout').value||null,
+        diet:val('cat-diet')||null,
+        supplement:val('cat-supplement')||null,
+        food:val('cat-food')||null,
+        health:val('cat-health')||null,
+        character:val('cat-character')||null,
+        private_note:val('cat-private-note')||null,
+        owner_items:val('cat-owner-items')||null,
+        updated_at:new Date().toISOString()
+      };
+      const {error}=await db.from('cats').insert(payload).select().single();
+      save.disabled=false;
+      save.textContent='Kedi ekle';
+      if(error){toast(error.message||'Kedi eklenemedi.',true);return}
+      toast('Kedi eklendi.');
+      setTimeout(()=>location.href='./',700);
+    };
+    load();
+  </script>
+</body>
+</html>
