@@ -19,7 +19,45 @@
     return storageClient;
   };
 
-  async function upload(file, target, button, hint) {
+  const captureForm = (form) => {
+    if (!form) return null;
+    const values = {};
+    Array.from(form.elements).forEach((element) => {
+      if (!element.id || element.type === 'file') return;
+      values[element.id] = element.type === 'checkbox' ? element.checked : element.value;
+    });
+    return { id: form.id, values };
+  };
+
+  const restoreForm = (snapshot, overrideId = '', overrideValue = '') => {
+    if (!snapshot?.id) return;
+    const form = document.getElementById(snapshot.id);
+    if (!form) return;
+
+    Object.entries(snapshot.values || {}).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (!element || !form.contains(element)) return;
+      if (element.type === 'checkbox') element.checked = Boolean(value);
+      else element.value = value ?? '';
+    });
+
+    if (overrideId) {
+      const override = document.getElementById(overrideId);
+      if (override && form.contains(override)) {
+        override.value = overrideValue ?? '';
+        override.dispatchEvent(new Event('input', { bubbles: true }));
+        override.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+  };
+
+  const restoreSoon = (snapshot, overrideId = '', overrideValue = '') => {
+    [0, 120, 420].forEach((delay) => {
+      setTimeout(() => restoreForm(snapshot, overrideId, overrideValue), delay);
+    });
+  };
+
+  async function upload(file, target, button, hint, snapshot) {
     if (!file) return;
     if (!file.type.startsWith('image/')) throw new Error('Yalnızca fotoğraf yükleyin.');
     if (file.size > 10 * 1024 * 1024) throw new Error('Fotoğraf en fazla 10 MB olabilir.');
@@ -41,11 +79,15 @@
       const result = await api.storage.from(bucket).upload(name, file, { upsert: false, contentType: file.type });
       if (result.error) throw result.error;
       const publicUrl = api.storage.from(bucket).getPublicUrl(name).data.publicUrl;
-      target.value = publicUrl;
-      target.dispatchEvent(new Event('input', { bubbles: true }));
-      target.dispatchEvent(new Event('change', { bubbles: true }));
+      if (!publicUrl) throw new Error('Fotoğraf bağlantısı oluşturulamadı.');
+
+      const liveTarget = document.getElementById(target.id) || target;
+      liveTarget.value = publicUrl;
+      liveTarget.dispatchEvent(new Event('input', { bubbles: true }));
+      liveTarget.dispatchEvent(new Event('change', { bubbles: true }));
+      restoreSoon(snapshot, target.id, publicUrl);
       hint.textContent = 'Fotoğraf yüklendi. Formu kaydedin.';
-      show('Fotoğraf yüklendi.');
+      show('Fotoğraf yüklendi. Bilgiler korundu.');
     } finally {
       button.disabled = false;
       button.innerHTML = old;
@@ -78,9 +120,11 @@
 
     button.onclick = () => picker.click();
     picker.onchange = async () => {
+      const snapshot = captureForm(input.closest('form'));
       try {
-        await upload(picker.files?.[0], input, button, hint);
+        await upload(picker.files?.[0], input, button, hint, snapshot);
       } catch (e) {
+        restoreSoon(snapshot);
         hint.textContent = e.message || 'Yükleme başarısız.';
         show(e.message || 'Yükleme başarısız.', true);
       } finally {
