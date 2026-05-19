@@ -92,9 +92,31 @@
     field.appendChild(row);
   }
 
+  function improveCatCreateFeedback() {
+    const form = document.getElementById('cat-form');
+    if (!form || form.dataset.createFeedbackReady) return;
+    form.dataset.createFeedbackReady = '1';
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton?.addEventListener('click', () => {
+      const name = document.getElementById('cat-name');
+      if (!name?.value.trim()) {
+        show('Önce kedi adını girin.', true);
+        name?.focus();
+      }
+    });
+
+    form.addEventListener('invalid', (event) => {
+      if (event.target?.id === 'cat-name') {
+        show('Kedi adı zorunlu.', true);
+      }
+    }, true);
+  }
+
   const enhance = () => {
     addControl(document.getElementById('cat-photo-url'));
     addControl(document.getElementById('note-photo-url'));
+    improveCatCreateFeedback();
   };
 
   const start = () => {
