@@ -1,7 +1,8 @@
 (() => {
   setInterval(() => {
-    const button = document.querySelector('#cat-form button[type="submit"]');
-    if (button) button.removeAttribute('disabled');
+    document.querySelectorAll('#cat-form button[type="submit"], #note-form button[type="submit"], #item-form button[type="submit"]').forEach((button) => {
+      button.removeAttribute('disabled');
+    });
 
     document.querySelectorAll('input.link-input').forEach((input) => {
       if (!input.value || input.value.includes('/owner.html?')) return;
