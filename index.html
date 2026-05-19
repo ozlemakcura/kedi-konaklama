@@ -16,19 +16,14 @@
   --blue:#2563EB;--blue-l:#DBEAFE;--blue-b:#93C5FD;
   --green:#059669;--green-l:#D1FAE5;--green-b:#6EE7B7;
   --orange:#EA580C;--orange-l:#FFEDD5;--orange-b:#FDBA74;
-  --bg:#FDF8FF;--card:#FFFFFF;--border:#E9D5FF;
+  --bg:#FDF8FF;--card:#fff;--border:#E9D5FF;
   --text:#1E1B4B;--muted:#6B7280;
   --r:12px;--rl:16px;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;font-size:15px}
 .wrap{max-width:640px;margin:0 auto;padding:1.5rem 1rem 3rem}
-
-/* Cards */
 .card{background:var(--card);border-radius:var(--rl);padding:1.25rem;margin-bottom:12px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(124,58,237,.06)}
 .card-sm{padding:1rem}
-.card-colored{border-top:3px solid var(--purple)}
-
-/* Buttons */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--r);font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--text);transition:all .15s;white-space:nowrap}
 .btn:hover{background:var(--purple-l);border-color:var(--purple-b)}
 .btn-primary{background:var(--purple);color:#fff;border-color:var(--purple)}
@@ -44,8 +39,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-danger:hover{background:var(--coral-l)}
 .btn-full{width:100%;justify-content:center}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-
-/* Forms */
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;font-family:inherit;background:#fff;color:var(--text);transition:border-color .15s}
@@ -53,14 +46,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .field textarea{resize:vertical;min-height:72px;line-height:1.5}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:480px){.g2{grid-template-columns:1fr}}
-
-/* Header */
 .hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding:1rem 1.25rem;background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%);border-radius:var(--rl);color:#fff}
 .hdr h1{font-size:18px;font-weight:700;margin:0;color:#fff}
 .hdr p{font-size:13px;margin:0;color:rgba(255,255,255,.8)}
 .logo{width:42px;height:42px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-
-/* Tabs */
 .tabs{display:flex;gap:2px;background:#E9D5FF;padding:4px;border-radius:12px;margin-bottom:1.25rem}
 .tab{flex:1;padding:7px 6px;font-size:12px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--purple-d);border-radius:8px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px}
 .tab.on{background:#fff;color:var(--purple);box-shadow:0 2px 6px rgba(124,58,237,.2)}
@@ -68,14 +57,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tab-notes.on{color:var(--purple)}
 .tab-msg.on{color:var(--pink)}
 .tab-items.on{color:var(--orange)}
-
-/* Checklist */
 .checks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
 .chk{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none;font-size:13px;transition:all .15s;background:#fff}
 .chk.on{border-color:var(--purple);background:var(--purple-l);color:var(--purple-d);font-weight:500}
 .chk input{accent-color:var(--purple);flex-shrink:0}
-
-/* Badges */
 .b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 .b-gr{background:var(--green-l);color:var(--green)}
 .b-te{background:var(--teal-l);color:var(--teal)}
@@ -83,8 +68,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .b-pu{background:var(--purple-l);color:var(--purple)}
 .b-pk{background:var(--pink-l);color:var(--pink)}
 .b-or{background:var(--orange-l);color:var(--orange)}
-
-/* Cat row */
 .cat-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .cat-row:last-child{border-bottom:none;padding-bottom:0}
 .cat-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
@@ -92,61 +75,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cat-name{font-size:14px;font-weight:700;color:var(--text)}
 .cat-meta{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.6}
 .cat-acts{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
-
-/* Alerts */
 .al{padding:10px 14px;border-radius:var(--r);font-size:13px;display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
 .al-info{background:var(--blue-l);color:var(--blue);border:1.5px solid var(--blue-b)}
 .al-warn{background:var(--amber-l);color:var(--amber);border:1.5px solid var(--amber-b)}
 .al-purple{background:var(--purple-l);color:var(--purple-d);border:1.5px solid var(--purple-b)}
-
-/* Note cards */
-.note-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px}
-.note-time{font-size:12px;color:var(--muted)}
-.tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
-.note-extra{font-size:13px;color:var(--muted);line-height:1.5}
+.note-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px}
+.note-time{font-size:12px;color:var(--muted);font-weight:500}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.note-extra{font-size:13px;color:var(--text);line-height:1.6}
 .note-acts{display:flex;gap:6px;margin-top:10px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:8px}
-
-/* Owner hero */
+.note-photo{width:100%;border-radius:var(--r);margin-top:10px;max-height:280px;object-fit:cover;display:block}
 .hero{text-align:center;padding:2rem 1rem 1.5rem;background:linear-gradient(135deg,var(--purple-l) 0%,var(--pink-l) 100%);border-radius:var(--rl);margin-bottom:1rem}
-.hero-av{width:80px;height:80px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 12px;box-shadow:0 4px 16px rgba(124,58,237,.2)}
+.hero-av{width:80px;height:80px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 12px;box-shadow:0 4px 16px rgba(124,58,237,.2);overflow:hidden}
 .hero-name{font-size:26px;font-weight:700;color:var(--purple-d);margin-bottom:6px}
 .hero-sub{font-size:14px;color:var(--purple)}
-
-/* Message box */
 .msg-box{background:var(--purple-l);border-radius:var(--r);padding:1rem;font-size:13px;line-height:1.7;white-space:pre-wrap;border:1.5px solid var(--purple-b);min-height:100px;color:var(--text)}
-
-/* Group/section labels */
 .glabel{font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;padding:8px 0 4px;border-top:1.5px solid var(--purple-l);margin-top:4px}
 .glabel:first-child{border-top:none;margin-top:0;padding-top:0}
 .slabel{font-size:12px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
-
-/* Edit banner */
 .edit-banner{background:linear-gradient(135deg,var(--blue-l),var(--purple-l));border:1.5px solid var(--purple-b);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--purple-d);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:500}
-
-/* Items list */
 .item-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--orange-l);border:1.5px solid var(--orange-b);border-radius:var(--r);margin-bottom:8px}
 .item-row span{flex:1;font-size:14px;font-weight:500;color:var(--orange)}
 .item-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0}
-
-/* Setup */
+.archive-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--purple-l)}
+.archive-count{font-size:13px;color:var(--muted);font-weight:500}
 .setup-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:linear-gradient(135deg,var(--purple-l) 0%,var(--pink-l) 100%)}
 .setup-card{max-width:480px;width:100%;background:#fff;border-radius:20px;padding:2rem;border:1.5px solid var(--purple-b);box-shadow:0 8px 32px rgba(124,58,237,.12)}
 .step{display:flex;gap:10px;padding:7px 0;font-size:13px;color:var(--muted);line-height:1.5}
 .step-n{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
 .step a{color:var(--purple);font-weight:500}
-
-/* Misc */
 .empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:14px}
 .empty-i{font-size:36px;display:block;margin-bottom:8px;opacity:.3}
 .spin{animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 #toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(16px);background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(124,58,237,.3)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* Section color bars */
-.sec-teal{border-left:4px solid var(--teal);padding-left:10px;margin-bottom:10px}
-.sec-purple{border-left:4px solid var(--purple);padding-left:10px;margin-bottom:10px}
-.sec-orange{border-left:4px solid var(--orange);padding-left:10px;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -157,19 +120,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 const JBASE='https://api.jsonbin.io/v3/b';
 const EMO=['🐱','🐈','😸','🙀','😺','🐾','🐈‍⬛'];
 const DEFAULT_ITEMS=['Kendi maması','Pet pasaportu'];
+const AV_BG=['#EDE9FE','#FCE7F3','#CCFBF1','#FEF3C7','#FFEDD5','#DBEAFE','#D1FAE5'];
 let MK='',BIN='',DATA={cats:[],notes:{},items:[]};
 let TAB='cats';
 let ownerLinks={};
 let editCatId=null;
 let editNoteState=null;
+let currentNotesCatId=null;
 
+// ── INIT ──────────────────────────────────────────────────────────────
 function init(){
   const sp=new URLSearchParams(location.search);
   const catParam=sp.get('cat'),binParam=sp.get('bin');
   if(catParam&&binParam){
     const hp=new URLSearchParams(location.hash.slice(1));
     MK=hp.get('mk')||'';BIN=binParam;
-    app('<div class="wrap"><div class="hero"><div class="hero-av">🐱</div><p>Yükleniyor...</p></div></div>');
+    app('<div class="wrap"><div class="hero"><div class="hero-av">🐱</div><p style="color:var(--purple)">Yükleniyor...</p></div></div>');
     loadData().then(()=>renderOwner(catParam)).catch(()=>app('<div class="wrap"><div class="empty"><span class="empty-i">⚠️</span>Veriler yüklenemedi.</div></div>'));
   } else {
     MK=localStorage.getItem('kb_mk')||'';BIN=localStorage.getItem('kb_bin')||'';
@@ -181,43 +147,42 @@ function init(){
   }
 }
 
+// ── API ───────────────────────────────────────────────────────────────
 async function loadData(){
   const h=MK?{'X-Master-Key':MK}:{};
   const r=await fetch(`${JBASE}/${BIN}/latest`,{headers:h});
-  if(!r.ok){
-    let msg='Yükleme hatası: '+r.status;
-    try{const j=await r.json();msg+=' — '+(j.message||JSON.stringify(j));}catch(e){}
-    throw new Error(msg);
-  }
+  if(!r.ok){let m='Yükleme hatası: '+r.status;try{const j=await r.json();m+=' — '+(j.message||'');}catch(e){}throw new Error(m);}
   const j=await r.json();DATA=j.record;
   if(!DATA.cats)DATA.cats=[];
   if(!DATA.notes)DATA.notes={};
   if(!DATA.items||!DATA.items.length)DATA.items=[...DEFAULT_ITEMS];
 }
 async function save(){
-  if(!MK||!BIN){toast('⚠️ API anahtarı veya Bin ID eksik!',4000);throw new Error('no credentials');}
+  if(!MK||!BIN){toast('⚠️ API anahtarı eksik!',4000);throw new Error('no creds');}
   const r=await fetch(`${JBASE}/${BIN}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':MK},body:JSON.stringify(DATA)});
-  if(!r.ok){
-    let msg='Kayıt hatası: '+r.status;
-    try{const j=await r.json();msg+=' — '+(j.message||JSON.stringify(j));}catch(e){}
-    toast('⚠️ '+msg,5000);throw new Error(msg);
-  }
+  if(!r.ok){let m='Kayıt hatası: '+r.status;try{const j=await r.json();m+=' — '+(j.message||'');}catch(e){}toast('⚠️ '+m,5000);throw new Error(m);}
   toast('Kaydedildi ✓');
 }
 async function createBin(mk){
   const r=await fetch(JBASE,{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':mk,'X-Bin-Private':'false'},body:JSON.stringify({cats:[],notes:{},items:[...DEFAULT_ITEMS]})});
-  if(!r.ok)throw new Error('bin create failed');return(await r.json()).metadata.id;
+  if(!r.ok)throw new Error('bin failed');return(await r.json()).metadata.id;
 }
 
+// ── HELPERS ───────────────────────────────────────────────────────────
 function app(html){document.getElementById('app').innerHTML=html;}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;}
 function daysSince(d){if(!d)return null;return Math.floor((Date.now()-new Date(d).getTime())/86400000);}
 function emo(i){return EMO[i%EMO.length];}
+function avBg(i){return AV_BG[i%AV_BG.length];}
 let toastTimer;
 function toast(msg,dur=2200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);}
+function v(id){const el=document.getElementById(id);return el?(el.value||'').trim():'';}
+function chked(id){const el=document.getElementById(id);return el?el.querySelector('input').checked:false;}
+function ownerLink(c){return`${location.origin}${location.pathname}?cat=${c.id}&bin=${BIN}#mk=${MK}`;}
+function copyOwnerLink(catId){navigator.clipboard.writeText(ownerLinks[catId]||'').then(()=>toast('Sahip linki kopyalandı! 🔗'));}
 
-function compressImage(file, maxW, quality){
+function compressImage(file,maxW,quality){
   return new Promise((res,rej)=>{
     const reader=new FileReader();
     reader.onload=e=>{
@@ -230,35 +195,21 @@ function compressImage(file, maxW, quality){
         canvas.getContext('2d').drawImage(img,0,0,w,h);
         res(canvas.toDataURL('image/jpeg',quality));
       };
-      img.onerror=rej;
-      img.src=e.target.result;
+      img.onerror=rej;img.src=e.target.result;
     };
-    reader.onerror=rej;
-    reader.readAsDataURL(file);
+    reader.onerror=rej;reader.readAsDataURL(file);
   });
 }
-
-function showImgPreview(inputId, previewId){
-  const inp=document.getElementById(inputId);
-  const prev=document.getElementById(previewId);
+function showImgPreview(inputId,previewId){
+  const inp=document.getElementById(inputId),prev=document.getElementById(previewId);
   if(!inp||!prev)return;
-  const file=inp.files[0];
-  if(!file)return;
+  const file=inp.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{prev.src=e.target.result;prev.style.display='block';};
   reader.readAsDataURL(file);
 }
-function v(id){const el=document.getElementById(id);return el?(el.value||'').trim():'';}
-function chked(id){const el=document.getElementById(id);return el?el.querySelector('input').checked:false;}
-function ownerLink(c){return`${location.origin}${location.pathname}?cat=${c.id}&bin=${BIN}#mk=${MK}`;}
-function copyOwnerLink(catId){const link=ownerLinks[catId];if(!link)return;navigator.clipboard.writeText(link).then(()=>toast('Sahip linki kopyalandı! 🔗'));}
 
-/* Avatar backgrounds */
-const AV_COLORS=['#EDE9FE','#FCE7F3','#CCFBF1','#FEF3C7','#FFEDD5','#DBEAFE','#D1FAE5'];
-const AV_TEXTS=['#5B21B6','#BE185D','#0F766E','#92400E','#9A3412','#1E40AF','#065F46'];
-function catAvStyle(i){return`background:${AV_COLORS[i%AV_COLORS.length]}`;}
-
-/* SETUP */
+// ── SETUP ─────────────────────────────────────────────────────────────
 function renderSetup(errMsg=''){
   app(`<div class="setup-outer"><div class="setup-card">
     <div style="text-align:center;margin-bottom:1.5rem">
@@ -269,8 +220,8 @@ function renderSetup(errMsg=''){
     <div style="margin-bottom:1.25rem">
       <div class="slabel">Nasıl kurulur?</div>
       <div class="step"><div class="step-n">1</div><div><a href="https://jsonbin.io" target="_blank">jsonbin.io</a>'ya gidin, ücretsiz hesap açın</div></div>
-      <div class="step"><div class="step-n">2</div><div>Sağ üstten profilinize → <strong>API Keys</strong> bölümüne gidin</div></div>
-      <div class="step"><div class="step-n">3</div><div><strong>X-MASTER-KEY</strong>'i kopyalayın ($ ile başlar)</div></div>
+      <div class="step"><div class="step-n">2</div><div>Profilinizden <strong>API Keys</strong> bölümüne gidin</div></div>
+      <div class="step"><div class="step-n">3</div><div><strong>X-MASTER-KEY</strong>'i kopyalayın</div></div>
       <div class="step"><div class="step-n">4</div><div>Aşağıya yapıştırın</div></div>
     </div>
     ${errMsg?`<div class="al al-warn"><i class="ti ti-alert-circle"></i>${esc(errMsg)}</div>`:''}
@@ -286,15 +237,14 @@ async function doSetup(){
   catch(e){renderSetup('Bağlantı kurulamadı. Anahtarı kontrol edin.');}
 }
 
-/* ADMIN SHELL */
+// ── ADMIN SHELL ───────────────────────────────────────────────────────
 function renderAdmin(tab){
   if(tab)TAB=tab;
   document.title='Kedi Konaklama — Admin';
   ownerLinks={};DATA.cats.forEach(c=>{ownerLinks[c.id]=ownerLink(c);});
   const count=DATA.cats.length;
   app(`<div class="wrap">
-    <div class="hdr">
-      <div class="logo">🐾</div>
+    <div class="hdr"><div class="logo">🐾</div>
       <div><h1>Kedi Konaklama</h1><p>${count===0?'Henüz kedi yok':count+' aktif kedi'}</p></div>
     </div>
     <div class="tabs">
@@ -308,15 +258,21 @@ function renderAdmin(tab){
   document.querySelectorAll('.chk input').forEach(inp=>{
     inp.addEventListener('change',function(){this.closest('.chk').classList.toggle('on',this.checked);});
   });
+  if(TAB==='notes'&&currentNotesCatId){
+    setTimeout(()=>{
+      const sel=document.getElementById('note-sel');
+      if(sel){sel.value=currentNotesCatId;renderArchive(currentNotesCatId);}
+    },50);
+  }
 }
 
-/* CATS TAB */
+// ── CATS TAB ──────────────────────────────────────────────────────────
 function tplCats(){
   const ec=editCatId!==null?DATA.cats.find(c=>c.id===editCatId):null;
   const dietOpts=['Kuru mama','Yaş mama','Kuru + yaş karma','Ev yemeği','Diyet / veteriner maması'].map(o=>`<option${ec?.diet===o?' selected':''}>${o}</option>`).join('');
   return`
     ${ec?`<div class="edit-banner"><span><i class="ti ti-pencil"></i> <strong>${esc(ec.name)}</strong> düzenleniyor</span><button class="btn btn-sm btn-danger" onclick="cancelCatEdit()"><i class="ti ti-x"></i> İptal</button></div>`:''}
-    <div class="card card-colored">
+    <div class="card" style="border-top:3px solid var(--teal)">
       <div class="slabel" style="color:var(--teal)">${ec?'Kedi bilgilerini düzenle':'Yeni kedi ekle'}</div>
       <div class="glabel" style="color:var(--teal);border-top-color:var(--teal-l)">Temel bilgiler</div>
       <div class="field">
@@ -364,10 +320,10 @@ function tplCats(){
 }
 
 function catCard(c,i){
-  const nCount=(DATA.notes[c.id]||[]).length;
-  return`<div class="card card-sm" style="border-left:4px solid ${AV_COLORS[i%AV_COLORS.length].replace('FE','D0')||'var(--teal)'}">
+  const nCount=(DATA.notes[c.id]||[]).filter(n=>n.from==='admin').length;
+  return`<div class="card card-sm" style="border-left:4px solid ${avBg(i)}">
     <div class="cat-row">
-      <div class="cat-av" style="${c.photo?'background:#fff;overflow:hidden;border:2px solid var(--teal-b)':catAvStyle(i)}">${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover">`:emo(i)}</div>
+      <div class="cat-av" style="${c.photo?'background:#fff;overflow:hidden;border:2px solid var(--teal-b)':('background:'+avBg(i))}">${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover">`:emo(i)}</div>
       <div class="cat-info">
         <div class="cat-name">${esc(c.name)}${c.breed?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.breed)}</span>`:''}${c.age?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.age)}</span>`:''}</div>
         ${c.owner||c.phone?`<div class="cat-meta">👤 ${esc(c.owner||'')}${c.phone?' · '+esc(c.phone):''}</div>`:''}
@@ -377,11 +333,11 @@ function catCard(c,i){
         ${c.health?`<div style="font-size:12px;color:var(--coral);margin-top:2px;font-weight:500">⚠️ ${esc(c.health)}</div>`:''}
         ${c.character?`<div style="font-size:12px;color:var(--purple);font-style:italic;margin-top:2px">💬 ${esc(c.character)}</div>`:''}
         ${c.extranote?`<div style="font-size:12px;color:var(--orange);margin-top:4px;border-top:1px solid var(--border);padding-top:4px">📋 ${esc(c.extranote)}</div>`:''}
-        ${c.gelenesya?`<div style="font-size:12px;color:var(--pink);margin-top:4px;font-weight:500">🎒 Gelen eşyalar: ${esc(c.gelenesya)}</div>`:''}
+        ${c.gelenesya?`<div style="font-size:12px;color:var(--pink);margin-top:4px;font-weight:500">🎒 ${esc(c.gelenesya)}</div>`:''}
       </div>
       <div class="cat-acts">
         ${nCount?`<span class="b b-pu">${nCount} not</span>`:''}
-        <button class="btn btn-sm" onclick="copyOwnerLink(${c.id})" title="Sahip linkini kopyala" style="color:var(--purple)"><i class="ti ti-link"></i></button>
+        <button class="btn btn-sm" onclick="copyOwnerLink(${c.id})" title="Sahip linki" style="color:var(--purple)"><i class="ti ti-link"></i></button>
         <button class="btn btn-sm btn-edit" onclick="startCatEdit(${c.id})"><i class="ti ti-pencil"></i></button>
         <button class="btn btn-sm btn-danger" onclick="removeCat(${c.id})"><i class="ti ti-trash"></i></button>
       </div>
@@ -391,25 +347,22 @@ function catCard(c,i){
 
 function startCatEdit(id){editCatId=id;renderAdmin('cats');document.querySelector('.card')?.scrollIntoView({behavior:'smooth'});}
 function cancelCatEdit(){editCatId=null;renderAdmin('cats');}
+
 async function saveCat(){
   const name=(document.getElementById('n-name').value||'').trim();
   if(!name){alert('Kedi adı zorunlu.');return;}
-  const btn=document.getElementById('add-btn');btn.disabled=true;
-  btn.innerHTML='<i class="ti ti-loader spin"></i> Kaydediliyor...';
+  const btn=document.getElementById('add-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Kaydediliyor...';
   let photo='';
-  const photoInput=document.getElementById('n-photo');
-  if(photoInput&&photoInput.files[0]){
-    try{photo=await compressImage(photoInput.files[0],240,0.75);}catch(e){toast('Fotoğraf okunamadı',3000);}
-  } else if(editCatId!==null){
-    const ec=DATA.cats.find(c=>c.id===editCatId);
-    photo=ec?.photo||'';
-  }
+  const pi=document.getElementById('n-photo');
+  if(pi&&pi.files[0]){try{photo=await compressImage(pi.files[0],240,0.75);}catch(e){}}
+  else if(editCatId!==null){photo=DATA.cats.find(c=>c.id===editCatId)?.photo||'';}
   const data={name,breed:v('n-breed'),age:v('n-age'),owner:v('n-owner'),phone:v('n-phone'),checkin:v('n-checkin'),checkout:v('n-checkout'),diet:v('n-diet'),supplement:v('n-supp'),food:v('n-food'),health:v('n-health'),character:v('n-char'),extranote:v('n-extranote'),gelenesya:v('n-gelenesya'),photo};
   if(editCatId!==null){const idx=DATA.cats.findIndex(c=>c.id===editCatId);if(idx>-1)DATA.cats[idx]={...DATA.cats[idx],...data};editCatId=null;}
   else DATA.cats.push({id:Date.now(),...data});
   try{await save();}catch(e){toast('Kayıt hatası!',3000);}
   renderAdmin('cats');
 }
+
 async function removeCat(id){
   if(!confirm('Bu kedi kaydını silmek istediğinize emin misiniz?'))return;
   DATA.cats=DATA.cats.filter(c=>c.id!==id);delete DATA.notes[id];
@@ -417,7 +370,7 @@ async function removeCat(id){
   renderAdmin('cats');
 }
 
-/* NOTES TAB */
+// ── NOTES TAB ─────────────────────────────────────────────────────────
 function tplNotes(){
   const opts=DATA.cats.map(c=>`<option value="${c.id}">${esc(c.name)}${c.owner?' ('+esc(c.owner)+')':''}</option>`).join('');
   const isEditing=editNoteState!==null;
@@ -425,7 +378,7 @@ function tplNotes(){
     ${isEditing?`<div class="edit-banner"><span><i class="ti ti-pencil"></i> Not düzenleniyor</span><button class="btn btn-sm btn-danger" onclick="cancelNoteEdit()"><i class="ti ti-x"></i> İptal</button></div>`:''}
     <div class="card" style="border-top:3px solid var(--purple)">
       <div class="field"><label>Hangi kedi?</label>
-        <select id="note-sel" onchange="onNoteChange()">${opts?'<option value="">— seçin —</option>'+opts:'<option>Önce kedi ekleyin</option>'}</select>
+        <select id="note-sel" onchange="onNoteCatChange(this.value)">${opts?'<option value="">— seçin —</option>'+opts:'<option>Önce kedi ekleyin</option>'}</select>
       </div>
       <div id="note-hint" style="display:none" class="al al-purple"><i class="ti ti-info-circle" style="flex-shrink:0"></i><span id="note-hint-txt"></span></div>
       <div class="slabel">Bugün gerçekleşenler</div>
@@ -440,50 +393,69 @@ function tplNotes(){
       </div>
       <div class="g2">
         <div class="field"><label>Ruh hali</label>
-          <select id="note-mood"><option value="">Seçin</option>${['Sakin ve mutlu','Aktif ve oyuncu','Biraz çekingen','Stresli görünüyor','Yorgun / uykulama eğilimli'].map(o=>`<option>${o}</option>`).join('')}</select>
+          <select id="note-mood"><option value="">Seçin</option><option>Sakin ve mutlu</option><option>Aktif ve oyuncu</option><option>Biraz çekingen</option><option>Stresli görünüyor</option><option>Yorgun / uykulama eğilimli</option></select>
         </div>
         <div class="field"><label>İştah</label>
-          <select id="note-app"><option value="">Seçin</option>${['Hepsini yedi','Yarısını yedi','Az yedi','Hiç yemedi'].map(o=>`<option>${o}</option>`).join('')}</select>
+          <select id="note-app"><option value="">Seçin</option><option>Hepsini yedi</option><option>Yarısını yedi</option><option>Az yedi</option><option>Hiç yemedi</option></select>
         </div>
       </div>
       <div class="field"><label>Ek notlar</label><textarea id="note-extra" placeholder="Özel gözlem, endişe, davranış..."></textarea></div>
       <div class="field">
         <label>Fotoğraf ekle</label>
-        <input type="file" id="note-photo" accept="image/*" onchange="showImgPreview('note-photo','note-photo-preview')" style="font-size:13px">
-        <img id="note-photo-preview" style="margin-top:8px;max-width:100%;border-radius:var(--r);display:none;max-height:200px;object-fit:cover">
+        <input type="file" id="note-photo" accept="image/*" onchange="showImgPreview('note-photo','note-photo-prev')" style="font-size:13px">
+        <img id="note-photo-prev" style="margin-top:8px;max-width:100%;border-radius:var(--r);display:none;max-height:180px;object-fit:cover">
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary" id="note-btn" onclick="saveNote()"><i class="ti ti-device-floppy"></i> ${isEditing?'Değişikliği Kaydet':'Notu Kaydet'}</button>
         ${isEditing?`<button class="btn btn-danger" onclick="cancelNoteEdit()"><i class="ti ti-x"></i> İptal</button>`:''}
       </div>
     </div>
-    <div id="notes-list"></div>`;
+
+    <div id="archive-section" style="margin-top:4px"></div>`;
 }
 
-function onNoteChange(){
-  const catId=parseInt(document.getElementById('note-sel').value);
+function onNoteCatChange(val){
+  const catId=parseInt(val);
+  currentNotesCatId=catId||null;
   const cat=DATA.cats.find(c=>c.id===catId);
   const hint=document.getElementById('note-hint');
   if(cat&&(cat.diet||cat.food||cat.supplement||cat.health)){
     hint.style.display='flex';
     document.getElementById('note-hint-txt').textContent=[cat.diet,cat.food,cat.supplement&&'Takviye: '+cat.supplement,cat.health&&'⚠️ '+cat.health].filter(Boolean).join(' · ');
-  } else {hint.style.display='none';}
-  renderNotesList(catId);
+  } else if(hint){hint.style.display='none';}
+  renderArchive(catId);
 }
 
-function renderNotesList(catId){
-  const el=document.getElementById('notes-list');if(!el||!catId)return;
-  const catNotes=DATA.notes[catId]||[];
+function renderArchive(catId){
+  const el=document.getElementById('archive-section');
+  if(!el)return;
+  if(!catId){el.innerHTML='';return;}
   const cat=DATA.cats.find(c=>c.id===catId);
-  if(!catNotes.length){el.innerHTML='<div class="empty" style="padding:1.5rem 1rem"><span style="font-size:24px;display:block;margin-bottom:6px;opacity:.3">📋</span>Henüz not eklenmedi</div>';return;}
-  el.innerHTML=`<div class="slabel">${cat?esc(cat.name)+' için ':''} kayıtlı notlar (${catNotes.length})</div>`+catNotes.map((n,idx)=>noteCard(n,catId,idx)).join('');
+  // Get ALL notes for this cat - try both string and int keys
+  const catNotes=(DATA.notes[catId]||DATA.notes[String(catId)]||[]).filter(n=>n.from==='admin'||n.from===undefined);
+  const ownerNotes=(DATA.notes[catId]||DATA.notes[String(catId)]||[]).filter(n=>n.from==='owner');
+
+  if(!catNotes.length&&!ownerNotes.length){
+    el.innerHTML=`<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">
+      <span style="font-size:28px;display:block;margin-bottom:6px;opacity:.3">📋</span>
+      ${cat?esc(cat.name)+' için henüz not eklenmedi':'Henüz not eklenmedi'}
+    </div>`;
+    return;
+  }
+
+  el.innerHTML=`
+    <div class="archive-header">
+      <div class="slabel" style="margin:0">📚 Notlar arşivi</div>
+      <span class="archive-count">${catNotes.length} bakıcı notu${ownerNotes.length?' · '+ownerNotes.length+' sahip notu':''}</span>
+    </div>
+    ${catNotes.map((n,idx)=>adminNoteCard(n,catId,idx)).join('')}
+    ${ownerNotes.length?`<div class="slabel" style="margin-top:12px;color:var(--pink)">Sahip notları</div>${ownerNotes.map(n=>ownerArchiveCard(n)).join('')}`:''}`;
 }
 
-function noteCard(n,catId,idx){
-  const isOwner=n.from==='owner';
-  return`<div class="card card-sm" style="${isOwner?'border-left:4px solid var(--pink)':'border-left:4px solid var(--purple)'}">
+function adminNoteCard(n,catId,idx){
+  return`<div class="card card-sm" style="border-left:4px solid var(--purple)">
     <div class="note-hdr">
-      <span class="note-time">${esc(n.date)} · ${esc(n.time)}${isOwner?' · <span style="color:var(--pink);font-size:11px;font-weight:600">Sahip notu</span>':''}</span>
+      <span class="note-time">${esc(n.date||'')} ${esc(n.time||'')}</span>
       <div style="display:flex;gap:4px;flex-wrap:wrap">
         ${n.mood?`<span class="b b-pu">${esc(n.mood)}</span>`:''}
         ${n.appetite?`<span class="b b-am">${esc(n.appetite)}</span>`:''}
@@ -499,20 +471,32 @@ function noteCard(n,catId,idx){
       ${n.checks.malt?'<span class="b b-pk">🍬 malt</span>':''}
     </div>`:''}
     ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
-    ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
-    ${n.photo?`<img src="${n.photo}" style="width:100%;border-radius:var(--r);margin-top:8px;max-height:250px;object-fit:cover">`:''}
-    ${catId!==undefined?`<div class="note-acts">
+    ${n.photo?`<img src="${n.photo}" class="note-photo">`:''}
+    <div class="note-acts">
       <button class="btn btn-sm btn-edit" onclick="startNoteEdit(${catId},${idx})"><i class="ti ti-pencil"></i> Düzenle</button>
       <button class="btn btn-sm btn-danger" onclick="deleteNote(${catId},${idx})"><i class="ti ti-trash"></i> Sil</button>
-    </div>`:''}
+    </div>
+  </div>`;
+}
+
+function ownerArchiveCard(n){
+  return`<div class="card card-sm" style="border-left:4px solid var(--pink)">
+    <div class="note-time" style="margin-bottom:6px;color:var(--pink)">${esc(n.date||'')} · ${esc(n.time||'')} · <span style="font-weight:600">Sahip notu</span></div>
+    ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
+    ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
   </div>`;
 }
 
 function startNoteEdit(catId,idx){
-  const note=(DATA.notes[catId]||[])[idx];if(!note)return;
-  editNoteState={catId,idx};renderAdmin('notes');
+  const allNotes=DATA.notes[catId]||DATA.notes[String(catId)]||[];
+  const adminNotes=allNotes.filter(n=>n.from==='admin'||n.from===undefined);
+  const note=adminNotes[idx];if(!note)return;
+  // Find real index in allNotes
+  const realIdx=allNotes.indexOf(note);
+  editNoteState={catId,idx:realIdx};
+  renderAdmin('notes');
   setTimeout(()=>{
-    const sel=document.getElementById('note-sel');if(sel){sel.value=catId;onNoteChange();}
+    const sel=document.getElementById('note-sel');if(sel){sel.value=catId;onNoteCatChange(catId);}
     const setChk=(id,val)=>{const el=document.getElementById(id);if(!el)return;const inp=el.querySelector('input');inp.checked=!!val;el.classList.toggle('on',!!val);};
     setChk('chk-mama',note.checks?.mama);setChk('chk-su',note.checks?.su);
     setChk('chk-tuvalet',note.checks?.tuvalet);setChk('chk-oyun',note.checks?.oyun);
@@ -528,46 +512,50 @@ function startNoteEdit(catId,idx){
 function cancelNoteEdit(){editNoteState=null;renderAdmin('notes');}
 
 async function saveNote(){
-  const catId=parseInt((document.getElementById('note-sel')||{}).value||'0');
+  const sel=document.getElementById('note-sel');
+  const catId=parseInt((sel||{}).value||'0');
   if(!catId){alert('Lütfen kedi seçin.');return;}
   const btn=document.getElementById('note-btn');btn.disabled=true;
   let notePhoto='';
-  const notePhotoInput=document.getElementById('note-photo');
-  if(notePhotoInput&&notePhotoInput.files[0]){
-    try{notePhoto=await compressImage(notePhotoInput.files[0],700,0.72);}catch(e){toast('Fotoğraf okunamadı',3000);}
-  }
+  const pi=document.getElementById('note-photo');
+  if(pi&&pi.files[0]){try{notePhoto=await compressImage(pi.files[0],700,0.72);}catch(e){}}
   const checks={mama:chked('chk-mama'),su:chked('chk-su'),tuvalet:chked('chk-tuvalet'),oyun:chked('chk-oyun'),ilac:chked('chk-ilac'),tarama:chked('chk-tarama'),malt:chked('chk-malt')};
-  if(!DATA.notes[catId])DATA.notes[catId]=[];
+  // Normalize key to integer
+  if(!DATA.notes[catId]){
+    // Try to migrate from string key
+    const strKey=String(catId);
+    if(DATA.notes[strKey]){DATA.notes[catId]=DATA.notes[strKey];delete DATA.notes[strKey];}
+    else DATA.notes[catId]=[];
+  }
   if(editNoteState&&editNoteState.catId===catId){
     const orig=DATA.notes[catId][editNoteState.idx];
-    DATA.notes[catId][editNoteState.idx]={...orig,mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),checks,photo:notePhoto||orig.photo||''};
+    if(orig)DATA.notes[catId][editNoteState.idx]={...orig,mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),checks,photo:notePhoto||orig.photo||''};
     editNoteState=null;
   } else {
     DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),mood:v('note-mood'),appetite:v('note-app'),extra:v('note-extra'),from:'admin',checks,photo:notePhoto});
   }
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
+  currentNotesCatId=catId;
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);btn.disabled=false;return;}
   renderAdmin('notes');
-  setTimeout(()=>{const sel=document.getElementById('note-sel');if(sel){sel.value=catId;onNoteChange();}},60);
 }
 
 async function deleteNote(catId,idx){
   if(!confirm('Bu notu silmek istediğinize emin misiniz?'))return;
-  DATA.notes[catId].splice(idx,1);
+  const notes=DATA.notes[catId]||DATA.notes[String(catId)];
+  if(notes)notes.splice(idx,1);
   try{await save();}catch(e){toast('Kayıt hatası!',3000);return;}
-  renderNotesList(catId);
+  renderArchive(catId);
 }
 
-/* ITEMS TAB */
+// ── ITEMS TAB ─────────────────────────────────────────────────────────
 function tplItems(){
   const items=DATA.items||[];
   return`<div class="card" style="border-top:3px solid var(--orange)">
     <div class="slabel" style="color:var(--orange)">Sahiplerden İstenecek Eşyalar</div>
-    <div class="al al-warn" style="margin-bottom:16px"><i class="ti ti-info-circle" style="flex-shrink:0"></i>Bu liste tüm sahip sayfalarında görünür.</div>
+    <div class="al al-warn"><i class="ti ti-info-circle" style="flex-shrink:0"></i>Bu liste tüm sahip sayfalarında görünür.</div>
     <div id="items-list">
       ${items.length===0?'<div class="empty" style="padding:1rem"><span style="opacity:.3">📦</span> Henüz eşya eklenmedi</div>':items.map((item,idx)=>`
-        <div class="item-row">
-          <div class="item-dot"></div>
-          <span>${esc(item)}</span>
+        <div class="item-row"><div class="item-dot"></div><span>${esc(item)}</span>
           <button class="btn btn-sm btn-danger" onclick="deleteItem(${idx})"><i class="ti ti-trash"></i></button>
         </div>`).join('')}
     </div>
@@ -577,24 +565,17 @@ function tplItems(){
     </div>
   </div>`;
 }
-
 async function addItem(){
-  const val=(document.getElementById('new-item').value||'').trim();
-  if(!val)return;
-  if(!DATA.items)DATA.items=[];
-  DATA.items.push(val);
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
-  renderAdmin('items');
+  const val=(document.getElementById('new-item').value||'').trim();if(!val)return;
+  if(!DATA.items)DATA.items=[];DATA.items.push(val);
+  try{await save();}catch(e){toast('Kayıt hatası!',3000);}renderAdmin('items');
 }
-
 async function deleteItem(idx){
-  if(!confirm('Bu eşyayı listeden çıkarmak istediğinize emin misiniz?'))return;
-  DATA.items.splice(idx,1);
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);}
-  renderAdmin('items');
+  if(!confirm('Bu eşyayı çıkarmak istediğinize emin misiniz?'))return;
+  DATA.items.splice(idx,1);try{await save();}catch(e){}renderAdmin('items');
 }
 
-/* MESSAGE TAB */
+// ── MESSAGE TAB ───────────────────────────────────────────────────────
 function tplMsg(){
   const opts=DATA.cats.map(c=>`<option value="${c.id}">${esc(c.name)}${c.owner?' ('+esc(c.owner)+')':''}</option>`).join('');
   return`<div class="card" style="border-top:3px solid var(--pink)">
@@ -602,10 +583,7 @@ function tplMsg(){
       <select id="msg-sel" onchange="genMsg()">${opts?'<option value="">— seçin —</option>'+opts:'<option>Önce kedi ekleyin</option>'}</select>
     </div>
     <div class="field"><label>Ton</label>
-      <select id="msg-tone" onchange="genMsg()">
-        <option value="sicak">Sıcak ve samimi</option>
-        <option value="kisa">Kısa ve bilgilendirici</option>
-      </select>
+      <select id="msg-tone" onchange="genMsg()"><option value="sicak">Sıcak ve samimi</option><option value="kisa">Kısa ve bilgilendirici</option></select>
     </div>
   </div>
   <div id="msg-out" style="display:none">
@@ -618,14 +596,14 @@ function tplMsg(){
   </div>
   <div id="msg-empty" class="empty"><i class="ti ti-brand-whatsapp empty-i"></i>Kedi seçince mesaj otomatik oluşur</div>`;
 }
-
 function genMsg(){
   const catId=parseInt((document.getElementById('msg-sel')||{}).value||'0');
   const tone=(document.getElementById('msg-tone')||{}).value||'sicak';
   const cat=DATA.cats.find(c=>c.id===catId);
   const out=document.getElementById('msg-out'),empty=document.getElementById('msg-empty');
   if(!cat){if(out)out.style.display='none';if(empty)empty.style.display='block';return;}
-  const latest=(DATA.notes[catId]||[]).find(n=>n.from==='admin');
+  const allNotes=DATA.notes[catId]||DATA.notes[String(catId)]||[];
+  const latest=allNotes.find(n=>n.from==='admin'||n.from===undefined);
   const today=new Date().toLocaleDateString('tr-TR');
   let msg='';
   if(tone==='sicak'){
@@ -659,21 +637,21 @@ function genMsg(){
 function copyMsg(){navigator.clipboard.writeText(document.getElementById('msg-box').textContent||'').then(()=>toast('Mesaj kopyalandı! 📋'));}
 function openWA(){window.open('https://wa.me/?text='+encodeURIComponent(document.getElementById('msg-box').textContent||''),'_blank');}
 
-/* OWNER VIEW */
+// ── OWNER VIEW ────────────────────────────────────────────────────────
 async function renderOwner(catIdStr){
   const catId=parseInt(catIdStr);
   const cat=DATA.cats.find(c=>c.id===catId);
   if(!cat){app('<div class="wrap"><div class="empty"><span class="empty-i">🙁</span>Kedi bulunamadı.</div></div>');return;}
   const idx=DATA.cats.indexOf(cat);
-  const allNotes=DATA.notes[catId]||[];
-  const adminNotes=allNotes.filter(n=>n.from==='admin');
+  const allNotes=DATA.notes[catId]||DATA.notes[String(catId)]||[];
+  const adminNotes=allNotes.filter(n=>n.from==='admin'||n.from===undefined);
   const ownerNotes=allNotes.filter(n=>n.from==='owner');
   const daysHere=daysSince(cat.checkin);
   const items=DATA.items||[];
   document.title=`${cat.name} · Konaklama`;
   app(`<div class="wrap">
     <div class="hero">
-      <div class="hero-av" style="${cat.photo?'background:#fff;overflow:hidden;padding:0':''}">${cat.photo?`<img src="${cat.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:emo(idx)}</div>
+      <div class="hero-av">${cat.photo?`<img src="${cat.photo}" style="width:100%;height:100%;object-fit:cover">`:emo(idx)}</div>
       <div class="hero-name">${esc(cat.name)}</div>
       <div class="hero-sub">${cat.breed?esc(cat.breed)+' &nbsp;·&nbsp; ':''}${daysHere===null?'Konaklamada':daysHere<0?Math.abs(daysHere)+' gün sonra gelecek 📅':daysHere===0?'Bugün geldi 🎉':daysHere+' gündür bizimle 🐾'}</div>
       ${cat.checkout?`<div style="font-size:13px;color:var(--purple);margin-top:6px;font-weight:500">Tahmini çıkış: ${fmtDate(cat.checkout)}</div>`:''}
@@ -693,17 +671,16 @@ async function renderOwner(catIdStr){
       ${cat.supplement?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Takviye</span><span style="font-size:13px">${esc(cat.supplement)}</span></div>`:''}
       ${cat.health?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Sağlık</span><span style="font-size:13px;color:var(--coral);font-weight:500">⚠️ ${esc(cat.health)}</span></div>`:''}
       ${cat.character?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Karakter</span><span style="font-size:13px;font-style:italic">${esc(cat.character)}</span></div>`:''}
-      ${cat.extranote?`<div style="display:flex;gap:6px;margin-bottom:6px"><span style="font-size:12px;color:var(--muted);min-width:90px">Notlar</span><span style="font-size:13px">${esc(cat.extranote)}</span></div>`:''}
-
+      ${cat.extranote?`<div style="display:flex;gap:6px;margin-bottom:0"><span style="font-size:12px;color:var(--muted);min-width:90px">Notlar</span><span style="font-size:13px">${esc(cat.extranote)}</span></div>`:''}
     </div>
 
-    <div class="slabel" style="color:var(--purple)">Bakıcı güncellemeleri</div>
+    <div class="slabel" style="color:var(--purple)">Bakıcı güncellemeleri (${adminNotes.length})</div>
     ${adminNotes.length===0
-      ?`<div class="al al-info"><i class="ti ti-clock" style="flex-shrink:0"></i>Henüz bugün için güncelleme eklenmedi. Birazdan tekrar kontrol edin!</div>`
+      ?`<div class="al al-info"><i class="ti ti-clock" style="flex-shrink:0"></i>Henüz güncelleme eklenmedi. Birazdan tekrar kontrol edin!</div>`
       :adminNotes.map((n,i)=>ownerAdminCard(n,i===0)).join('')
     }
 
-    ${ownerNotes.length>0?`<div class="slabel" style="margin-top:1.5rem;color:var(--pink)">Sizin notlarınız</div>${ownerNotes.map(n=>ownerNoteCard(n,catId,allNotes.indexOf(n))).join('')}`:''}
+    ${ownerNotes.length>0?`<div class="slabel" style="margin-top:1.5rem;color:var(--pink)">Sizin notlarınız (${ownerNotes.length})</div>${ownerNotes.map(n=>ownerNoteCard(n)).join('')}`:''}
 
     ${MK?`<div class="card" style="margin-top:1.5rem;border-top:3px solid var(--pink)">
       <div class="slabel" style="color:var(--pink)">Not ekle</div>
@@ -716,7 +693,7 @@ async function renderOwner(catIdStr){
 
 function ownerAdminCard(n,isLatest){
   return`<div class="card card-sm" style="${isLatest?'border:2px solid var(--purple)':'border-left:4px solid var(--purple-l)'}">
-    ${isLatest?`<div style="font-size:12px;font-weight:700;color:var(--purple-d);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">⭐ Son güncelleme · ${esc(n.date)} ${esc(n.time)}</div>`:`<div class="note-time" style="margin-bottom:8px">${esc(n.date)} · ${esc(n.time)}</div>`}
+    ${isLatest?`<div style="font-size:12px;font-weight:700;color:var(--purple-d);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">⭐ Son güncelleme · ${esc(n.date||'')} ${esc(n.time||'')}</div>`:`<div class="note-time" style="margin-bottom:8px">${esc(n.date||'')} · ${esc(n.time||'')}</div>`}
     ${n.checks?`<div class="tags">
       ${n.checks.mama?'<span class="b b-gr">🍽 mama yedi</span>':''}
       ${n.checks.su?'<span class="b b-gr">💧 su içti</span>':''}
@@ -731,55 +708,16 @@ function ownerAdminCard(n,isLatest){
       ${n.appetite?`<span class="b b-am">${esc(n.appetite)}</span>`:''}
     </div>`:''}
     ${n.extra?`<div style="font-size:14px;line-height:1.6">${esc(n.extra)}</div>`:''}
-    ${n.photo?`<img src="${n.photo}" style="width:100%;border-radius:var(--r);margin-top:10px;max-height:280px;object-fit:cover">`:''}
+    ${n.photo?`<img src="${n.photo}" class="note-photo">`:''}
   </div>`;
 }
 
-function ownerNoteCard(n, catId, idx){
-  return`<div class="card card-sm" style="border-left:4px solid var(--pink)" id="owner-note-${idx}">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
-      <div class="note-time">${esc(n.date)} · ${esc(n.time)}</div>
-      ${MK?`<div style="display:flex;gap:4px">
-        <button class="btn btn-sm btn-edit" onclick="editOwnerNote(${catId},${idx})"><i class="ti ti-pencil"></i></button>
-        <button class="btn btn-sm btn-danger" onclick="deleteOwnerNote(${catId},${idx})"><i class="ti ti-trash"></i></button>
-      </div>`:''}
-    </div>
+function ownerNoteCard(n){
+  return`<div class="card card-sm" style="border-left:4px solid var(--pink)">
+    <div class="note-time" style="margin-bottom:6px">${esc(n.date||'')} · ${esc(n.time||'')}</div>
     ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:''}
     ${n.ownerName?`<div style="font-size:12px;color:var(--muted);margin-top:4px">— ${esc(n.ownerName)}</div>`:''}
   </div>`;
-}
-
-function editOwnerNote(catId, idx){
-  const note=(DATA.notes[catId]||[])[idx];
-  if(!note)return;
-  const card=document.getElementById(`owner-note-${idx}`);
-  if(!card)return;
-  card.innerHTML=`
-    <div class="field" style="margin:0 0 8px">
-      <textarea id="edit-owner-note-text" style="width:100%;padding:8px;border:1.5px solid var(--pink);border-radius:8px;font-size:13px;font-family:inherit;min-height:80px">${esc(note.extra||'')}</textarea>
-    </div>
-    <div style="display:flex;gap:6px">
-      <button class="btn btn-sm" style="background:var(--pink);color:#fff;border-color:var(--pink)" onclick="saveOwnerNoteEdit(${catId},${idx})"><i class="ti ti-device-floppy"></i> Kaydet</button>
-      <button class="btn btn-sm btn-danger" onclick="renderOwner('${catId}')"><i class="ti ti-x"></i> İptal</button>
-    </div>
-  `;
-  document.getElementById('edit-owner-note-text').focus();
-}
-
-async function saveOwnerNoteEdit(catId, idx){
-  const text=(document.getElementById('edit-owner-note-text').value||'').trim();
-  const notes=DATA.notes[catId]||[];
-  if(!notes[idx])return;
-  notes[idx].extra=text;
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);return;}
-  renderOwner(String(catId));
-}
-
-async function deleteOwnerNote(catId, idx){
-  if(!confirm('Bu notu silmek istediğinize emin misiniz?'))return;
-  (DATA.notes[catId]||[]).splice(idx,1);
-  try{await save();}catch(e){toast('Kayıt hatası!',3000);return;}
-  renderOwner(String(catId));
 }
 
 async function submitOwnerNote(catId){
@@ -788,8 +726,11 @@ async function submitOwnerNote(catId){
   if(!text){alert('Lütfen bir not yazın.');return;}
   const btn=document.getElementById('ow-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin"></i> Gönderiliyor...';
   if(name)localStorage.setItem('ow_name',name);
+  // Reload latest data first to avoid overwriting admin notes
+  try{await loadData();}catch(e){}
+  const note={date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),extra:text,ownerName:name,from:'owner'};
   if(!DATA.notes[catId])DATA.notes[catId]=[];
-  DATA.notes[catId].unshift({date:new Date().toLocaleDateString('tr-TR'),time:new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),extra:text,ownerName:name,from:'owner'});
+  DATA.notes[catId].unshift(note);
   try{await save();await loadData();await renderOwner(new URLSearchParams(location.search).get('cat'));}
   catch(e){toast('Gönderim başarısız.',3500);btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Gönder';}
 }
