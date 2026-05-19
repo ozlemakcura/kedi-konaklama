@@ -97,8 +97,14 @@
     addControl(document.getElementById('note-photo-url'));
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  const start = () => {
     enhance();
     new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
-  });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 })();
