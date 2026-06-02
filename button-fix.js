@@ -5,11 +5,18 @@
     return new Date().toISOString().slice(0, 10);
   }
 
+  function addDays(dateText, days) {
+    const date = new Date(`${dateText}T12:00:00`);
+    date.setDate(date.getDate() + days);
+    return date.toISOString().slice(0, 10);
+  }
+
   function isActiveCat(cat) {
     const t = today();
-    const alreadyArrived = !cat.checkin_date || cat.checkin_date <= t;
+    const activeStart = cat.checkin_date ? addDays(cat.checkin_date, -2) : '';
+    const readyForPreparation = !cat.checkin_date || activeStart <= t;
     const notCheckedOut = !cat.checkout_date || cat.checkout_date > t;
-    return alreadyArrived && notCheckedOut;
+    return readyForPreparation && notCheckedOut;
   }
 
   function client() {
