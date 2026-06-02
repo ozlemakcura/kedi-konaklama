@@ -2,6 +2,7 @@
   if (!location.pathname.endsWith('/note.html')) return;
 
   let db;
+  let activeCatFilterApplied = false;
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => Array.from(document.querySelectorAll(selector));
   const config = window.KEDI_APP_CONFIG || {};
@@ -26,6 +27,51 @@
     return new Date().toISOString().slice(0, 10);
   }
 
+  function isCurrentCat(cat) {
+    return !cat.checkout_date || cat.checkout_date >= today();
+  }
+
+  function escapeHtml(value = '') {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
+  async function showOnlyCurrentCats() {
+    const select = $('#note-cat');
+    const api = client();
+    if (!select || !api) return;
+
+    const { data, error } = await api
+      .from('cats')
+      .select('id,name,owner_name,checkout_date')
+      .order('created_at', { ascending: false });
+
+    if (error || !Array.isArray(data)) return;
+
+    const currentCats = data.filter(isCurrentCat);
+    const hiddenCount = data.length - currentCats.length;
+    const selected = select.value;
+
+    select.innerHTML = '<option value="">Güncel kedi seçin</option>' + currentCats.map((cat) => (
+      `<option value="${cat.id}">${escapeHtml(cat.name)}${cat.owner_name ? ` — ${escapeHtml(cat.owner_name)}` : ''}</option>`
+    )).join('');
+
+    if (currentCats.some((cat) => cat.id === selected)) {
+      select.value = selected;
+    }
+
+    const status = $('#status');
+    if (status && !activeCatFilterApplied) {
+      const suffix = hiddenCount > 0 ? ` Ayrılan ${hiddenCount} kedi not ekleme listesinden gizlendi.` : '';
+      status.textContent = `Hazır.${suffix}`;
+    }
+    activeCatFilterApplied = true;
+  }
+
   function readFlags() {
     const flags = {};
     $$('[data-flag]').forEach((input) => {
@@ -48,7 +94,7 @@
       return;
     }
     if (!catId) {
-      toast('Önce kedi seçin.', true);
+      toast('Önce güncel bir kedi seçin.', true);
       $('#note-cat')?.focus();
       return;
     }
@@ -57,6 +103,22 @@
     const userId = sessionResult.data?.session?.user?.id || '';
     if (!userId) {
       toast('Oturum bulunamadı. Ana panele dönüp tekrar giriş yapın.', true);
+      return;
+    }
+
+    const { data: selectedCat, error: catError } = await api
+      .from('cats')
+      .select('id,checkout_date')
+      .eq('id', catId)
+      .maybeSingle();
+
+    if (catError || !selectedCat) {
+      toast('Kedi kaydı bulunamadı.', true);
+      return;
+    }
+    if (!isCurrentCat(selectedCat)) {
+      toast('Bu kedi ayrılmış görünüyor. Yeni günlük not yalnızca güncel kedilere eklenebilir.', true);
+      await showOnlyCurrentCats();
       return;
     }
 
@@ -105,6 +167,7 @@
 
     $('#cancel-edit')?.addEventListener('click', () => {
       window.__editingDailyNoteId = '';
+      setTimeout(showOnlyCurrentCats, 100);
     });
   }
 
@@ -115,6 +178,15 @@
     button.addEventListener('click', saveNote, true);
     $('#note-form')?.addEventListener('submit', saveNote, true);
     syncEditState();
+
+    setTimeout(showOnlyCurrentCats, 400);
+    setTimeout(showOnlyCurrentCats, 1200);
+    new MutationObserver(() => {
+      if ($('#note-cat') && !$('#note-cat').dataset.activeCatsFiltered) {
+        $('#note-cat').dataset.activeCatsFiltered = '1';
+        setTimeout(showOnlyCurrentCats, 80);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
   }
 
   if (document.readyState === 'loading') {
