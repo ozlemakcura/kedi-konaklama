@@ -94,7 +94,11 @@
         ${note.mood || note.appetite ? `<div class="divider"></div><div class="title">${note.mood ? `<span class="badge">${esc(note.mood)}</span>` : ''}${note.appetite ? `<span class="badge amber">${esc(note.appetite)}</span>` : ''}</div>` : ''}
         ${note.body ? `<div class="divider"></div><div class="note">${esc(note.body)}</div>` : ''}
         ${note.photo_url ? `<div class="divider"></div><a href="${esc(note.photo_url)}" target="_blank" rel="noreferrer">Fotoğrafı aç</a>` : ''}
-        <div class="divider"></div><button class="btn soft" type="button" data-edit-daily-note="${note.id}">Düzenle</button>
+        <div class="divider"></div>
+        <div class="buttons">
+          <button class="btn soft" type="button" data-edit-daily-note="${note.id}">Düzenle</button>
+          <button class="btn danger" type="button" data-delete-daily-note="${note.id}">Sil</button>
+        </div>
       </article>
     `).join('') : '<div class="empty">Bu kedi için henüz not yok.</div>';
   }
@@ -136,13 +140,29 @@
     await loadNotes();
   }
 
+  async function deleteNote(id) {
+    const ok = window.confirm('Bu günlük not silinsin mi?');
+    if (!ok) return;
+    const api = client();
+    if (!api) return;
+    const result = await api.from('daily_notes').delete().eq('id', id);
+    if (result.error) { toast(result.error.message || 'Not silinemedi.', true); return; }
+    toast('Günlük not silindi.');
+    if (editingNoteId === id) clearEditMode();
+    await loadNotes();
+  }
+
   function start() {
     $('#note-form')?.addEventListener('submit', saveNote, true);
     document.addEventListener('click', (event) => {
       const edit = event.target.closest('[data-edit-daily-note]');
-      if (!edit) return;
-      const note = notes.find((item) => item.id === edit.dataset.editDailyNote);
-      if (note) setNoteForm(note);
+      if (edit) {
+        const note = notes.find((item) => item.id === edit.dataset.editDailyNote);
+        if (note) setNoteForm(note);
+        return;
+      }
+      const del = event.target.closest('[data-delete-daily-note]');
+      if (del) deleteNote(del.dataset.deleteDailyNote);
     }, true);
     $('#cat-select')?.addEventListener('change', () => { clearEditMode(); setTimeout(loadNotes, 300); });
     setInterval(() => { const catId = selectedCatId(); if (catId && catId !== lastCatId) { lastCatId = catId; clearEditMode(); loadNotes(); } }, 900);
