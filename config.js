@@ -11,4 +11,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const buttonFixScript = document.createElement("script");
   buttonFixScript.src = "./button-fix.js";
   document.body.appendChild(buttonFixScript);
+
+  const routineCategoryScript = document.createElement("script");
+  routineCategoryScript.src = "./routine-category-custom.js";
+  document.body.appendChild(routineCategoryScript);
+
+  const ownerNoteTimeScript = document.createElement("script");
+  ownerNoteTimeScript.src = "./owner-note-time.js";
+  document.body.appendChild(ownerNoteTimeScript);
 });
