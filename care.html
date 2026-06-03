@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kedi Bakım Paneli</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <style>
+    :root{--bg:#f7f4ff;--text:#20183a;--muted:#6b6480;--line:#e8defc;--purple:#6d28d9;--pink:#db2777;--green:#15803d;--amber:#b45309;--red:#be123c;--blue:#2563eb;--shadow:0 18px 60px rgba(44,22,92,.10)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(139,92,246,.18),transparent 32rem),radial-gradient(circle at top right,rgba(219,39,119,.15),transparent 28rem),var(--bg)}
+    h1,h2,h3,p{margin-top:0}.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 56px}.hero,.card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.hero{padding:24px;margin-bottom:18px}.hero-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#efe7ff;color:var(--purple);font-weight:700;font-size:13px}.muted{color:var(--muted)}.layout{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{padding:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--purple)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:13px;padding:12px 13px;outline:none}.field textarea{min-height:105px;resize:vertical}.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.check{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:#fff}.check input{accent-color:var(--purple)}.buttons{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn{border:0;border-radius:13px;padding:11px 14px;cursor:pointer;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(135deg,var(--pink),#ec4899);color:#fff}.soft{background:#fff;border:1px solid var(--line);color:var(--text)}.green{background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0}.danger{background:#fff1f2;color:var(--red);border:1px solid #fecdd3}.blue{background:#eff6ff;color:var(--blue);border:1px solid #bfdbfe}.notice{border-radius:14px;padding:14px 16px;border:1px solid var(--line);background:#eff6ff;color:#1d4ed8;line-height:1.5;margin-bottom:14px}.list{display:grid;gap:12px}.item{border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px}.item.late{border-color:#fecdd3;background:#fff1f2}.item.done{border-color:#bbf7d0;background:#f0fdf4}.title{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800;background:#f5f3ff;color:var(--purple)}.badge.red{background:#fee2e2;color:var(--red)}.badge.green{background:#dcfce7;color:var(--green)}.badge.blue{background:#dbeafe;color:var(--blue)}.badge.amber{background:#fffbeb;color:var(--amber)}.divider{height:1px;background:var(--line);margin:14px 0}.empty{border:1px dashed #d8b4fe;border-radius:16px;padding:22px;text-align:center;color:var(--muted);background:#fcfaff}.small{font-size:12px;color:var(--muted)}.note{white-space:pre-wrap;line-height:1.6}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);padding:12px 16px;background:#20183a;color:#fff;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.18s ease;z-index:60}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:900px){.layout,.grid{grid-template-columns:1fr}.hero-head{flex-direction:column}.checks{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-head">
+        <div>
+          <div class="eyebrow"><i class="ti ti-paw"></i> Tek sayfa bakım</div>
+          <h1 style="margin:14px 0 8px">Kedi bakım paneli</h1>
+          <p class="muted">Kediyi seç; günlük not, rutin takibi ve rutin düzenleme aynı ekranda.</p>
+        </div>
+        <a class="btn soft" href="./"><i class="ti ti-arrow-left"></i> Panele dön</a>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:18px">
+      <div class="grid">
+        <div class="field"><label>Aktif kedi</label><select id="cat-select"></select></div>
+        <div class="field"><label>Durum</label><input id="care-status" readonly value="Bilgiler hazırlanıyor..."></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <article class="card">
+        <h2>Günlük not</h2>
+        <form id="note-form">
+          <div class="grid">
+            <div class="field"><label>Tarih</label><input id="note-date" type="date" required></div>
+            <div class="field"><label>Fotoğraf URL</label><input id="note-photo-url"></div>
+            <div class="field"><label>Ruh hali</label><input id="note-mood" placeholder="Sakin, oyuncu..."></div>
+            <div class="field"><label>İştah</label><input id="note-appetite" placeholder="İyi, orta..."></div>
+          </div>
+          <div class="field"><label>Günlük kontroller</label><div class="checks">
+            <label class="check"><input type="checkbox" data-flag="food"> 🍽️ Mama yedi</label>
+            <label class="check"><input type="checkbox" data-flag="water"> 💧 Su içti</label>
+            <label class="check"><input type="checkbox" data-flag="toilet"> ✨ Tuvalet normal</label>
+            <label class="check"><input type="checkbox" data-flag="play"> 🎾 Oyun / aktif</label>
+            <label class="check"><input type="checkbox" data-flag="medicine"> 💊 İlaç verildi</label>
+            <label class="check"><input type="checkbox" data-flag="care"> ✂️ Bakım yapıldı</label>
+          </div></div>
+          <div class="field"><label>Detaylı not</label><textarea id="note-body"></textarea></div>
+          <button class="btn primary" type="submit"><i class="ti ti-device-floppy"></i> Günlük notu kaydet</button>
+        </form>
+      </article>
+
+      <article class="card">
+        <div class="title"><h2 style="margin:0">Bugünün rutinleri</h2><span id="today-label" class="badge blue"></span></div>
+        <div class="divider"></div>
+        <div id="routine-list" class="list"><div class="empty">Rutinler yükleniyor...</div></div>
+      </article>
+    </section>
+
+    <section class="layout" style="margin-top:18px">
+      <article class="card">
+        <h2>Bu kedinin rutinlerini düzenle</h2>
+        <form id="routine-form">
+          <div class="grid">
+            <div class="field"><label>Rutin adı</label><input id="routine-title" placeholder="Örn: Kalp ilacı" required></div>
+            <div class="field"><label>Saat</label><input id="routine-time" type="time" required></div>
+          </div>
+          <div class="field"><label>Kategori / özel isim</label><input id="routine-category" placeholder="Örn: Kalp ilacı, özel mama, malt"></div>
+          <label class="check"><input id="routine-owner-visible" type="checkbox"> Sahip sayfasında göster</label>
+          <div class="buttons" style="margin-top:14px">
+            <button class="btn primary" type="submit" id="save-routine"><i class="ti ti-device-floppy"></i> Rutini kaydet</button>
+            <button class="btn soft" type="button" id="cancel-routine" hidden>Düzenlemeyi bırak</button>
+            <button class="btn blue" type="button" id="add-defaults">Varsayılanları ekle</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card">
+        <h2>Son notlar</h2>
+        <div id="recent-notes" class="list"><div class="empty">Notlar yükleniyor...</div></div>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:18px">
+      <h2>Tanımlı rutinler</h2>
+      <div id="template-list" class="list"><div class="empty">Rutinler yükleniyor...</div></div>
+    </section>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const cfg=window.KEDI_APP_CONFIG||{};
+    const db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+    const $=s=>document.querySelector(s); const $$=s=>Array.from(document.querySelectorAll(s));
+    const esc=(v='')=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+    const today=()=>new Date().toISOString().slice(0,10); const nowTime=()=>new Date().toTimeString().slice(0,5); const fmtTime=v=>String(v||'').slice(0,5);
+    const fmtDate=v=>v?new Date(v+(String(v).includes('T')?'':'T12:00:00')).toLocaleDateString('tr-TR'):'—';
+    const fmtDateTime=v=>v?new Date(v).toLocaleString('tr-TR',{dateStyle:'medium',timeStyle:'short'}):'—';
+    const toast=(m,e=false)=>{const t=$('#toast');t.textContent=m;t.style.background=e?'#be123c':'#20183a';t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),2600)};
+    function addDays(dateText,days){const d=new Date(`${dateText}T12:00:00`);d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+    function isActiveCat(cat){const t=today();const activeStart=cat.checkin_date?addDays(cat.checkin_date,-2):'';return(!cat.checkin_date||activeStart<=t)&&(!cat.checkout_date||cat.checkout_date>t)}
+    function readFlags(){const out={};$$('[data-flag]').forEach(i=>out[i.dataset.flag]=i.checked);return out}
+
+    let session=null,cats=[],activeCats=[],selectedCatId='',templates=[],logs=[],notes=[],editingRoutineId='';
+    const defaults=[['Mama / su kontrolü','09:00','Mama / Su',true],['Takviye / ilaç','09:30','Takviye',true],['Kum temizliği','10:00','Kum',false],['Genel kontrol','11:00','Kontrol',false],['Oyun saati','14:00','Oyun',true],['Genel kontrol','15:00','Kontrol',false],['Malt / bakım','17:00','Malt',true],['Mama / su kontrolü','20:00','Mama / Su',true],['Kum temizliği','21:00','Kum',false],['Son gece kontrolü','22:30','Kontrol',false]];
+
+    function selectedCat(){return cats.find(c=>c.id===selectedCatId)}
+    function renderCats(){const fromUrl=new URLSearchParams(location.search).get('id'); if(!selectedCatId) selectedCatId=fromUrl||activeCats[0]?.id||cats[0]?.id||''; $('#cat-select').innerHTML='<option value="">Kedi seçin</option>'+activeCats.map(c=>`<option value="${c.id}">${esc(c.name)}${c.owner_name?` — ${esc(c.owner_name)}`:''}</option>`).join(''); $('#cat-select').value=selectedCatId;}
+    function resetNote(){ $('#note-date').value=today(); $('#note-form').reset(); $('#note-date').value=today(); }
+    function resetRoutine(){editingRoutineId=''; $('#routine-form').reset(); $('#cancel-routine').hidden=true; $('#save-routine').innerHTML='<i class="ti ti-device-floppy"></i> Rutini kaydet'}
+
+    function renderRoutines(){
+      $('#today-label').textContent=new Date().toLocaleDateString('tr-TR');
+      const list=templates.filter(t=>t.cat_id===selectedCatId&&t.is_active!==false).sort((a,b)=>`${a.routine_time}`.localeCompare(`${b.routine_time}`));
+      if(!list.length){$('#routine-list').innerHTML='<div class="empty">Bu kedi için rutin yok. Alttan rutin ekle veya varsayılanları ekle.</div>';return}
+      $('#routine-list').innerHTML=list.map(t=>{const log=logs.find(l=>l.routine_template_id===t.id&&l.routine_date===today());const late=!log&&fmtTime(t.routine_time)<nowTime();return `<article class="item ${log?'done':late?'late':''}"><div class="title"><div><h3 style="margin:0">${fmtTime(t.routine_time)} · ${esc(t.title)}</h3><div class="small">${esc(t.category||'Rutin')} · ${t.show_to_owner?'Sahibe gösterilir':'Sadece admin'}</div></div><div>${log?'<span class="badge green">Yapıldı</span>':late?'<span class="badge red">Gecikti</span>':'<span class="badge blue">Bekliyor</span>'}</div></div>${log?`<div class="small" style="margin-top:8px">Yapılma saati: ${fmtDateTime(log.completed_at)}</div>`:''}<div class="buttons" style="margin-top:12px">${log?`<button class="btn soft" data-undo="${log.id}">Geri al</button>`:`<button class="btn green" data-done="${t.id}">Yapıldı</button>`}<button class="btn soft" data-edit-routine="${t.id}">Düzenle</button></div></article>`}).join('')
+    }
+
+    function renderTemplates(){
+      const list=templates.filter(t=>t.cat_id===selectedCatId&&t.is_active!==false).sort((a,b)=>`${a.routine_time}`.localeCompare(`${b.routine_time}`));
+      $('#template-list').innerHTML=list.length?list.map(t=>`<article class="item"><div class="title"><div><strong>${fmtTime(t.routine_time)} · ${esc(t.title)}</strong><div class="small">${esc(t.category||'Rutin')} · ${t.show_to_owner?'Sahibe gösterilir':'Sadece admin'}</div></div><div class="buttons"><button class="btn soft" data-edit-routine="${t.id}">Düzenle</button><button class="btn danger" data-delete-routine="${t.id}">Sil</button></div></div></article>`).join(''):'<div class="empty">Bu kedi için rutin yok.</div>'
+    }
+
+    function renderNotes(){
+      const list=notes.filter(n=>n.cat_id===selectedCatId).slice(0,8);
+      $('#recent-notes').innerHTML=list.length?list.map(n=>`<article class="item"><div class="title"><strong>${fmtDate(n.note_date)}</strong><span class="badge blue">${new Date(n.created_at).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})}</span></div>${n.body?`<div class="divider"></div><div class="note">${esc(n.body)}</div>`:''}${n.photo_url?`<div class="divider"></div><a href="${esc(n.photo_url)}" target="_blank" rel="noreferrer">Fotoğrafı aç</a>`:''}</article>`).join(''):'<div class="empty">Bu kedi için henüz not yok.</div>'
+    }
+
+    function renderAll(){const cat=selectedCat(); $('#care-status').value=cat?`${cat.name} için bakım ekranı hazır.`:'Aktif kedi seçin.'; renderRoutines(); renderTemplates(); renderNotes()}
+
+    async function load(){
+      const s=await db.auth.getSession(); session=s.data.session; if(!session){$('#care-status').value='Giriş yapmanız gerekiyor.';return}
+      const [catsRes,tplRes,logsRes,notesRes]=await Promise.all([db.from('cats').select('*').order('created_at',{ascending:false}),db.from('routine_templates').select('*').order('routine_time',{ascending:true}),db.from('routine_logs').select('*').eq('routine_date',today()).order('completed_at',{ascending:false}),db.from('daily_notes').select('*').order('created_at',{ascending:false})]);
+      if(catsRes.error||tplRes.error||logsRes.error||notesRes.error){toast((catsRes.error||tplRes.error||logsRes.error||notesRes.error).message,true);return}
+      cats=catsRes.data||[]; activeCats=cats.filter(isActiveCat); templates=tplRes.data||[]; logs=logsRes.data||[]; notes=notesRes.data||[]; renderCats(); if(!selectedCatId&&activeCats[0]) selectedCatId=activeCats[0].id; resetNote(); renderAll();
+    }
+
+    $('#cat-select').onchange=()=>{selectedCatId=$('#cat-select').value; resetNote(); resetRoutine(); renderAll()};
+    $('#note-form').onsubmit=async e=>{e.preventDefault(); if(!selectedCatId){toast('Kedi seçin.',true);return} const payload={user_id:session.user.id,cat_id:selectedCatId,note_date:$('#note-date').value||today(),mood:$('#note-mood').value.trim()||null,appetite:$('#note-appetite').value.trim()||null,photo_url:$('#note-photo-url').value.trim()||null,body:$('#note-body').value.trim()||null,flags:readFlags()}; const res=await db.from('daily_notes').insert(payload).select().single(); if(res.error){toast(res.error.message,true);return} toast('Günlük not kaydedildi.'); resetNote(); await load()};
+    $('#routine-form').onsubmit=async e=>{e.preventDefault(); if(!selectedCatId){toast('Kedi seçin.',true);return} const title=$('#routine-title').value.trim(), time=$('#routine-time').value; if(!title||!time){toast('Rutin adı ve saat zorunlu.',true);return} const payload={user_id:session.user.id,cat_id:selectedCatId,title,routine_time:time,category:$('#routine-category').value.trim()||null,show_to_owner:$('#routine-owner-visible').checked,is_active:true}; const res=editingRoutineId?await db.from('routine_templates').update(payload).eq('id',editingRoutineId):await db.from('routine_templates').insert(payload); if(res.error){toast(res.error.message,true);return} toast(editingRoutineId?'Rutin güncellendi.':'Rutin eklendi.'); resetRoutine(); await load()};
+    $('#cancel-routine').onclick=resetRoutine;
+    $('#add-defaults').onclick=async()=>{if(!selectedCatId){toast('Kedi seçin.',true);return} const rows=defaults.map(([title,time,category,show])=>({user_id:session.user.id,cat_id:selectedCatId,title,routine_time:time,category,show_to_owner:show,is_active:true})); const res=await db.from('routine_templates').insert(rows); if(res.error){toast(res.error.message,true);return} toast('Varsayılan rutinler eklendi.'); await load()};
+    document.addEventListener('click',async e=>{const done=e.target.closest('[data-done]'),undo=e.target.closest('[data-undo]'),edit=e.target.closest('[data-edit-routine]'),del=e.target.closest('[data-delete-routine]'); if(done){const t=templates.find(x=>x.id===done.dataset.done); if(!t)return; const res=await db.from('routine_logs').insert({user_id:session.user.id,cat_id:t.cat_id,routine_template_id:t.id,routine_date:today(),title:t.title,routine_time:t.routine_time,category:t.category,show_to_owner:t.show_to_owner}); if(res.error){toast(res.error.message,true);return} toast('Rutin yapıldı.'); await load()} if(undo){const res=await db.from('routine_logs').delete().eq('id',undo.dataset.undo); if(res.error){toast(res.error.message,true);return} toast('Rutin geri alındı.'); await load()} if(edit){const t=templates.find(x=>x.id===edit.dataset.editRoutine); if(!t)return; editingRoutineId=t.id; $('#routine-title').value=t.title; $('#routine-time').value=fmtTime(t.routine_time); $('#routine-category').value=t.category||''; $('#routine-owner-visible').checked=!!t.show_to_owner; $('#cancel-routine').hidden=false; $('#save-routine').innerHTML='<i class="ti ti-device-floppy"></i> Rutini güncelle'; window.scrollTo({top:0,behavior:'smooth'})} if(del){if(!confirm('Bu rutin silinsin mi?'))return; const res=await db.from('routine_templates').update({is_active:false}).eq('id',del.dataset.deleteRoutine); if(res.error){toast(res.error.message,true);return} toast('Rutin silindi.'); await load()}});
+    load();
+  </script>
+</body>
+</html>
