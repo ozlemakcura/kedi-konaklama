@@ -19,4 +19,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const ownerNoteTimeScript = document.createElement("script");
   ownerNoteTimeScript.src = "./owner-note-time.js";
   document.body.appendChild(ownerNoteTimeScript);
+
+  const careNoteEditScript = document.createElement("script");
+  careNoteEditScript.src = "./care-note-edit.js";
+  document.body.appendChild(careNoteEditScript);
 });
