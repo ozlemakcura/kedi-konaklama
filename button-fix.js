@@ -45,22 +45,22 @@
     strong.textContent = String(activeCount);
   }
 
-  function addRoutineButtons() {
+  function addCareButtons() {
     const heroButtons = document.querySelector('.hero-card .btn-row');
-    if (heroButtons && !heroButtons.querySelector('a[href="./routine.html"]')) {
+    if (heroButtons && !heroButtons.querySelector('a[href="./care.html"]')) {
       const link = document.createElement('a');
-      link.href = './routine.html';
+      link.href = './care.html';
       link.className = 'btn teal';
-      link.innerHTML = '<i class="ti ti-clock-check"></i> Rutinler';
+      link.innerHTML = '<i class="ti ti-paw"></i> Bakım';
       heroButtons.appendChild(link);
     }
 
     const nav = document.querySelector('.nav');
-    if (nav && !nav.querySelector('a[href="./routine.html"]')) {
+    if (nav && !nav.querySelector('a[href="./care.html"]')) {
       const link = document.createElement('a');
-      link.href = './routine.html';
+      link.href = './care.html';
       link.className = 'ghost';
-      link.innerHTML = '<i class="ti ti-clock-check"></i> Rutinler';
+      link.innerHTML = '<i class="ti ti-paw"></i> Bakım';
       nav.appendChild(link);
     }
   }
@@ -81,7 +81,7 @@
       copyButton.dataset.copyLink = value.replace('/kedi-konaklama/?owner=', '/kedi-konaklama/owner.html?owner=');
     });
 
-    addRoutineButtons();
+    addCareButtons();
   }, 200);
 
   setInterval(updateActiveCatMetric, 1500);
@@ -100,7 +100,7 @@
     if (notesButton) {
       event.preventDefault();
       event.stopPropagation();
-      location.href = './note.html';
+      location.href = './care.html';
       return;
     }
 
