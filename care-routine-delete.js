@@ -1,16 +1,1 @@
-(() => {
-  if (!location.pathname.endsWith('/care.html')) return;
-
-  let db;
-  const cfg = window.KEDI_APP_CONFIG || {};
-  const $ = (s) => document.querySelector(s);
-
-  function client() {
-    if (!window.supabase || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return null;
-    if (!db) db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-    return db;
-  }
-
-  function toast(message, error = false) {
-    const t = $('#toast');
-    if (!t
+(()=>{if(!location.pathname.endsWith('/care.html'))return;let db;const cfg=window.KEDI_APP_CONFIG||{};const $=s=>document.querySelector(s);function api(){if(!window.supabase||!cfg.supabaseUrl||!cfg.supabaseAnonKey)return null;if(!db)db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);return db}function toast(m,e=false){const t=$('#toast');if(!t)return;t.textContent=m;t.style.background=e?'#be123c':'#20183a';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}function addButtons(){document.querySelectorAll('[data-edit-routine]').forEach(b=>{const box=b.parentElement;if(!
