@@ -14,8 +14,4 @@
   function toast(message, error = false) {
     const t = $('#toast');
     if (!t) return;
-    t.textContent = message;
-    t.style.background = error ? '#be123c' : '#20183a';
-    t.classList.add('show');
-    clearTimeout(t._routineDeleteTimer);
-    t._routineDeleteTimer = set
+    t.textContent
