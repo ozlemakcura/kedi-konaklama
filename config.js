@@ -23,4 +23,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const careNoteEditScript = document.createElement("script");
   careNoteEditScript.src = "./care-note-edit.js";
   document.body.appendChild(careNoteEditScript);
+
+  const careAllCatsScript = document.createElement("script");
+  careAllCatsScript.src = "./care-all-cats.js";
+  document.body.appendChild(careAllCatsScript);
 });
