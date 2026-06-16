@@ -83,11 +83,19 @@
     if (cancel) cancel.hidden = true;
   }
 
+  function ensureHeader(count) {
+    const container = $('#recent-notes');
+    const card = container?.closest('.card');
+    const h2 = card?.querySelector('h2');
+    if (h2) h2.textContent = `Tüm notlar (${count})`;
+  }
+
   function renderNotes() {
     const container = $('#recent-notes');
     if (!container) return;
     const catId = selectedCatId();
-    const list = notes.filter((note) => note.cat_id === catId).slice(0, 10);
+    const list = notes.filter((note) => note.cat_id === catId);
+    ensureHeader(list.length);
     container.innerHTML = list.length ? list.map((note) => `
       <article class="item">
         <div class="title"><strong>${fmtDate(note.note_date)}</strong><span class="badge blue">${fmtTime(note.created_at)}</span></div>
@@ -109,7 +117,7 @@
     const sessionResult = await api.auth.getSession();
     session = sessionResult.data?.session;
     if (!session) return;
-    const { data, error } = await api.from('daily_notes').select('*').order('created_at', { ascending: false });
+    const { data, error } = await api.from('daily_notes').select('*').order('note_date', { ascending: false }).order('created_at', { ascending: false });
     if (error) return;
     notes = data || [];
     renderNotes();
