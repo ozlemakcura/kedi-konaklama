@@ -11,6 +11,14 @@
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => Array.from(document.querySelectorAll(selector));
   const esc = (v = '') => String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+  const FLAG_LABELS = [
+    ['food', '🍽️ Mama yedi'],
+    ['water', '💧 Su içti'],
+    ['toilet', '✨ Tuvalet normal'],
+    ['play', '🎾 Oyun / aktif'],
+    ['medicine', '💊 İlaç verildi'],
+    ['care', '✂️ Bakım yapıldı']
+  ];
 
   function client() {
     if (!window.supabase || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return null;
@@ -21,6 +29,11 @@
   function today() { return new Date().toISOString().slice(0, 10); }
   function fmtDate(value) { return value ? new Date(value + (String(value).includes('T') ? '' : 'T12:00:00')).toLocaleDateString('tr-TR') : '—'; }
   function fmtTime(value) { return value ? new Date(value).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '—'; }
+
+  function flagBadges(flags = {}) {
+    const active = FLAG_LABELS.filter(([key]) => !!flags?.[key]);
+    return active.length ? `<div class="divider"></div><div class="title">${active.map(([, label]) => `<span class="badge green">${esc(label)}</span>`).join('')}</div>` : '';
+  }
 
   function toast(message, error = false) {
     const t = $('#toast');
@@ -100,6 +113,7 @@
       <article class="item">
         <div class="title"><strong>${fmtDate(note.note_date)}</strong><span class="badge blue">${fmtTime(note.created_at)}</span></div>
         ${note.mood || note.appetite ? `<div class="divider"></div><div class="title">${note.mood ? `<span class="badge">${esc(note.mood)}</span>` : ''}${note.appetite ? `<span class="badge amber">${esc(note.appetite)}</span>` : ''}</div>` : ''}
+        ${flagBadges(note.flags)}
         ${note.body ? `<div class="divider"></div><div class="note">${esc(note.body)}</div>` : ''}
         ${note.photo_url ? `<div class="divider"></div><a href="${esc(note.photo_url)}" target="_blank" rel="noreferrer">Fotoğrafı aç</a>` : ''}
         <div class="divider"></div>
