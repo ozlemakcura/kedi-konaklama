@@ -128,10 +128,18 @@
   async function loadNotes() {
     const api = client();
     if (!api) return;
+    const catId = selectedCatId();
+    if (!catId) { notes = []; renderNotes(); return; }
     const sessionResult = await api.auth.getSession();
     session = sessionResult.data?.session;
     if (!session) return;
-    const { data, error } = await api.from('daily_notes').select('*').order('note_date', { ascending: false }).order('created_at', { ascending: false });
+    const { data, error } = await api
+      .from('daily_notes')
+      .select('*')
+      .eq('cat_id', catId)
+      .order('note_date', { ascending: false })
+      .order('created_at', { ascending: false })
+      .range(0, 4999);
     if (error) return;
     notes = data || [];
     renderNotes();
