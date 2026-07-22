@@ -2,10 +2,6 @@ name: E-posta Bildirim Fonksiyonunu Yayınla
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "supabase/functions/notify-owner-interaction/**"
 
 jobs:
   deploy:
