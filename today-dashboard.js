@@ -7,7 +7,17 @@
   if (!window.supabase || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return;
 
   const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-  const today = () => new Date().toISOString().slice(0, 10);
+  const today = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  const startOfTodayIso = () => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString();
+  };
   const nowTime = () => new Date().toTimeString().slice(0, 5);
   const esc = (value = '') => String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -96,7 +106,7 @@
       client.from('daily_notes').select('id,cat_id,note_date,created_at').eq('note_date', date),
       client.from('routine_templates').select('id,cat_id,title,routine_time,category,is_active').eq('is_active', true).order('routine_time'),
       client.from('routine_logs').select('id,cat_id,routine_template_id,routine_date,completed_at').eq('routine_date', date),
-      client.from('owner_notes').select('id,cat_id,owner_name,message,created_at').gte('created_at', `${date}T00:00:00`).order('created_at', { ascending: false }),
+      client.from('owner_notes').select('id,cat_id,owner_name,message,created_at').gte('created_at', startOfTodayIso()).order('created_at', { ascending: false }),
     ]);
 
     const firstError = [catsRes, notesRes, templatesRes, logsRes, ownerNotesRes].find((result) => result.error)?.error;
