@@ -32,6 +32,10 @@ window.addEventListener("DOMContentLoaded", () => {
   ownerInteractionsScript.src = "./owner-interactions.js";
   document.body.appendChild(ownerInteractionsScript);
 
+  const ownerEmailHookScript = document.createElement("script");
+  ownerEmailHookScript.src = "./owner-email-hook.js";
+  document.body.appendChild(ownerEmailHookScript);
+
   const ownerNotificationsScript = document.createElement("script");
   ownerNotificationsScript.src = "./owner-notifications.js";
   document.body.appendChild(ownerNotificationsScript);
