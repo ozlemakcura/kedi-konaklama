@@ -31,4 +31,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const ownerInteractionsScript = document.createElement("script");
   ownerInteractionsScript.src = "./owner-interactions.js";
   document.body.appendChild(ownerInteractionsScript);
+
+  const ownerNotificationsScript = document.createElement("script");
+  ownerNotificationsScript.src = "./owner-notifications.js";
+  document.body.appendChild(ownerNotificationsScript);
 });
