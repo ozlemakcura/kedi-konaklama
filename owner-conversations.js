@@ -47,7 +47,7 @@
     return {
       ...note,
       kind: 'admin-reply',
-      parentId: decodeValue(match[1]),
+      parentKey: decodeValue(match[1]),
       target: decodeValue(match[2]),
       text: String(match[3] || '').trim(),
     };
@@ -60,11 +60,27 @@
   function groupAdminReplies(notes) {
     const map = new Map();
     notes.map(parseAdminReply).filter(Boolean).forEach((reply) => {
-      if (!map.has(reply.parentId)) map.set(reply.parentId, []);
-      map.get(reply.parentId).push(reply);
+      if (!map.has(reply.parentKey)) map.set(reply.parentKey, []);
+      map.get(reply.parentKey).push(reply);
     });
     map.forEach((items) => items.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at))));
     return map;
+  }
+
+  function repliesForNote(note, repliesByParent) {
+    const keys = [note?.id, note?.created_at].filter(Boolean);
+    const replies = keys.flatMap((key) => repliesByParent.get(key) || []);
+    const seen = new Set();
+    return replies.filter((reply) => {
+      const identity = `${reply.created_at || ''}|${reply.message || reply.text || ''}`;
+      if (seen.has(identity)) return false;
+      seen.add(identity);
+      return true;
+    });
+  }
+
+  function replyIdentity(reply) {
+    return `${reply.created_at || ''}|${reply.message || reply.text || ''}`;
   }
 
   function injectStyles() {
@@ -91,6 +107,7 @@
       .owner-admin-reply-meta{font-size:11px;color:#6d28d9;font-weight:800;margin-bottom:4px}
       .owner-admin-reply-text{white-space:pre-wrap;line-height:1.45}
       .owner-reaction-admin-replies{margin-top:10px}
+      .owner-unmatched-reply{border-color:#d8b4fe;background:#faf5ff}
       @media(max-width:640px){.conversation-form{grid-template-columns:1fr}.conversation-head{flex-direction:column}.conversation-send{justify-self:start}}
     `;
     document.head.appendChild(style);
@@ -155,7 +172,7 @@
       list.dataset.conversationReady = '1';
       list.classList.add('conversation-list');
       list.innerHTML = baseNotes.length
-        ? baseNotes.map((note) => adminConversationCard(note, catMap.get(note.cat_id), repliesByParent.get(note.id) || [])).join('')
+        ? baseNotes.map((note) => adminConversationCard(note, catMap.get(note.cat_id), repliesForNote(note, repliesByParent))).join('')
         : '<div class="empty">Henüz sahip notu, tepki veya yanıtı yok.</div>';
       const description = panel.querySelector('.panel-head .muted');
       if (description) description.textContent = 'Sahiplerin mesajlarını görün ve aynı konuşmanın içinden yanıtlayın.';
@@ -179,7 +196,8 @@
     }
     const interaction = parseOwnerInteraction(parent);
     const target = interaction?.target || '';
-    const message = `[[admin-reply:${encodeValue(parent.id)}]][[care:${encodeValue(target)}]]${text}`;
+    const parentKey = parent.created_at || parent.id;
+    const message = `[[admin-reply:${encodeValue(parentKey)}]][[care:${encodeValue(target)}]]${text}`;
     button.disabled = true;
     const result = await client.rpc('submit_owner_note', {
       p_token: cat.public_token,
@@ -222,7 +240,11 @@
       if (error || !data) return;
       const allNotes = data.owner_notes || [];
       const repliesByParent = groupAdminReplies(allNotes);
+      const allAdminReplies = allNotes.map(parseAdminReply).filter(Boolean);
+      const usedReplies = new Set();
       const ownerInteractions = allNotes.map(parseOwnerInteraction).filter(Boolean);
+
+      const markUsed = (replies) => replies.forEach((reply) => usedReplies.add(replyIdentity(reply)));
 
       document.querySelectorAll('.day-column:first-child .item').forEach((card) => {
         const target = card.dataset.careTarget;
@@ -234,18 +256,23 @@
           node.querySelector('.owner-admin-replies')?.remove();
           const parent = ownerTextReplies[index];
           if (!parent) return;
-          node.insertAdjacentHTML('beforeend', ownerReplyMarkup(repliesByParent.get(parent.id) || []));
+          const replies = repliesForNote(parent, repliesByParent);
+          markUsed(replies);
+          node.insertAdjacentHTML('beforeend', ownerReplyMarkup(replies));
         });
 
-        const reactionReplies = interactions
-          .filter((item) => item.type === 'reaction')
-          .flatMap((item) => repliesByParent.get(item.id) || []);
+        const reactionParents = interactions.filter((item) => item.type === 'reaction');
+        const reactionReplies = reactionParents.flatMap((item) => repliesForNote(item, repliesByParent));
+        markUsed(reactionReplies);
+        const legacyTargetReplies = allAdminReplies.filter((reply) => reply.target === target && !usedReplies.has(replyIdentity(reply)));
+        markUsed(legacyTargetReplies);
         const box = card.querySelector('.owner-interaction-box');
         box?.querySelector('.owner-reaction-admin-replies')?.remove();
-        if (box && reactionReplies.length) {
+        const repliesToShow = [...reactionReplies, ...legacyTargetReplies];
+        if (box && repliesToShow.length) {
           const wrapper = document.createElement('div');
           wrapper.className = 'owner-reaction-admin-replies';
-          wrapper.innerHTML = ownerReplyMarkup(reactionReplies);
+          wrapper.innerHTML = ownerReplyMarkup(repliesToShow);
           box.appendChild(wrapper);
         }
       });
@@ -254,8 +281,15 @@
       const sentList = sentHeading?.closest('.card')?.querySelector('.list');
       if (sentList) {
         const generalNotes = allNotes.filter((note) => !isTechnical(note));
-        sentList.innerHTML = generalNotes.length
-          ? generalNotes.map((note) => `<div class="item"><div class="muted">${esc(fmtDateTime(note.created_at))} · ${esc(note.owner_name || 'Sahip')}</div><div class="divider"></div><div class="note">${esc(note.message)}</div>${ownerReplyMarkup(repliesByParent.get(note.id) || [])}</div>`).join('')
+        const generalMarkup = generalNotes.map((note) => {
+          const replies = repliesForNote(note, repliesByParent);
+          markUsed(replies);
+          return `<div class="item"><div class="muted">${esc(fmtDateTime(note.created_at))} · ${esc(note.owner_name || 'Sahip')}</div><div class="divider"></div><div class="note">${esc(note.message)}</div>${ownerReplyMarkup(replies)}</div>`;
+        }).join('');
+        const unmatchedReplies = allAdminReplies.filter((reply) => !usedReplies.has(replyIdentity(reply)));
+        const unmatchedMarkup = unmatchedReplies.map((reply) => `<div class="item owner-unmatched-reply"><div class="muted">${esc(fmtDateTime(reply.created_at))} · Özlem'in yanıtı</div><div class="divider"></div><div class="note">${esc(reply.text)}</div></div>`).join('');
+        sentList.innerHTML = generalMarkup || unmatchedMarkup
+          ? `${generalMarkup}${unmatchedMarkup}`
           : '<div class="empty">Henüz genel not gönderilmedi.</div>';
       }
     } finally {
