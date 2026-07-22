@@ -27,4 +27,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const careAllCatsScript = document.createElement("script");
   careAllCatsScript.src = "./care-all-cats.js";
   document.body.appendChild(careAllCatsScript);
+
+  const ownerInteractionsScript = document.createElement("script");
+  ownerInteractionsScript.src = "./owner-interactions.js";
+  document.body.appendChild(ownerInteractionsScript);
 });
